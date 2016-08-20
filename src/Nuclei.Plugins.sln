@@ -1,0 +1,97 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0245F9D1-9F8D-43AA-8C61-69370002790D}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
+		..\LICENSE.md = ..\LICENSE.md
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FE08C557-2C2F-409C-A106-C12F6A6E8C40}"
+	ProjectSection(SolutionItems) = preProject
+		..\nuget.config = ..\nuget.config
+		..\packages.config = ..\packages.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{525FF8D6-BF44-4BEB-BEF4-DD767DC0E722}"
+	ProjectSection(SolutionItems) = preProject
+		base.props = base.props
+		..\build.settings.props = ..\build.settings.props
+		..\deploy.settings.props = ..\deploy.settings.props
+		..\entrypoint.msbuild = ..\entrypoint.msbuild
+		..\settings.props = ..\settings.props
+		..\test.settings.props = ..\test.settings.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "codeanalysis", "codeanalysis", "{4058FF97-0E99-419F-9E44-C89432CE5199}"
+	ProjectSection(SolutionItems) = preProject
+		..\CustomDictionary.xml = ..\CustomDictionary.xml
+		default.ruleset = default.ruleset
+		stylecop.json = stylecop.json
+		test.ruleset = test.ruleset
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuclei.Plugins", "Nuclei.Plugins\Nuclei.Plugins.csproj", "{E39027F6-757D-4F16-9014-EA3FA25C0D0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuclei.Plugins.Discovery", "Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj", "{89667ADE-301D-455C-88C9-E2D5C9AE18CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuclei.Plugins.Instantiation", "Nuclei.Plugins.Instantiation\Nuclei.Plugins.Instantiation.csproj", "{1C7534B2-2E24-487C-BBF8-7AF10DC8165E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Unit.Plugins", "Test.Unit.Plugins\Test.Unit.Plugins.csproj", "{BA52BF50-EB9B-4E05-8155-BB73BA70BDA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Unit.Plugins.Discovery", "Test.Unit.Plugins.Discovery\Test.Unit.Plugins.Discovery.csproj", "{02274A5E-5428-4413-A9C5-92037620A544}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Unit.Plugins.Instantiation", "Test.Unit.Plugins.Instantiation\Test.Unit.Plugins.Instantiation.csproj", "{7A5F87F3-2969-4165-9FBF-8CC95F4BDEED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Deploy|Any CPU = Deploy|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E39027F6-757D-4F16-9014-EA3FA25C0D0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E39027F6-757D-4F16-9014-EA3FA25C0D0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E39027F6-757D-4F16-9014-EA3FA25C0D0C}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{E39027F6-757D-4F16-9014-EA3FA25C0D0C}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{E39027F6-757D-4F16-9014-EA3FA25C0D0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E39027F6-757D-4F16-9014-EA3FA25C0D0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89667ADE-301D-455C-88C9-E2D5C9AE18CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89667ADE-301D-455C-88C9-E2D5C9AE18CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89667ADE-301D-455C-88C9-E2D5C9AE18CD}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{89667ADE-301D-455C-88C9-E2D5C9AE18CD}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{89667ADE-301D-455C-88C9-E2D5C9AE18CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89667ADE-301D-455C-88C9-E2D5C9AE18CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C7534B2-2E24-487C-BBF8-7AF10DC8165E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C7534B2-2E24-487C-BBF8-7AF10DC8165E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C7534B2-2E24-487C-BBF8-7AF10DC8165E}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C7534B2-2E24-487C-BBF8-7AF10DC8165E}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{1C7534B2-2E24-487C-BBF8-7AF10DC8165E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C7534B2-2E24-487C-BBF8-7AF10DC8165E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA52BF50-EB9B-4E05-8155-BB73BA70BDA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA52BF50-EB9B-4E05-8155-BB73BA70BDA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA52BF50-EB9B-4E05-8155-BB73BA70BDA1}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA52BF50-EB9B-4E05-8155-BB73BA70BDA1}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{BA52BF50-EB9B-4E05-8155-BB73BA70BDA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA52BF50-EB9B-4E05-8155-BB73BA70BDA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02274A5E-5428-4413-A9C5-92037620A544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02274A5E-5428-4413-A9C5-92037620A544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02274A5E-5428-4413-A9C5-92037620A544}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{02274A5E-5428-4413-A9C5-92037620A544}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{02274A5E-5428-4413-A9C5-92037620A544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02274A5E-5428-4413-A9C5-92037620A544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A5F87F3-2969-4165-9FBF-8CC95F4BDEED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A5F87F3-2969-4165-9FBF-8CC95F4BDEED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A5F87F3-2969-4165-9FBF-8CC95F4BDEED}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A5F87F3-2969-4165-9FBF-8CC95F4BDEED}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{7A5F87F3-2969-4165-9FBF-8CC95F4BDEED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A5F87F3-2969-4165-9FBF-8CC95F4BDEED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
