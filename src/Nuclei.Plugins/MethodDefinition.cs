@@ -93,15 +93,20 @@ namespace Nuclei.Plugins
             MethodInfo method,
             Func<Type, TypeIdentity> identityGenerator)
         {
+            if (method == null)
             {
-                Lokad.Enforce.Argument(() => method);
-                Lokad.Enforce.Argument(() => identityGenerator);
+                throw new ArgumentNullException("method");
+            }
+
+            if (identityGenerator == null)
+            {
+                throw new ArgumentNullException("identityGenerator");
             }
 
             return new MethodDefinition(
-                identityGenerator(method.DeclaringType), 
-                method.Name, 
-                !method.ReturnType.Equals(typeof(void)) ? identityGenerator(method.ReturnType) : null, 
+                identityGenerator(method.DeclaringType),
+                method.Name,
+                !method.ReturnType.Equals(typeof(void)) ? identityGenerator(method.ReturnType) : null,
                 method.GetParameters().Select(p => ParameterDefinition.CreateDefinition(p, identityGenerator)).ToList());
         }
 
@@ -121,22 +126,22 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The type that owns the current method.
         /// </summary>
-        private readonly TypeIdentity m_DeclaringType;
+        private readonly TypeIdentity _declaringType;
 
         /// <summary>
         /// The name of the method.
         /// </summary>
-        private readonly string m_MethodName;
+        private readonly string _methodName;
 
         /// <summary>
         /// The return type of the method.
         /// </summary>
-        private readonly TypeIdentity m_ReturnType;
+        private readonly TypeIdentity _returnType;
 
         /// <summary>
         /// The collection of parameters for the method.
         /// </summary>
-        private readonly List<ParameterDefinition> m_Parameters;
+        private readonly List<ParameterDefinition> _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodDefinition"/> class.
@@ -146,8 +151,8 @@ namespace Nuclei.Plugins
         /// <param name="returnType">The return type of the method.</param>
         /// <param name="parameters">The collection containing the parameters for the method.</param>
         private MethodDefinition(
-            TypeIdentity declaringType, 
-            string name, 
+            TypeIdentity declaringType,
+            string name,
             TypeIdentity returnType,
             List<ParameterDefinition> parameters)
         {
@@ -157,10 +162,10 @@ namespace Nuclei.Plugins
                 Debug.Assert(parameters != null, "The parameter array should not be null.");
             }
 
-            m_DeclaringType = declaringType;
-            m_MethodName = name;
-            m_ReturnType = returnType;
-            m_Parameters = parameters;
+            _declaringType = declaringType;
+            _methodName = name;
+            _returnType = returnType;
+            _parameters = parameters;
         }
 
         /// <summary>
@@ -170,7 +175,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_DeclaringType;
+                return _declaringType;
             }
         }
 
@@ -181,7 +186,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_MethodName;
+                return _methodName;
             }
         }
 
@@ -192,7 +197,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_ReturnType;
+                return _returnType;
             }
         }
 
@@ -203,7 +208,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Parameters.AsReadOnly();
+                return _parameters.AsReadOnly();
             }
         }
 
@@ -215,7 +220,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="MethodDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool Equals(MethodDefinition other)
         {
@@ -234,14 +241,16 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public sealed override bool Equals(object obj)
         {
@@ -279,16 +288,16 @@ namespace Nuclei.Plugins
                 {
                     hash = (hash * 23) ^ parameter.GetHashCode();
                 }
-                
+
                 return hash;
             }
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {

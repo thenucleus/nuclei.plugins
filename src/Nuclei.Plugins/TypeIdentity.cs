@@ -7,7 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -90,14 +89,15 @@ namespace Nuclei.Plugins
         /// </exception>
         public static TypeIdentity CreateDefinition(Type type, Func<Type, TypeIdentity> identityStorage)
         {
+            if (type == null)
             {
-                Lokad.Enforce.Argument(() => type);
+                throw new ArgumentNullException("type");
             }
 
             // It turns out that if the type is a generic parameter all kinds of crazy stuff happens
             // For instance generic parameters are nested, which means that we'll try to get
-            // the identity of the declaring type, which then means we have to get the 
-            // generic parameters, which ... que infinite loop. Hence if we are a generic 
+            // the identity of the declaring type, which then means we have to get the
+            // generic parameters, which ... que infinite loop. Hence if we are a generic
             // parameter, then we bail early.
             var isGenericParameter = type.IsGenericParameter;
             return new TypeIdentity(
@@ -130,51 +130,51 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The name of the type.
         /// </summary>
-        private readonly string m_Name;
+        private readonly string _name;
 
         /// <summary>
         /// The namespace of the type.
         /// </summary>
-        private readonly string m_Namespace;
+        private readonly string _namespace;
 
         /// <summary>
         /// The assembly information for the assembly that contains the type.
         /// </summary>
-        private readonly AssemblyDefinition m_Assembly;
+        private readonly AssemblyDefinition _assembly;
 
         /// <summary>
         /// The type definition for the type that declares the current nested type or
         /// generic parameter.
         /// </summary>
-        private readonly TypeIdentity m_DeclaringType;
+        private readonly TypeIdentity _declaringType;
 
         /// <summary>
         /// The collection that defines all the generic type arguments.
         /// </summary>
-        private readonly TypeIdentity[] m_TypeArguments
+        private readonly TypeIdentity[] _typeArguments
             = new TypeIdentity[0];
 
         /// <summary>
         /// A flag indicating if the current type is a generic type.
         /// </summary>
-        private readonly bool m_IsGenericType;
+        private readonly bool _isGenericType;
 
         /// <summary>
-        /// A flag indicating that the current type has generic parameter, some of which 
+        /// A flag indicating that the current type has generic parameter, some of which
         /// have not been replaced by real types.
         /// </summary>
-        private readonly bool m_IsOpenGeneric;
+        private readonly bool _isOpenGeneric;
 
         /// <summary>
         /// A flag indicating that the current type is actually a generic parameter (e.g. T)
         /// for an generic type.
         /// </summary>
-        private readonly bool m_IsGenericParameter;
+        private readonly bool _isGenericParameter;
 
         /// <summary>
         /// A flag indicating if the current type is a nested type or not.
         /// </summary>
-        private readonly bool m_IsNested;
+        private readonly bool _isNested;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeIdentity"/> class.
@@ -205,15 +205,15 @@ namespace Nuclei.Plugins
             bool isGenericType,
             TypeIdentity[] typeParameters)
         {
-            m_Name = typeName;
-            m_Namespace = typeNamespace;
-            m_Assembly = assembly;
-            m_IsGenericParameter = isGenericParameter;
-            m_IsNested = isNested;
-            m_DeclaringType = declaringType;
-            m_IsOpenGeneric = isOpenGeneric;
-            m_IsGenericType = isGenericType;
-            m_TypeArguments = typeParameters;
+            _name = typeName;
+            _namespace = typeNamespace;
+            _assembly = assembly;
+            _isGenericParameter = isGenericParameter;
+            _isNested = isNested;
+            _declaringType = declaringType;
+            _isOpenGeneric = isOpenGeneric;
+            _isGenericType = isGenericType;
+            _typeArguments = typeParameters;
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Name;
+                return _name;
             }
         }
 
@@ -234,7 +234,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Namespace;
+                return _namespace;
             }
         }
 
@@ -256,7 +256,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                if (m_IsOpenGeneric || m_IsGenericParameter)
+                if (_isOpenGeneric || _isGenericParameter)
                 {
                     return FormatWithoutTypeParameters();
                 }
@@ -282,11 +282,11 @@ namespace Nuclei.Plugins
 
         private string FormatNestedName()
         {
-            return m_IsNested
+            return _isNested
                 ? string.Format(
                     CultureInfo.InvariantCulture,
                     "{0}+{1}",
-                    m_DeclaringType.FormatNestedName(),
+                    _declaringType.FormatNestedName(),
                     Name)
                 : Name;
         }
@@ -294,18 +294,18 @@ namespace Nuclei.Plugins
         private string FormatTypeParameters(bool isFullyQualified)
         {
             var builder = new StringBuilder();
-            if (m_TypeArguments.Length > 0)
+            if (_typeArguments.Length > 0)
             {
                 builder.Append("[");
-                for (int i = 0; i < m_TypeArguments.Length; i++)
+                for (int i = 0; i < _typeArguments.Length; i++)
                 {
                     if (i > 0)
                     {
                         builder.Append(",");
                     }
 
-                    var arg = m_TypeArguments[i];
-                    if (arg.m_IsGenericParameter)
+                    var arg = _typeArguments[i];
+                    if (arg._isGenericParameter)
                     {
                         builder.Append(arg.Name);
                     }
@@ -332,7 +332,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Assembly;
+                return _assembly;
             }
         }
 
@@ -343,7 +343,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_DeclaringType;
+                return _declaringType;
             }
         }
 
@@ -354,7 +354,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_TypeArguments;
+                return _typeArguments;
             }
         }
 
@@ -365,7 +365,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_IsGenericType;
+                return _isGenericType;
             }
         }
 
@@ -377,19 +377,19 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_IsOpenGeneric;
+                return _isOpenGeneric;
             }
         }
 
         /// <summary>
-        /// Gets a value indicating whether the current type is a generic parameter (e.g. T) for a 
+        /// Gets a value indicating whether the current type is a generic parameter (e.g. T) for a
         /// generic type.
         /// </summary>
         public bool IsGenericParameter
         {
             get
             {
-                return m_IsGenericParameter;
+                return _isGenericParameter;
             }
         }
 
@@ -400,7 +400,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_IsNested;
+                return _isNested;
             }
         }
 
@@ -412,7 +412,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="TypeIdentity"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool Equals(TypeIdentity other)
         {
@@ -428,7 +430,7 @@ namespace Nuclei.Plugins
                 && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase)
                 && string.Equals(Namespace, other.Namespace, StringComparison.OrdinalIgnoreCase)
                 && Assembly.Equals(other.Assembly)
-                && m_TypeArguments.SequenceEqual(other.m_TypeArguments);
+                && _typeArguments.SequenceEqual(other._typeArguments);
         }
 
         /// <summary>
@@ -439,9 +441,14 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="Type"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0",
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1062:Validate arguments of public methods",
+            MessageId = "0",
             Justification = "There is no need to validate the parameter because it is implicitly verified.")]
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool Equals(Type other)
         {
@@ -454,7 +461,7 @@ namespace Nuclei.Plugins
             // we overload the == operator. If other isn't actually null then
             // we get an infinite loop where we're constantly trying to compare to null.
             //
-            // Note that generic parameters (e.g. T in IEnumerable<T>) are weird. They have 
+            // Note that generic parameters (e.g. T in IEnumerable<T>) are weird. They have
             // a name, namespace and assembly but not a FullName or an AssemblyQualifiedName (both are null)
             // so we'll do the comparison manually.
             var areEqual = !ReferenceEquals(other, null)
@@ -465,12 +472,12 @@ namespace Nuclei.Plugins
             if (areEqual)
             {
                 var typeArguments = other.GetGenericArguments();
-                areEqual = areEqual && (typeArguments.Length == m_TypeArguments.Length);
+                areEqual = areEqual && (typeArguments.Length == _typeArguments.Length);
                 if (areEqual)
                 {
-                    for (int i = 0; i < m_TypeArguments.Length; i++)
+                    for (int i = 0; i < _typeArguments.Length; i++)
                     {
-                        areEqual = areEqual && m_TypeArguments[i].Equals(typeArguments[i]);
+                        areEqual = areEqual && _typeArguments[i].Equals(typeArguments[i]);
                         if (!areEqual)
                         {
                             break;
@@ -483,14 +490,16 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public sealed override bool Equals(object obj)
         {
@@ -524,7 +533,7 @@ namespace Nuclei.Plugins
                 // Mash the hash together with yet another random prime number
                 hash = (hash * 23) ^ Name.GetHashCode();
                 hash = (hash * 23) ^ Namespace.GetHashCode();
-                foreach (var arg in m_TypeArguments)
+                foreach (var arg in _typeArguments)
                 {
                     hash = (hash * 23) ^ arg.GetHashCode();
                 }
@@ -534,10 +543,10 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {

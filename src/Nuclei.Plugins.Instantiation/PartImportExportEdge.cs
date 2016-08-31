@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics;
-using Apollo.Core.Extensions.Plugins;
+using Nuclei.Plugins;
 using QuickGraph;
 
 namespace Nuclei.Plugins.Instantiation

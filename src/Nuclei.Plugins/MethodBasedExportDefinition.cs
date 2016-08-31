@@ -75,7 +75,7 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="MethodBasedExportDefinition"/> class based 
+        /// Creates a new instance of the <see cref="MethodBasedExportDefinition"/> class based
         /// on the given <see cref="MethodInfo"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
@@ -93,9 +93,14 @@ namespace Nuclei.Plugins
             MethodInfo method,
             Func<Type, TypeIdentity> identityGenerator)
         {
+            if (method == null)
             {
-                Lokad.Enforce.Argument(() => method);
-                Lokad.Enforce.Argument(() => identityGenerator);
+                throw new ArgumentNullException("method");
+            }
+
+            if (identityGenerator == null)
+            {
+                throw new ArgumentNullException("identityGenerator");
             }
 
             return new MethodBasedExportDefinition(
@@ -105,7 +110,7 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="MethodBasedExportDefinition"/> class 
+        /// Creates a new instance of the <see cref="MethodBasedExportDefinition"/> class
         /// based on the given <see cref="MethodInfo"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
@@ -122,7 +127,7 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The name of the method.
         /// </summary>
-        private readonly MethodDefinition m_Method;
+        private readonly MethodDefinition _method;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodBasedExportDefinition"/> class.
@@ -131,7 +136,7 @@ namespace Nuclei.Plugins
         /// <param name="declaringType">The type which declares the method on which the import is placed.</param>
         /// <param name="method">The method for which the current object stores the serialized data.</param>
         private MethodBasedExportDefinition(
-            string contractName, 
+            string contractName,
             TypeIdentity declaringType,
             MethodDefinition method)
             : base(contractName, declaringType)
@@ -140,7 +145,7 @@ namespace Nuclei.Plugins
                 Debug.Assert(method != null, "The method object should not be null.");
             }
 
-            m_Method = method;
+            _method = method;
         }
 
         /// <summary>
@@ -150,7 +155,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Method;
+                return _method;
             }
         }
 
@@ -162,7 +167,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="SerializableExportDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public override bool Equals(SerializableExportDefinition other)
         {
@@ -182,14 +189,16 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public override bool Equals(object obj)
         {
@@ -230,17 +239,17 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {
             return string.Format(
-                CultureInfo.InvariantCulture, 
-                "Exporting [{0}] on {1}", 
-                ContractName, 
+                CultureInfo.InvariantCulture,
+                "Exporting [{0}] on {1}",
+                ContractName,
                 Method);
         }
     }

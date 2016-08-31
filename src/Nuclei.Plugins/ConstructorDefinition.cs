@@ -119,12 +119,12 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The type that owns the constructor.
         /// </summary>
-        private readonly TypeIdentity m_DeclaringType;
+        private readonly TypeIdentity _declaringType;
 
         /// <summary>
         /// The collection of parameters for the constructor.
         /// </summary>
-        private readonly List<ParameterDefinition> m_Parameters;
+        private readonly List<ParameterDefinition> _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstructorDefinition"/> class.
@@ -140,8 +140,8 @@ namespace Nuclei.Plugins
                 Debug.Assert(parameters != null, "The parameter array should not be null.");
             }
 
-            m_DeclaringType = declaringType;
-            m_Parameters = parameters;
+            _declaringType = declaringType;
+            _parameters = parameters;
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_DeclaringType;
+                return _declaringType;
             }
         }
 
@@ -162,7 +162,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Parameters.AsReadOnly();
+                return _parameters.AsReadOnly();
             }
         }
 
@@ -174,7 +174,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="ConstructorDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool Equals(ConstructorDefinition other)
         {
@@ -192,14 +194,16 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public sealed override bool Equals(object obj)
         {
@@ -242,10 +246,10 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {

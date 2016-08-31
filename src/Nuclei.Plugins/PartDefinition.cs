@@ -7,7 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using Nuclei.Plugins;
 
 namespace Nuclei.Plugins
 {
@@ -39,24 +38,6 @@ namespace Nuclei.Plugins
         /// Gets or sets the collection of exports for the current type.
         /// </summary>
         public IEnumerable<SerializableExportDefinition> Exports
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets or sets the collection of schedule actions for the current type.
-        /// </summary>
-        public IEnumerable<ScheduleActionDefinition> Actions
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets or sets the collection of schedule conditions for the current type.
-        /// </summary>
-        public IEnumerable<ScheduleConditionDefinition> Conditions
         {
             get;
             set;

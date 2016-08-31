@@ -20,7 +20,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Apollo.Core.Base.Plugins;
 using Apollo.Core.Base.Scheduling;
-using Apollo.Core.Extensions.Plugins;
+using Nuclei.Plugins;
 using Apollo.Core.Host.Properties;
 using Apollo.Utilities;
 using Nuclei;

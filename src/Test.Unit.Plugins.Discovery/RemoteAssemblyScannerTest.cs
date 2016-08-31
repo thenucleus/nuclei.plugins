@@ -14,7 +14,7 @@ using System.Linq;
 using System.Reflection;
 using Apollo.Core.Base.Plugins;
 using Apollo.Core.Base.Scheduling;
-using Apollo.Core.Extensions.Plugins;
+using Nuclei.Plugins;
 using Apollo.Core.Extensions.Scheduling;
 using Apollo.Utilities;
 using Moq;

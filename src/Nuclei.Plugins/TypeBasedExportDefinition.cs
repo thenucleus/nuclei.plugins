@@ -73,7 +73,7 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="TypeBasedExportDefinition"/> class based 
+        /// Creates a new instance of the <see cref="TypeBasedExportDefinition"/> class based
         /// on the given <see cref="Type"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
@@ -91,9 +91,14 @@ namespace Nuclei.Plugins
             Type declaringType,
             Func<Type, TypeIdentity> identityGenerator)
         {
+            if (declaringType == null)
             {
-                Lokad.Enforce.Argument(() => declaringType);
-                Lokad.Enforce.Argument(() => identityGenerator);
+                throw new ArgumentNullException("declaringType");
+            }
+
+            if (identityGenerator == null)
+            {
+                throw new ArgumentNullException("identityGenerator");
             }
 
             return new TypeBasedExportDefinition(
@@ -102,7 +107,7 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="TypeBasedExportDefinition"/> class 
+        /// Creates a new instance of the <see cref="TypeBasedExportDefinition"/> class
         /// based on the given <see cref="Type"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
@@ -123,7 +128,7 @@ namespace Nuclei.Plugins
         /// <param name="declaringType">The type that owns the current export.</param>
         private TypeBasedExportDefinition(string contractName, TypeIdentity declaringType)
             : base(contractName, declaringType)
-        { 
+        {
         }
 
         /// <summary>
@@ -134,7 +139,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="SerializableExportDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public override bool Equals(SerializableExportDefinition other)
         {
@@ -153,14 +160,16 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public override bool Equals(object obj)
         {
@@ -200,17 +209,17 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {
             return string.Format(
-                CultureInfo.InvariantCulture, 
-                "Exporting [{0}] on {1}", 
-                ContractName, 
+                CultureInfo.InvariantCulture,
+                "Exporting [{0}] on {1}",
+                ContractName,
                 DeclaringType);
         }
     }

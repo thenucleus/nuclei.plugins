@@ -10,7 +10,7 @@ using System.Globalization;
 using Apollo.Utilities;
 using Nuclei;
 
-namespace Apollo.Core.Extensions.Plugins
+namespace Nuclei.Plugins
 {
     /// <summary>
     /// Defines the ID for the registration of an object in an object group.

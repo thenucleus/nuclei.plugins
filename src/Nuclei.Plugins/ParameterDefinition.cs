@@ -88,9 +88,14 @@ namespace Nuclei.Plugins
         /// </exception>
         public static ParameterDefinition CreateDefinition(ParameterInfo parameter, Func<Type, TypeIdentity> identityGenerator)
         {
+            if (parameter == null)
             {
-                Lokad.Enforce.Argument(() => parameter);
-                Lokad.Enforce.Argument(() => identityGenerator);
+                throw new ArgumentNullException("parameter");
+            }
+
+            if (identityGenerator == null)
+            {
+                throw new ArgumentNullException("identityGenerator");
             }
 
             return new ParameterDefinition(
@@ -114,12 +119,12 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The name of the parameter.
         /// </summary>
-        private readonly string m_Name;
+        private readonly string _name;
 
         /// <summary>
         /// The type of the parameter.
         /// </summary>
-        private readonly TypeIdentity m_Type;
+        private readonly TypeIdentity _type;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ParameterDefinition"/> class.
@@ -133,8 +138,8 @@ namespace Nuclei.Plugins
                 Debug.Assert(type != null, "The declaring type should not be null.");
             }
 
-            m_Name = name;
-            m_Type = type;
+            _name = name;
+            _type = type;
         }
 
         /// <summary>
@@ -144,7 +149,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Name;
+                return _name;
             }
         }
 
@@ -155,7 +160,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Type;
+                return _type;
             }
         }
 
@@ -167,7 +172,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="ParameterDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool Equals(ParameterDefinition other)
         {
@@ -179,20 +186,22 @@ namespace Nuclei.Plugins
             // Check if other is a null reference by using ReferenceEquals because
             // we overload the == operator. If other isn't actually null then
             // we get an infinite loop where we're constantly trying to compare to null.
-            return !ReferenceEquals(other, null) 
-                && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) 
+            return !ReferenceEquals(other, null)
+                && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase)
                 && Identity == other.Identity;
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public sealed override bool Equals(object obj)
         {
@@ -226,16 +235,16 @@ namespace Nuclei.Plugins
                 // Mash the hash together with yet another random prime number
                 hash = (hash * 23) ^ Name.GetHashCode();
                 hash = (hash * 23) ^ Identity.GetHashCode();
-                
+
                 return hash;
             }
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {

@@ -90,22 +90,22 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The name of the assembly.
         /// </summary>
-        private readonly string m_Name;
+        private readonly string _name;
 
         /// <summary>
         /// The version of the assembly.
         /// </summary>
-        private readonly Version m_Version;
+        private readonly Version _version;
 
         /// <summary>
         /// The culture of the assembly.
         /// </summary>
-        private readonly CultureInfo m_Culture;
+        private readonly CultureInfo _culture;
 
         /// <summary>
         /// The public key token of the assembly.
         /// </summary>
-        private readonly string m_PublicKeyToken;
+        private readonly string _publicKeyToken;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AssemblyDefinition"/> class.
@@ -116,8 +116,9 @@ namespace Nuclei.Plugins
         /// </exception>
         private AssemblyDefinition(Assembly assembly)
         {
+            if (assembly == null)
             {
-                Lokad.Enforce.Argument(() => assembly);
+                throw new ArgumentNullException("assembly");
             }
 
             var assemblyName = assembly.GetName();
@@ -125,10 +126,10 @@ namespace Nuclei.Plugins
                 string.Empty,
                 assemblyName.GetPublicKeyToken().Select(b => b.ToString("x2", CultureInfo.InvariantCulture)));
 
-            m_Name = assemblyName.Name;
-            m_Version = assemblyName.Version;
-            m_Culture = assemblyName.CultureInfo;
-            m_PublicKeyToken = publicKeyToken;
+            _name = assemblyName.Name;
+            _version = assemblyName.Version;
+            _culture = assemblyName.CultureInfo;
+            _publicKeyToken = publicKeyToken;
         }
 
         /// <summary>
@@ -138,7 +139,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Name;
+                return _name;
             }
         }
 
@@ -149,7 +150,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Version;
+                return _version;
             }
         }
 
@@ -160,7 +161,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Culture;
+                return _culture;
             }
         }
 
@@ -171,7 +172,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_PublicKeyToken;
+                return _publicKeyToken;
             }
         }
 
@@ -200,7 +201,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="AssemblyDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool Equals(AssemblyDefinition other)
         {
@@ -220,14 +223,16 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public sealed override bool Equals(object obj)
         {
@@ -272,10 +277,10 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {

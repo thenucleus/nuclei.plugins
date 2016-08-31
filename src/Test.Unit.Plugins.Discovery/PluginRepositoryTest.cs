@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Apollo.Core.Base.Plugins;
-using Apollo.Core.Extensions.Plugins;
+using Nuclei.Plugins;
 using NUnit.Framework;
 using Test.Mocks;
 

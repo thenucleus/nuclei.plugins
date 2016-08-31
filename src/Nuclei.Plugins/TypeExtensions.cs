@@ -9,8 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Nuclei.Plugins
 {
@@ -20,17 +18,17 @@ namespace Nuclei.Plugins
     public static class TypeExtensions
     {
         /// <summary>
-        /// A collection that caches type identity objects for the four standard generic types 
+        /// A collection that caches type identity objects for the four standard generic types
         /// which MEF can automatically convert to.
         /// </summary>
         /// <design>
         /// We store this mapping so that we only have to create the instances of the different
-        /// generic types once. Creating one shouldn't be very costly but for each type there is a 
+        /// generic types once. Creating one shouldn't be very costly but for each type there is a
         /// possibility of some sub-types being created (for the generic parameters etc.). And given
         /// that these elements never change we can pre-create them and store them.
         /// </design>
-        private static readonly IDictionary<Type, TypeIdentity> s_SpecialCasesCache
-            = new Dictionary<Type, TypeIdentity> 
+        private static readonly IDictionary<Type, TypeIdentity> _specialCasesCache
+            = new Dictionary<Type, TypeIdentity>
             {
                 { typeof(IEnumerable<>), TypeIdentity.CreateDefinition(typeof(IEnumerable<>)) },
                 { typeof(Lazy<>), TypeIdentity.CreateDefinition(typeof(Lazy<>)) },
@@ -54,7 +52,9 @@ namespace Nuclei.Plugins
         /// <returns>
         ///     <see langword="true" /> if the type is based on the given open generic type; otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public static bool OpenGenericIsAssignableFrom(
             TypeIdentity openGeneric,
@@ -81,21 +81,23 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Returns a value indicating if the given type is based on the <see cref="Lazy{T}"/> or 
+        /// Returns a value indicating if the given type is based on the <see cref="Lazy{T}"/> or
         /// <see cref="Lazy{T, TMetadata}"/> open generic types.
         /// </summary>
         /// <param name="importType">The type that may or may not be based on the open generic type.</param>
         /// <param name="toDefinition">The function that translates a <see cref="TypeIdentity"/> to a <see cref="TypeDefinition"/>.</param>
         /// <returns>
-        ///     <see langword="true" /> if the type is based on the <see cref="Lazy{T}"/> or <see cref="Lazy{T, TMetadata}"/> open generic type; 
+        ///     <see langword="true" /> if the type is based on the <see cref="Lazy{T}"/> or <see cref="Lazy{T, TMetadata}"/> open generic type;
         ///     otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public static bool IsLazy(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
         {
-            return OpenGenericIsAssignableFrom(s_SpecialCasesCache[typeof(Lazy<>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(s_SpecialCasesCache[typeof(Lazy<,>)], importType, toDefinition);
+            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Lazy<>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Lazy<,>)], importType, toDefinition);
         }
 
         /// <summary>
@@ -108,14 +110,16 @@ namespace Nuclei.Plugins
         ///     <see langword="true" /> if the type is based on the <see cref="Func{T}"/>, <see cref="Func{T1, TResult}"/>,
         /// <see cref="Func{T1, T2, TResult}"/> or <see cref="Func{T1, T2, T3, TResult}"/> open generic type; otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public static bool IsFunc(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
         {
-            return OpenGenericIsAssignableFrom(s_SpecialCasesCache[typeof(Func<>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(s_SpecialCasesCache[typeof(Func<,>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(s_SpecialCasesCache[typeof(Func<,,>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(s_SpecialCasesCache[typeof(Func<,,,>)], importType, toDefinition);
+            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<,>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<,,>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<,,,>)], importType, toDefinition);
         }
 
         /// <summary>
@@ -130,10 +134,10 @@ namespace Nuclei.Plugins
         /// </returns>
         public static bool IsAction(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
         {
-            return OpenGenericIsAssignableFrom(s_SpecialCasesCache[typeof(Action<>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(s_SpecialCasesCache[typeof(Action<,>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(s_SpecialCasesCache[typeof(Action<,,>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(s_SpecialCasesCache[typeof(Action<,,,>)], importType, toDefinition);
+            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<,>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<,,>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<,,,>)], importType, toDefinition);
         }
 
         /// <summary>
@@ -145,11 +149,13 @@ namespace Nuclei.Plugins
         ///     <see langword="true" /> if the type is based on the <see cref="IEnumerable{T}"/> open generic type; 
         ///     otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public static bool IsCollection(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
         {
-            return OpenGenericIsAssignableFrom(s_SpecialCasesCache[typeof(IEnumerable<>)], importType, toDefinition);
+            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(IEnumerable<>)], importType, toDefinition);
         }
     }
 }

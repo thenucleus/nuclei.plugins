@@ -8,10 +8,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using Apollo.Utilities;
-using Nuclei;
+using Nuclei.Plugins.Properties;
 
-namespace Apollo.Core.Extensions.Plugins
+namespace Nuclei.Plugins
 {
     /// <summary>
     /// Defines the ID of a registration of an export.
@@ -22,7 +21,7 @@ namespace Apollo.Core.Extensions.Plugins
         /// <summary>
         /// The contract name for the export.
         /// </summary>
-        private readonly string m_ContractName;
+        private readonly string _contractName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportRegistrationId"/> class.
@@ -38,12 +37,19 @@ namespace Apollo.Core.Extensions.Plugins
         private ExportRegistrationId(string id, string contractName)
             : base(id)
         {
+            if (id == null)
             {
-                Lokad.Enforce.Argument(() => id);
-                Lokad.Enforce.Argument(() => id, Lokad.Rules.StringIs.NotEmpty);
+                throw new ArgumentNullException("id");
             }
 
-            m_ContractName = contractName;
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw new ArgumentException(
+                    Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString,
+                    "id");
+            }
+
+            _contractName = contractName;
         }
 
         /// <summary>
@@ -58,17 +64,26 @@ namespace Apollo.Core.Extensions.Plugins
         /// <exception cref="ArgumentException">
         /// Thrown if <paramref name="contractName"/> is an empty string.
         /// </exception>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods",
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1062:Validate arguments of public methods",
             Justification = "There is no way to validate these values before using them. We'll rely on the CLR here.")]
         public ExportRegistrationId(Type owner, int objectIndex, string contractName)
             : base(string.Format(CultureInfo.InvariantCulture, "[{0}]-[{1}]-[{2}]", owner.AssemblyQualifiedName, objectIndex, contractName))
         {
+            if (contractName == null)
             {
-                Lokad.Enforce.Argument(() => contractName);
-                Lokad.Enforce.Argument(() => contractName, Lokad.Rules.StringIs.NotEmpty);
+                throw new ArgumentNullException("contractName");
             }
 
-            m_ContractName = contractName;
+            if (string.IsNullOrWhiteSpace(contractName))
+            {
+                throw new ArgumentException(
+                    Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString,
+                    "contractName");
+            }
+
+            _contractName = contractName;
         }
 
         /// <summary>
@@ -77,12 +92,14 @@ namespace Apollo.Core.Extensions.Plugins
         /// <param name="owner">The type that owns the export.</param>
         /// <param name="objectIndex">The index of the object in the group.</param>
         /// <param name="contractType">The contract type for the export.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods",
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1062:Validate arguments of public methods",
             Justification = "There is no way to validate these values before using them. We'll rely on the CLR here.")]
         public ExportRegistrationId(Type owner, int objectIndex, Type contractType)
             : this(owner, objectIndex, contractType.FullName)
         {
-            m_ContractName = contractType.FullName;
+            _contractName = contractType.FullName;
         }
 
         /// <summary>
@@ -92,7 +109,7 @@ namespace Apollo.Core.Extensions.Plugins
         {
             get
             {
-                return m_ContractName;
+                return _contractName;
             }
         }
 
@@ -105,7 +122,7 @@ namespace Apollo.Core.Extensions.Plugins
         /// </returns>
         protected override ExportRegistrationId Clone(string value)
         {
-            return new ExportRegistrationId(value, m_ContractName);
+            return new ExportRegistrationId(value, _contractName);
         }
 
         /// <summary>

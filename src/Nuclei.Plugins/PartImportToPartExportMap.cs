@@ -7,7 +7,7 @@
 
 using System;
 using System.Collections.Generic;
-using Apollo.Core.Extensions.Plugins;
+using Nuclei.Plugins;
 
 namespace Nuclei.Plugins
 {

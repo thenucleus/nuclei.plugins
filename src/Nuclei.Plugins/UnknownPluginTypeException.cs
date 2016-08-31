@@ -7,9 +7,9 @@
 
 using System;
 using System.Runtime.Serialization;
-using Apollo.Core.Extensions.Properties;
+using Nuclei.Plugins.Properties;
 
-namespace Apollo.Core.Extensions.Plugins
+namespace Nuclei.Plugins
 {
     /// <summary>
     /// An exception thrown when the user tries to add a type to a group when that type is unknown.
@@ -29,7 +29,7 @@ namespace Apollo.Core.Extensions.Plugins
         /// Initializes a new instance of the <see cref="UnknownPluginTypeException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public UnknownPluginTypeException(string message) 
+        public UnknownPluginTypeException(string message)
             : base(message)
         {
         }

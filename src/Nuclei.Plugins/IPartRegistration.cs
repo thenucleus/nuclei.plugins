@@ -7,7 +7,7 @@
 
 using System.Collections.Generic;
 
-namespace Apollo.Core.Extensions.Plugins
+namespace Nuclei.Plugins
 {
     /// <summary>
     /// Defines the interface for objects that store information about the registration of an object
@@ -35,22 +35,6 @@ namespace Apollo.Core.Extensions.Plugins
         /// Gets the collection of imports that have been registered for the current object.
         /// </summary>
         IEnumerable<ImportRegistrationId> RegisteredImports
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the collection of schedule actions that have been registered for the current object. 
-        /// </summary>
-        IEnumerable<ScheduleActionRegistrationId> RegisteredActions
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the collection of schedule conditions that have been registered for the current object.
-        /// </summary>
-        IEnumerable<ScheduleConditionRegistrationId> RegisteredConditions
         {
             get;
         }

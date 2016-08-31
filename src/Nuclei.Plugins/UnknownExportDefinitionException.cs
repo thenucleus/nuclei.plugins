@@ -7,9 +7,9 @@
 
 using System;
 using System.Runtime.Serialization;
-using Apollo.Core.Extensions.Properties;
+using Nuclei.Plugins.Properties;
 
-namespace Apollo.Core.Extensions.Plugins
+namespace Nuclei.Plugins
 {
     /// <summary>
     /// An exception thrown when an export definition is requested that doesn't exist on the part or part group.
@@ -29,7 +29,7 @@ namespace Apollo.Core.Extensions.Plugins
         /// Initializes a new instance of the <see cref="UnknownExportDefinitionException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public UnknownExportDefinitionException(string message) 
+        public UnknownExportDefinitionException(string message)
             : base(message)
         {
         }

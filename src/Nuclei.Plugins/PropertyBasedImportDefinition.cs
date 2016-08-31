@@ -76,7 +76,7 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="PropertyBasedImportDefinition"/> class based on 
+        /// Creates a new instance of the <see cref="PropertyBasedImportDefinition"/> class based on
         /// the given <see cref="PropertyInfo"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current import.</param>
@@ -85,7 +85,7 @@ namespace Nuclei.Plugins
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
         /// <param name="isRecomposable">
-        ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts; 
+        ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts;
         ///     otherwise, <see langword="false" />.
         /// </param>
         /// <param name="creationPolicy">
@@ -100,20 +100,28 @@ namespace Nuclei.Plugins
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="identityGenerator"/> is <see langword="null" />.
         /// </exception>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Recomposable",
+        [SuppressMessage(
+            "Microsoft.Naming",
+            "CA1704:IdentifiersShouldBeSpelledCorrectly",
+            MessageId = "Recomposable",
             Justification = "MEF uses the same term, so we're not going to make up some other one.")]
         public static PropertyBasedImportDefinition CreateDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
-            ImportCardinality cardinality, 
-            bool isRecomposable, 
+            ImportCardinality cardinality,
+            bool isRecomposable,
             CreationPolicy creationPolicy,
             PropertyInfo property,
             Func<Type, TypeIdentity> identityGenerator)
         {
+            if (property == null)
             {
-                Lokad.Enforce.Argument(() => property);
-                Lokad.Enforce.Argument(() => identityGenerator);
+                throw new ArgumentNullException("property");
+            }
+
+            if (identityGenerator == null)
+            {
+                throw new ArgumentNullException("identityGenerator");
             }
 
             return new PropertyBasedImportDefinition(
@@ -135,7 +143,7 @@ namespace Nuclei.Plugins
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
         /// <param name="isRecomposable">
-        ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts; 
+        ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts;
         ///     otherwise, <see langword="false" />.
         /// </param>
         /// <param name="creationPolicy">
@@ -146,13 +154,16 @@ namespace Nuclei.Plugins
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="property"/> is <see langword="null" />.
         /// </exception>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Recomposable",
+        [SuppressMessage(
+            "Microsoft.Naming",
+            "CA1704:IdentifiersShouldBeSpelledCorrectly",
+            MessageId = "Recomposable",
             Justification = "MEF uses the same term, so we're not going to make up some other one.")]
         public static PropertyBasedImportDefinition CreateDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
-            ImportCardinality cardinality, 
-            bool isRecomposable, 
+            ImportCardinality cardinality,
+            bool isRecomposable,
             CreationPolicy creationPolicy,
             PropertyInfo property)
         {
@@ -162,14 +173,14 @@ namespace Nuclei.Plugins
                 cardinality,
                 isRecomposable,
                 creationPolicy,
-                property, 
+                property,
                 t => TypeIdentity.CreateDefinition(t));
         }
 
         /// <summary>
         /// The name of the property.
         /// </summary>
-        private readonly PropertyDefinition m_Property;
+        private readonly PropertyDefinition _property;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyBasedImportDefinition"/> class.
@@ -180,7 +191,7 @@ namespace Nuclei.Plugins
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
         /// <param name="isRecomposable">
-        ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts; 
+        ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts;
         ///     otherwise, <see langword="false" />.
         /// </param>
         /// <param name="creationPolicy">
@@ -188,28 +199,32 @@ namespace Nuclei.Plugins
         /// </param>
         /// <param name="declaringType">The type that defines the property.</param>
         /// <param name="property">The property for which the current object stores the serialized data.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="property"/> is <see langword="null" />.
+        /// </exception>
         private PropertyBasedImportDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
-            ImportCardinality cardinality, 
-            bool isRecomposable, 
-            CreationPolicy creationPolicy, 
+            ImportCardinality cardinality,
+            bool isRecomposable,
+            CreationPolicy creationPolicy,
             TypeIdentity declaringType,
             PropertyDefinition property)
             : base(
-                contractName, 
-                requiredTypeIdentity, 
+                contractName,
+                requiredTypeIdentity,
                 cardinality,
                 isRecomposable,
                 false,
                 creationPolicy,
                 declaringType)
         {
+            if (property == null)
             {
-                Lokad.Enforce.Argument(() => property);
+                throw new ArgumentNullException("property");
             }
 
-            m_Property = property;
+            _property = property;
         }
 
         /// <summary>
@@ -219,7 +234,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Property;
+                return _property;
             }
         }
 
@@ -231,7 +246,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="SerializableImportDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public override bool Equals(SerializableImportDefinition other)
         {
@@ -251,14 +268,16 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public override bool Equals(object obj)
         {
@@ -299,17 +318,17 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {
             return string.Format(
-                CultureInfo.InvariantCulture, 
-                "Importing [{0}] on {1}", 
-                ContractName, 
+                CultureInfo.InvariantCulture,
+                "Importing [{0}] on {1}",
+                ContractName,
                 Property);
         }
     }

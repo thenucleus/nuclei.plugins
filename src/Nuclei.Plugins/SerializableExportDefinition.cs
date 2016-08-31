@@ -6,14 +6,12 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Nuclei.Plugins
 {
     /// <summary>
-    /// Provides the base class for classes that store information about a MEF export in a serializable form, i.e. without 
+    /// Provides the base class for classes that store information about a MEF export in a serializable form, i.e. without
     /// requiring the owning type to be loaded.
     /// </summary>
     /// <design>
@@ -26,12 +24,12 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The name of the contract for the export.
         /// </summary>
-        private readonly string m_ContractName;
+        private readonly string _contractName;
 
         /// <summary>
         /// The serialized description of the type that owns the current export.
         /// </summary>
-        private readonly TypeIdentity m_DeclaringType;
+        private readonly TypeIdentity _declaringType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializableExportDefinition"/> class.
@@ -43,12 +41,13 @@ namespace Nuclei.Plugins
         /// </exception>
         protected SerializableExportDefinition(string contractName, TypeIdentity declaringType)
         {
+            if (declaringType == null)
             {
-                Lokad.Enforce.Argument(() => declaringType);
+                throw new ArgumentNullException("declaringType");
             }
 
-            m_ContractName = contractName;
-            m_DeclaringType = declaringType;
+            _contractName = contractName;
+            _declaringType = declaringType;
         }
 
         /// <summary>
@@ -58,7 +57,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_ContractName;
+                return _contractName;
             }
         }
 
@@ -69,7 +68,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_DeclaringType;
+                return _declaringType;
             }
         }
 
@@ -81,19 +80,23 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="SerializableExportDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public abstract bool Equals(SerializableExportDefinition other);
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public abstract override bool Equals(object obj);
 
@@ -106,10 +109,10 @@ namespace Nuclei.Plugins
         public abstract override int GetHashCode();
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public abstract override string ToString();
     }

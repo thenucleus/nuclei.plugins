@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Apollo.Core.Base.Plugins;
-using Apollo.Core.Extensions.Plugins;
+using Nuclei.Plugins;
 
 namespace Nuclei.Plugins.Discovery
 {

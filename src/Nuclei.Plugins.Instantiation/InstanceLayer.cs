@@ -15,7 +15,7 @@ using System.Linq;
 using System.Reflection;
 using Apollo.Core.Base.Plugins;
 using Apollo.Core.Dataset.Properties;
-using Apollo.Core.Extensions.Plugins;
+using Nuclei.Plugins;
 using Apollo.Utilities.History;
 using QuickGraph;
 using QuickGraph.Algorithms;

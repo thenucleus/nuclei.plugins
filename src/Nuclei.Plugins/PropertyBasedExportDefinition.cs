@@ -75,7 +75,7 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="PropertyBasedExportDefinition"/> class based on 
+        /// Creates a new instance of the <see cref="PropertyBasedExportDefinition"/> class based on
         /// the given <see cref="PropertyInfo"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
@@ -93,9 +93,14 @@ namespace Nuclei.Plugins
             PropertyInfo property,
             Func<Type, TypeIdentity> identityGenerator)
         {
+            if (property == null)
             {
-                Lokad.Enforce.Argument(() => property);
-                Lokad.Enforce.Argument(() => identityGenerator);
+                throw new ArgumentNullException("property");
+            }
+
+            if (identityGenerator == null)
+            {
+                throw new ArgumentNullException("identityGenerator");
             }
 
             return new PropertyBasedExportDefinition(
@@ -121,7 +126,7 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The property.
         /// </summary>
-        private readonly PropertyDefinition m_Property;
+        private readonly PropertyDefinition _property;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyBasedExportDefinition"/> class.
@@ -130,7 +135,7 @@ namespace Nuclei.Plugins
         /// <param name="declaringType">The type that declares the property on which the import is placed.</param>
         /// <param name="property">The property for which the current object stores the serialized data.</param>
         private PropertyBasedExportDefinition(
-            string contractName, 
+            string contractName,
             TypeIdentity declaringType,
             PropertyDefinition property)
             : base(contractName, declaringType)
@@ -139,7 +144,7 @@ namespace Nuclei.Plugins
                 Debug.Assert(property != null, "The property object shouldn't be null.");
             }
 
-            m_Property = property;
+            _property = property;
         }
 
         /// <summary>
@@ -149,7 +154,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Property;
+                return _property;
             }
         }
 
@@ -161,7 +166,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="SerializableExportDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public override bool Equals(SerializableExportDefinition other)
         {
@@ -180,14 +187,16 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public override bool Equals(object obj)
         {
@@ -227,17 +236,17 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {
             return string.Format(
-                CultureInfo.InvariantCulture, 
-                "Exporting [{0}] on {1}", 
-                ContractName, 
+                CultureInfo.InvariantCulture,
+                "Exporting [{0}] on {1}",
+                ContractName,
                 Property);
         }
     }

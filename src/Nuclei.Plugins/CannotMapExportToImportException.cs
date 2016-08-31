@@ -7,9 +7,9 @@
 
 using System;
 using System.Runtime.Serialization;
-using Apollo.Core.Extensions.Properties;
+using Nuclei.Plugins.Properties;
 
-namespace Apollo.Core.Extensions.Plugins
+namespace Nuclei.Plugins
 {
     /// <summary>
     /// An exception thrown when the user tries to link an export and an import which are not compatible.

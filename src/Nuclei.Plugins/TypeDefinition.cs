@@ -88,11 +88,16 @@ namespace Nuclei.Plugins
         /// </exception>
         public static TypeDefinition CreateDefinition(Type type, Func<Type, TypeIdentity> identityGenerator)
         {
+            if (type == null)
             {
-                Lokad.Enforce.Argument(() => type);
-                Lokad.Enforce.Argument(() => identityGenerator);
+                throw new ArgumentNullException("type");
             }
-            
+
+            if (identityGenerator == null)
+            {
+                throw new ArgumentNullException("identityGenerator");
+            }
+
             // Note that the following call may lead to a StackOverflow if the identityGenerator function 
             // isn't smart enough to verify if we're in the process of generating a TypeDefinition for a given
             // type. e.g. if we're handling System.Boolean we also have to process System.IComparable<System.Boolean>
@@ -114,33 +119,33 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The identity information for the type.
         /// </summary>
-        private readonly TypeIdentity m_Identity;
+        private readonly TypeIdentity _identity;
 
         /// <summary>
         /// The base class for the current type. Is <c>null</c> if the current type
         /// doesn't have a base class.
         /// </summary>
-        private readonly TypeIdentity m_Base;
+        private readonly TypeIdentity _base;
 
         /// <summary>
         /// The interfaces that are inherited or implemented by the current type.
         /// </summary>
-        private readonly TypeIdentity[] m_BaseInterfaces;
+        private readonly TypeIdentity[] _baseInterfaces;
 
         /// <summary>
         /// The generic type definition for the current type if there is one; otherwise <see langword="null" />.
         /// </summary>
-        private readonly TypeIdentity m_GenericTypeDefinition;
+        private readonly TypeIdentity _genericTypeDefinition;
 
         /// <summary>
         /// A flag indicating if the current type is a class or not.
         /// </summary>
-        private readonly bool m_IsClass;
+        private readonly bool _isClass;
 
         /// <summary>
         /// A flag indicating if the current type is an interface or not.
         /// </summary>
-        private readonly bool m_IsInterface;
+        private readonly bool _isInterface;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeDefinition"/> class.
@@ -169,12 +174,12 @@ namespace Nuclei.Plugins
                 Debug.Assert(baseInterfaces != null, "The base interfaces array should not be null.");
             }
 
-            m_Identity = identity;
-            m_Base = baseType;
-            m_BaseInterfaces = baseInterfaces;
-            m_GenericTypeDefinition = genericTypeDefinition;
-            m_IsClass = isClass;
-            m_IsInterface = isInterface;
+            _identity = identity;
+            _base = baseType;
+            _baseInterfaces = baseInterfaces;
+            _genericTypeDefinition = genericTypeDefinition;
+            _isClass = isClass;
+            _isInterface = isInterface;
         }
 
         /// <summary>
@@ -184,7 +189,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Identity;
+                return _identity;
             }
         }
 
@@ -195,7 +200,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Base;
+                return _base;
             }
         }
 
@@ -206,7 +211,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_BaseInterfaces;
+                return _baseInterfaces;
             }
         }
 
@@ -219,7 +224,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_GenericTypeDefinition;
+                return _genericTypeDefinition;
             }
         }
 
@@ -230,7 +235,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_IsClass;
+                return _isClass;
             }
         }
 
@@ -241,7 +246,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_IsInterface;
+                return _isInterface;
             }
         }
 
@@ -253,7 +258,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="TypeDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool Equals(TypeDefinition other)
         {
@@ -269,14 +276,16 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public sealed override bool Equals(object obj)
         {
@@ -314,10 +323,10 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {

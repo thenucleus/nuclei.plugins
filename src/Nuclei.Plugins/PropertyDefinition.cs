@@ -90,9 +90,14 @@ namespace Nuclei.Plugins
             PropertyInfo property,
             Func<Type, TypeIdentity> identityGenerator)
         {
+            if (property == null)
             {
-                Lokad.Enforce.Argument(() => property);
-                Lokad.Enforce.Argument(() => identityGenerator);
+                throw new ArgumentNullException("property");
+            }
+
+            if (identityGenerator == null)
+            {
+                throw new ArgumentNullException("identityGenerator");
             }
 
             return new PropertyDefinition(
@@ -117,17 +122,17 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The type that owns the current method.
         /// </summary>
-        private readonly TypeIdentity m_DeclaringType;
+        private readonly TypeIdentity _declaringType;
 
         /// <summary>
         /// The name of the property.
         /// </summary>
-        private readonly string m_Name;
+        private readonly string _name;
 
         /// <summary>
         /// The type of the property.
         /// </summary>
-        private readonly TypeIdentity m_PropertyType;
+        private readonly TypeIdentity _propertyType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyDefinition"/> class.
@@ -143,9 +148,9 @@ namespace Nuclei.Plugins
                 Debug.Assert(propertyType != null, "The property type object should not be null.");
             }
 
-            m_DeclaringType = declaringType;
-            m_Name = name;
-            m_PropertyType = propertyType;
+            _declaringType = declaringType;
+            _name = name;
+            _propertyType = propertyType;
         }
 
         /// <summary>
@@ -155,7 +160,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_DeclaringType;
+                return _declaringType;
             }
         }
 
@@ -166,7 +171,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Name;
+                return _name;
             }
         }
 
@@ -177,7 +182,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_PropertyType;
+                return _propertyType;
             }
         }
 
@@ -189,7 +194,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="PropertyDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool Equals(PropertyDefinition other)
         {
@@ -208,14 +215,16 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public sealed override bool Equals(object obj)
         {
@@ -250,16 +259,16 @@ namespace Nuclei.Plugins
                 hash = (hash * 23) ^ DeclaringType.GetHashCode();
                 hash = (hash * 23) ^ PropertyName.GetHashCode();
                 hash = (hash * 23) ^ PropertyType.GetHashCode();
-                
+
                 return hash;
             }
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {

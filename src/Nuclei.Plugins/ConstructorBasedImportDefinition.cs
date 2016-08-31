@@ -104,9 +104,14 @@ namespace Nuclei.Plugins
             ParameterInfo parameter,
             Func<Type, TypeIdentity> identityGenerator)
         {
+            if (parameter == null)
             {
-                Lokad.Enforce.Argument(() => parameter);
-                Lokad.Enforce.Argument(() => identityGenerator);
+                throw new ArgumentNullException("parameter");
+            }
+
+            if (identityGenerator == null)
+            {
+                throw new ArgumentNullException("identityGenerator");
             }
 
             return new ConstructorBasedImportDefinition(
@@ -155,12 +160,12 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The parameter on which the import is defined.
         /// </summary>
-        private readonly ParameterDefinition m_Parameter;
+        private readonly ParameterDefinition _parameter;
 
         /// <summary>
         /// The constructor on which the import is defined.
         /// </summary>
-        private readonly ConstructorDefinition m_Constructor;
+        private readonly ConstructorDefinition _constructor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstructorBasedImportDefinition"/> class.
@@ -193,12 +198,13 @@ namespace Nuclei.Plugins
                 creationPolicy,
                 declaringType)
         {
+            if (parameter == null)
             {
-                Lokad.Enforce.Argument(() => parameter);
+                throw new ArgumentNullException("parameter");
             }
 
-            m_Constructor = constructor;
-            m_Parameter = parameter;
+            _constructor = constructor;
+            _parameter = parameter;
         }
 
         /// <summary>
@@ -208,7 +214,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Parameter;
+                return _parameter;
             }
         }
 
@@ -219,7 +225,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Constructor;
+                return _constructor;
             }
         }
 
@@ -231,7 +237,9 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="SerializableImportDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public override bool Equals(SerializableImportDefinition other)
         {
@@ -252,14 +260,16 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public override bool Equals(object obj)
         {
@@ -302,10 +312,10 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {

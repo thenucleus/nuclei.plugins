@@ -12,7 +12,7 @@ using System.Linq;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Apollo.Core.Extensions.Plugins
+namespace Nuclei.Plugins
 {
     // Note that it is not possible to use the Gallio Comparison contract verifiers because they require that the
     // class implements the overloaded operators directly which ID derivative classes do not do (and could only do if we

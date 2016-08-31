@@ -6,7 +6,6 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics.CodeAnalysis;
@@ -14,7 +13,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Nuclei.Plugins
 {
     /// <summary>
-    /// Provides the base class for classes that store information about a MEF import in a serializable form, i.e. without 
+    /// Provides the base class for classes that store information about a MEF import in a serializable form, i.e. without
     /// requiring the owning type to be loaded.
     /// </summary>
     /// <design>
@@ -27,38 +26,38 @@ namespace Nuclei.Plugins
         /// <summary>
         /// The name of the contract for the import.
         /// </summary>
-        private readonly string m_ContractName;
+        private readonly string _contractName;
 
         /// <summary>
         /// The type identity of the export type expected.
         /// </summary>
-        private readonly TypeIdentity m_RequiredTypeIdentity;
+        private readonly TypeIdentity _requiredTypeIdentity;
 
         /// <summary>
         /// The import cardinality for the import.
         /// </summary>
-        private readonly ImportCardinality m_Cardinality;
+        private readonly ImportCardinality _cardinality;
 
         /// <summary>
-        /// A flag indicating if it is possible to provide values for the import multiple times during the lifetime of 
+        /// A flag indicating if it is possible to provide values for the import multiple times during the lifetime of
         /// the part.
         /// </summary>
-        private readonly bool m_IsRecomposable;
+        private readonly bool _isRecomposable;
 
         /// <summary>
         /// A flag indicating if the import has to be satisfied before the creation of the part.
         /// </summary>
-        private readonly bool m_IsPreRequisite;
+        private readonly bool _isPreRequisite;
 
         /// <summary>
         /// The creation policy for the import.
         /// </summary>
-        private readonly CreationPolicy m_CreationPolicy;
+        private readonly CreationPolicy _creationPolicy;
 
         /// <summary>
         /// The serialized description of the type that declares the current import.
         /// </summary>
-        private readonly TypeIdentity m_DeclaringType;
+        private readonly TypeIdentity _declaringType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializableImportDefinition"/> class.
@@ -69,7 +68,7 @@ namespace Nuclei.Plugins
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
         /// <param name="isRecomposable">
-        ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts; 
+        ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts;
         ///     otherwise, <see langword="false" />.
         /// </param>
         /// <param name="isPrerequisite">
@@ -83,28 +82,32 @@ namespace Nuclei.Plugins
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="declaringType"/> is <see langword="null" />.
         /// </exception>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Recomposable",
+        [SuppressMessage(
+            "Microsoft.Naming",
+            "CA1704:IdentifiersShouldBeSpelledCorrectly",
+            MessageId = "Recomposable",
             Justification = "MEF uses the same term, so we're not going to make up some other one.")]
         protected SerializableImportDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
-            ImportCardinality cardinality, 
-            bool isRecomposable, 
+            ImportCardinality cardinality,
+            bool isRecomposable,
             bool isPrerequisite,
             CreationPolicy creationPolicy,
             TypeIdentity declaringType)
         {
+            if (declaringType == null)
             {
-                Lokad.Enforce.Argument(() => declaringType);
+                throw new ArgumentNullException("declaringType");
             }
 
-            m_ContractName = contractName;
-            m_RequiredTypeIdentity = requiredTypeIdentity;
-            m_Cardinality = cardinality;
-            m_IsRecomposable = isRecomposable;
-            m_IsPreRequisite = isPrerequisite;
-            m_CreationPolicy = creationPolicy;
-            m_DeclaringType = declaringType;
+            _contractName = contractName;
+            _requiredTypeIdentity = requiredTypeIdentity;
+            _cardinality = cardinality;
+            _isRecomposable = isRecomposable;
+            _isPreRequisite = isPrerequisite;
+            _creationPolicy = creationPolicy;
+            _declaringType = declaringType;
         }
 
         /// <summary>
@@ -114,7 +117,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_ContractName;
+                return _contractName;
             }
         }
 
@@ -123,9 +126,9 @@ namespace Nuclei.Plugins
         /// </summary>
         public TypeIdentity RequiredTypeIdentity
         {
-            get 
+            get
             {
-                return m_RequiredTypeIdentity;
+                return _requiredTypeIdentity;
             }
         }
 
@@ -136,7 +139,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_Cardinality;
+                return _cardinality;
             }
         }
 
@@ -144,13 +147,16 @@ namespace Nuclei.Plugins
         /// Gets a value indicating whether the import can be satisfied multiple times during the lifetime of
         /// a part.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Recomposable",
+        [SuppressMessage(
+            "Microsoft.Naming",
+            "CA1704:IdentifiersShouldBeSpelledCorrectly",
+            MessageId = "Recomposable",
             Justification = "MEF uses the same term.")]
         public bool IsRecomposable
         {
             get
             {
-                return m_IsRecomposable;
+                return _isRecomposable;
             }
         }
 
@@ -161,7 +167,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_IsPreRequisite;
+                return _isPreRequisite;
             }
         }
 
@@ -172,7 +178,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_CreationPolicy;
+                return _creationPolicy;
             }
         }
 
@@ -183,7 +189,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_DeclaringType;
+                return _declaringType;
             }
         }
 
@@ -195,19 +201,23 @@ namespace Nuclei.Plugins
         ///     <see langword="true"/> if the specified <see cref="SerializableImportDefinition"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public abstract bool Equals(SerializableImportDefinition other);
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public abstract override bool Equals(object obj);
 
@@ -220,10 +230,10 @@ namespace Nuclei.Plugins
         public abstract override int GetHashCode();
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         public abstract override string ToString();
     }
