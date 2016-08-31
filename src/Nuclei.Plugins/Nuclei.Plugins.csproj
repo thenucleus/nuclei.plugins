@@ -37,6 +37,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -51,23 +52,9 @@
     <Compile Include="ConstructorBasedImportDefinition.cs" />
     <Compile Include="ConstructorDefinition.cs" />
     <Compile Include="ExportRegistrationId.cs" />
-    <Compile Include="GroupCompositionId.cs" />
-    <Compile Include="GroupCompositionState.cs" />
-    <Compile Include="GroupConnection.cs" />
-    <Compile Include="GroupDefinition.cs" />
-    <Compile Include="GroupExportDefinition.cs" />
-    <Compile Include="GroupImportDefinition.cs" />
-    <Compile Include="GroupPartDefinition.cs" />
-    <Compile Include="GroupRegistrationId.cs" />
-    <Compile Include="ICompositionCommands.cs" />
-    <Compile Include="ICompositionLayer.cs" />
-    <Compile Include="IExportGroupDefinitions.cs" />
     <Compile Include="ImportRegistrationId.cs" />
     <Compile Include="IPartRegistration.cs" />
-    <Compile Include="IRegisterGroupDefinitions.cs" />
-    <Compile Include="IRegisterSchedules.cs" />
     <Compile Include="MethodBasedExportDefinition.cs" />
-    <Compile Include="MethodBasedScheduleConditionDefinition.cs" />
     <Compile Include="MethodDefinition.cs" />
     <Compile Include="ParameterDefinition.cs" />
     <Compile Include="PartDefinition.cs" />
@@ -77,15 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyBasedExportDefinition.cs" />
     <Compile Include="PropertyBasedImportDefinition.cs" />
-    <Compile Include="PropertyBasedScheduleConditionDefinition.cs" />
     <Compile Include="PropertyDefinition.cs" />
-    <Compile Include="ScheduleActionAttribute.cs" />
-    <Compile Include="ScheduleActionDefinition.cs" />
-    <Compile Include="ScheduleActionRegistrationId.cs" />
-    <Compile Include="ScheduleConditionAttribute.cs" />
-    <Compile Include="ScheduleConditionDefinition.cs" />
-    <Compile Include="ScheduleConditionRegistrationId.cs" />
-    <Compile Include="ScheduleDefinition.cs" />
     <Compile Include="SerializableExportDefinition.cs" />
     <Compile Include="SerializableImportDefinition.cs" />
     <Compile Include="TypeBasedExportDefinition.cs" />

@@ -49,17 +49,10 @@
     <Compile Include="AppDomainOwningPluginScanner.cs" />
     <Compile Include="AppDomainPluginClassLoader.cs" />
     <Compile Include="DuplicateContractNameException.cs" />
-    <Compile Include="DuplicateGroupDefinitionException.cs" />
     <Compile Include="DuplicatePartDefinitionException.cs" />
     <Compile Include="DuplicateTypeDefinitionException.cs" />
-    <Compile Include="GroupDefinitionBuilder.cs" />
-    <Compile Include="GroupExportMap.cs" />
-    <Compile Include="GroupImportEngine.cs" />
-    <Compile Include="GroupImportMap.cs" />
     <Compile Include="IAssemblyScanner.cs" />
-    <Compile Include="IConnectGroups.cs" />
     <Compile Include="IConnectParts.cs" />
-    <Compile Include="IOwnScheduleDefinitions.cs" />
     <Compile Include="IPluginRepository.cs" />
     <Compile Include="ISatisfyPluginRequests.cs" />
     <Compile Include="PartImportEngine.cs" />
@@ -71,9 +64,7 @@
     <Compile Include="PluginsModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteAssemblyScanner.cs" />
-    <Compile Include="ScheduleDefinitionBuilder.cs" />
     <Compile Include="TypeIdentityBuilder.cs" />
-    <Compile Include="UnknownGroupDefinitionException.cs" />
     <Compile Include="UnknownPartDefinitionException.cs" />
     <Compile Include="UnknownTypeDefinitionException.cs" />
   </ItemGroup>

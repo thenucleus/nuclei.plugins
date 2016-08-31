@@ -61,20 +61,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DuplicateContractNameExceptionTest.cs" />
-    <Compile Include="DuplicateGroupDefinitionExceptionTest.cs" />
     <Compile Include="DuplicatePartDefinitionExceptionTest.cs" />
     <Compile Include="DuplicateTypeDefinitionExceptionTest.cs" />
-    <Compile Include="GroupDefinitionBuilderTest.cs" />
-    <Compile Include="GroupExportMapTest.cs" />
-    <Compile Include="GroupImportEngineTest.cs" />
-    <Compile Include="GroupImportMapTest.cs" />
     <Compile Include="PartImportEngineTest.cs" />
     <Compile Include="PluginDetectorTest.cs" />
     <Compile Include="PluginRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteAssemblyScannerTest.cs" />
-    <Compile Include="ScheduleDefinitionBuilderTest.cs" />
-    <Compile Include="UnknownGroupDefinitionExceptionTest.cs" />
     <Compile Include="UnknownPartDefinitionExceptionTest.cs" />
     <Compile Include="UnknownTypeDefinitionExceptionTest.cs" />
   </ItemGroup>

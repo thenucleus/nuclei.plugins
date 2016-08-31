@@ -60,15 +60,12 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompositionCommandsTest.cs" />
-    <Compile Include="CompositionLayerTest.cs" />
     <Compile Include="ConstructionOfPluginTypeFailedExceptionTest.cs" />
     <Compile Include="InstanceLayerTest.cs" />
     <Compile Include="PartCompositionIdTest.cs" />
     <Compile Include="PartInstanceIdTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnableToLoadPluginTypeExceptionTest.cs" />
-    <Compile Include="UnknownGroupCompositionIdExceptionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
