@@ -1,6 +1,7 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright company="P. van der Velde">
-//     Copyright (c) P. van der Velde. All rights reserved.
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -75,7 +76,7 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="ConstructorBasedImportDefinition"/> class based 
+        /// Creates a new instance of the <see cref="ConstructorBasedImportDefinition"/> class based
         /// on the given <see cref="ParameterInfo"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current import.</param>
@@ -98,8 +99,8 @@ namespace Nuclei.Plugins
         public static ConstructorBasedImportDefinition CreateDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
-            ImportCardinality cardinality, 
-            CreationPolicy creationPolicy, 
+            ImportCardinality cardinality,
+            CreationPolicy creationPolicy,
             ParameterInfo parameter,
             Func<Type, TypeIdentity> identityGenerator)
         {
@@ -119,7 +120,7 @@ namespace Nuclei.Plugins
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="ConstructorBasedImportDefinition"/> class 
+        /// Creates a new instance of the <see cref="ConstructorBasedImportDefinition"/> class
         /// based on the given <see cref="ParameterInfo"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current import.</param>
@@ -143,11 +144,11 @@ namespace Nuclei.Plugins
             ParameterInfo parameter)
         {
             return CreateDefinition(
-                contractName, 
+                contractName,
                 requiredTypeIdentity,
                 cardinality,
                 creationPolicy,
-                parameter, 
+                parameter,
                 t => TypeIdentity.CreateDefinition(t));
         }
 
@@ -178,14 +179,14 @@ namespace Nuclei.Plugins
         private ConstructorBasedImportDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
-            ImportCardinality cardinality, 
-            CreationPolicy creationPolicy, 
+            ImportCardinality cardinality,
+            CreationPolicy creationPolicy,
             TypeIdentity declaringType,
             ConstructorDefinition constructor,
             ParameterDefinition parameter)
             : base(
-                contractName, 
-                requiredTypeIdentity, 
+                contractName,
+                requiredTypeIdentity,
                 cardinality,
                 false,
                 true,

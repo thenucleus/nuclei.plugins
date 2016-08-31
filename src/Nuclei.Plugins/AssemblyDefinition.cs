@@ -1,6 +1,7 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright company="P. van der Velde">
-//     Copyright (c) P. van der Velde. All rights reserved.
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -121,7 +122,7 @@ namespace Nuclei.Plugins
 
             var assemblyName = assembly.GetName();
             var publicKeyToken = string.Join(
-                string.Empty, 
+                string.Empty,
                 assemblyName.GetPublicKeyToken().Select(b => b.ToString("x2", CultureInfo.InvariantCulture)));
 
             m_Name = assemblyName.Name;
@@ -211,8 +212,8 @@ namespace Nuclei.Plugins
             // Check if other is a null reference by using ReferenceEquals because
             // we overload the == operator. If other isn't actually null then
             // we get an infinite loop where we're constantly trying to compare to null.
-            return !ReferenceEquals(other, null) 
-                && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) 
+            return !ReferenceEquals(other, null)
+                && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase)
                 && Version.Equals(other.Version)
                 && Culture.Equals(other.Culture)
                 && string.Equals(PublicKeyToken, other.PublicKeyToken, StringComparison.OrdinalIgnoreCase);

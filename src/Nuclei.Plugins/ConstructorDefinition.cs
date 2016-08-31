@@ -1,6 +1,7 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright company="P. van der Velde">
-//     Copyright (c) P. van der Velde. All rights reserved.
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -89,7 +90,7 @@ namespace Nuclei.Plugins
         ///     Thrown if <paramref name="identityGenerator"/> is <see langword="null" />.
         /// </exception>
         public static ConstructorDefinition CreateDefinition(
-            ConstructorInfo constructor, 
+            ConstructorInfo constructor,
             Func<Type, TypeIdentity> identityGenerator)
         {
             {
@@ -235,7 +236,7 @@ namespace Nuclei.Plugins
                 {
                     hash = (hash * 23) ^ parameter.GetHashCode();
                 }
-                
+
                 return hash;
             }
         }

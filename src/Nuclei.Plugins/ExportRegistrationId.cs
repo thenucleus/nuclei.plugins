@@ -1,6 +1,7 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright company="P. van der Velde">
-//     Copyright (c) P. van der Velde. All rights reserved.
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -76,7 +77,7 @@ namespace Apollo.Core.Extensions.Plugins
         /// <param name="owner">The type that owns the export.</param>
         /// <param name="objectIndex">The index of the object in the group.</param>
         /// <param name="contractType">The contract type for the export.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", 
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods",
             Justification = "There is no way to validate these values before using them. We'll rely on the CLR here.")]
         public ExportRegistrationId(Type owner, int objectIndex, Type contractType)
             : this(owner, objectIndex, contractType.FullName)
