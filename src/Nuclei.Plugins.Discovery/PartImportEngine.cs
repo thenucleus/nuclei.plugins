@@ -9,7 +9,6 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Apollo.Core.Base.Plugins;
 
 namespace Nuclei.Plugins.Discovery
 {
@@ -44,8 +43,8 @@ namespace Nuclei.Plugins.Discovery
         /// <summary>
         /// The object that stores information about all the available parts and part groups.
         /// </summary>
-        private readonly ISatisfyPluginRequests m_Repository;
-        
+        private readonly ISatisfyPluginRequests _repository;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PartImportEngine"/> class.
         /// </summary>
@@ -55,11 +54,12 @@ namespace Nuclei.Plugins.Discovery
         /// </exception>
         public PartImportEngine(ISatisfyPluginRequests repository)
         {
+            if (repository == null)
             {
-                Lokad.Enforce.Argument(() => repository);
+                throw new ArgumentNullException("repository");
             }
 
-            m_Repository = repository;
+            _repository = repository;
         }
 
         /// <summary>
@@ -70,7 +70,9 @@ namespace Nuclei.Plugins.Discovery
         /// <returns>
         ///     <see langword="true" /> if the given import would accept the given export; otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool Accepts(SerializableImportDefinition importDefinition, SerializableExportDefinition exportDefinition)
         {
@@ -80,7 +82,7 @@ namespace Nuclei.Plugins.Discovery
             }
 
             var importRequiredType = importDefinition.RequiredTypeIdentity;
-            var importRequiredTypeDef = m_Repository.TypeByIdentity(importRequiredType);
+            var importRequiredTypeDef = _repository.TypeByIdentity(importRequiredType);
 
             var exportType = ExportedType(exportDefinition);
             if (AvailableTypeMatchesRequiredType(importRequiredType, exportType))
@@ -88,8 +90,8 @@ namespace Nuclei.Plugins.Discovery
                 return true;
             }
 
-            Func<TypeIdentity, TypeDefinition> toDefinition = t => m_Repository.TypeByIdentity(t);
-            if (importRequiredTypeDef.IsCollection(toDefinition) 
+            Func<TypeIdentity, TypeDefinition> toDefinition = t => _repository.TypeByIdentity(t);
+            if (importRequiredTypeDef.IsCollection(toDefinition)
                 && ExportMatchesCollectionImport(importRequiredType, exportType, toDefinition))
             {
                 return true;
@@ -115,7 +117,41 @@ namespace Nuclei.Plugins.Discovery
 
         private bool AvailableTypeMatchesRequiredType(TypeIdentity requiredType, TypeIdentity availableType)
         {
-            return (availableType != null) && (requiredType.Equals(availableType) || m_Repository.IsSubTypeOf(requiredType, availableType));
+            return (availableType != null) && (requiredType.Equals(availableType) || _repository.IsSubTypeOf(requiredType, availableType));
+        }
+
+        private bool ExportMatchesActionImport(TypeIdentity importType, SerializableExportDefinition exportDefinition)
+        {
+            Debug.Assert(importType.TypeArguments.Count() > 0, "Action<T> should have at least 1 generic type argument.");
+            var typeArguments = importType.TypeArguments.ToList();
+
+            // Export is a method that matches the signature of the Action<T>
+            var methodExport = exportDefinition as MethodBasedExportDefinition;
+            if (methodExport != null)
+            {
+                if (methodExport.Method.ReturnType != null)
+                {
+                    return false;
+                }
+
+                var parameters = methodExport.Method.Parameters.ToList();
+                if (parameters.Count != typeArguments.Count)
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < typeArguments.Count; i++)
+                {
+                    if (!AvailableTypeMatchesRequiredType(typeArguments[i], parameters[i].Identity))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         private bool ExportMatchesCollectionImport(TypeIdentity importType, TypeIdentity exportType, Func<TypeIdentity, TypeDefinition> toDefinition)
@@ -138,13 +174,6 @@ namespace Nuclei.Plugins.Discovery
             }
 
             return false;
-        }
-
-        private bool ExportMatchesLazyImport(TypeIdentity importType, TypeIdentity exportType)
-        {
-            Debug.Assert(importType.TypeArguments.Count() >= 1, "Lazy<T> / Lazy<T, TMeta> should have at least 1 generic type argument");
-            var genericType = importType.TypeArguments.First();
-            return AvailableTypeMatchesRequiredType(genericType, exportType);
         }
 
         private bool ExportMatchesFuncImport(TypeIdentity importType, TypeIdentity exportType, SerializableExportDefinition exportDefinition)
@@ -191,38 +220,11 @@ namespace Nuclei.Plugins.Discovery
             return false;
         }
 
-        private bool ExportMatchesActionImport(TypeIdentity importType, SerializableExportDefinition exportDefinition)
+        private bool ExportMatchesLazyImport(TypeIdentity importType, TypeIdentity exportType)
         {
-            Debug.Assert(importType.TypeArguments.Count() > 0, "Action<T> should have at least 1 generic type argument.");
-            var typeArguments = importType.TypeArguments.ToList();
-
-            // Export is a method that matches the signature of the Action<T>
-            var methodExport = exportDefinition as MethodBasedExportDefinition;
-            if (methodExport != null)
-            {
-                if (methodExport.Method.ReturnType != null)
-                {
-                    return false;
-                }
-
-                var parameters = methodExport.Method.Parameters.ToList();
-                if (parameters.Count != typeArguments.Count)
-                {
-                    return false;
-                }
-
-                for (int i = 0; i < typeArguments.Count; i++)
-                {
-                    if (!AvailableTypeMatchesRequiredType(typeArguments[i], parameters[i].Identity))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            return false;
+            Debug.Assert(importType.TypeArguments.Count() >= 1, "Lazy<T> / Lazy<T, TMeta> should have at least 1 generic type argument");
+            var genericType = importType.TypeArguments.First();
+            return AvailableTypeMatchesRequiredType(genericType, exportType);
         }
     }
 }

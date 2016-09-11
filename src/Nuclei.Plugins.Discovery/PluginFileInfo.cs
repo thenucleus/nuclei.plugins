@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------
 
 using System;
+using Nuclei.Plugins.Discovery.Properties;
 
 namespace Nuclei.Plugins.Discovery
 {
@@ -18,12 +19,12 @@ namespace Nuclei.Plugins.Discovery
         /// <summary>
         /// The file path of the plugin file.
         /// </summary>
-        private readonly string m_Path;
+        private readonly string _path;
 
         /// <summary>
         /// The last time, in coordinated universal time (UTC), that the plugin file was modified.
         /// </summary>
-        private readonly DateTimeOffset m_LastWriteTimeUtc;
+        private readonly DateTimeOffset _lastWriteTimeUtc;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PluginFileInfo"/> class.
@@ -38,13 +39,20 @@ namespace Nuclei.Plugins.Discovery
         /// </exception>
         public PluginFileInfo(string path, DateTimeOffset lastWriteTimeUtc)
         {
+            if (path == null)
             {
-                Lokad.Enforce.Argument(() => path);
-                Lokad.Enforce.Argument(() => path, Lokad.Rules.StringIs.NotEmpty);
+                throw new ArgumentNullException("path");
             }
 
-            m_Path = path;
-            m_LastWriteTimeUtc = lastWriteTimeUtc;
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException(
+                    Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString,
+                    "path");
+            }
+
+            _path = path;
+            _lastWriteTimeUtc = lastWriteTimeUtc;
         }
 
         /// <summary>
@@ -54,7 +62,7 @@ namespace Nuclei.Plugins.Discovery
         {
             get
             {
-                return m_Path;
+                return _path;
             }
         }
 
@@ -65,7 +73,7 @@ namespace Nuclei.Plugins.Discovery
         {
             get
             {
-                return m_LastWriteTimeUtc;
+                return _lastWriteTimeUtc;
             }
         }
     }

@@ -6,7 +6,6 @@
 //-----------------------------------------------------------------------
 
 using System.Collections.Generic;
-using Apollo.Core.Base.Plugins;
 
 namespace Nuclei.Plugins.Discovery
 {
@@ -41,12 +40,5 @@ namespace Nuclei.Plugins.Discovery
         /// <param name="part">The part definition.</param>
         /// <param name="pluginFileInfo">The file info of the assembly which owns the part.</param>
         void AddPart(PartDefinition part, PluginFileInfo pluginFileInfo);
-
-        /// <summary>
-        /// Adds a new part group to the repository.
-        /// </summary>
-        /// <param name="group">The part group definition.</param>
-        /// <param name="pluginFileInfo">The file info of the assembly which owns the group.</param>
-        void AddGroup(GroupDefinition group, PluginFileInfo pluginFileInfo);
     }
 }

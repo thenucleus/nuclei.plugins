@@ -6,7 +6,6 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
-using Apollo.Core.Base.Plugins;
 
 namespace Nuclei.Plugins.Discovery
 {
@@ -23,7 +22,9 @@ namespace Nuclei.Plugins.Discovery
         /// <returns>
         ///     <see langword="true" /> if the given import would accept the given export; otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         bool Accepts(SerializableImportDefinition importDefinition, SerializableExportDefinition exportDefinition);
     }

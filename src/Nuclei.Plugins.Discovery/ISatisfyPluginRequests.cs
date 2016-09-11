@@ -7,8 +7,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Apollo.Core.Base.Plugins;
-using Nuclei.Plugins;
 
 namespace Nuclei.Plugins.Discovery
 {
@@ -26,7 +24,9 @@ namespace Nuclei.Plugins.Discovery
         /// <see langword="true" /> if the repository contains the <c>TypeDefinition</c> for the given type;
         /// otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         bool ContainsDefinitionForType(TypeIdentity type);
 
@@ -39,7 +39,9 @@ namespace Nuclei.Plugins.Discovery
         /// <see langword="true" /> if the repository contains the <c>TypeDefinition</c> for the given type;
         /// otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         bool ContainsDefinitionForType(string fullyQualifiedName);
 
@@ -72,7 +74,9 @@ namespace Nuclei.Plugins.Discovery
         /// <returns>
         /// <see langword="true" /> if the child derives from the given parent; otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         bool IsSubTypeOf(TypeIdentity parent, TypeIdentity child);
 
@@ -88,18 +92,5 @@ namespace Nuclei.Plugins.Discovery
         /// <param name="type">The declaring type.</param>
         /// <returns>The requested part.</returns>
         PartDefinition Part(TypeIdentity type);
-
-        /// <summary>
-        /// Returns a collection containing all known groups.
-        /// </summary>
-        /// <returns>The collection containing all known groups.</returns>
-        IEnumerable<GroupDefinition> Groups();
-
-        /// <summary>
-        /// Returns the group that was registered with the given ID.
-        /// </summary>
-        /// <param name="groupRegistrationId">The registration ID.</param>
-        /// <returns>The requested type.</returns>
-        GroupDefinition Group(GroupRegistrationId groupRegistrationId);
     }
 }

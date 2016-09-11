@@ -7,7 +7,7 @@
 
 using System;
 using System.Runtime.Serialization;
-using Apollo.Core.Host.Properties;
+using Nuclei.Plugins.Discovery.Properties;
 
 namespace Nuclei.Plugins.Discovery
 {
@@ -30,7 +30,7 @@ namespace Nuclei.Plugins.Discovery
         /// Initializes a new instance of the <see cref="DuplicateContractNameException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public DuplicateContractNameException(string message) 
+        public DuplicateContractNameException(string message)
             : base(message)
         {
         }

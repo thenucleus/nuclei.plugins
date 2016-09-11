@@ -9,9 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Apollo.Core.Base.Plugins;
 using Nuclei.Plugins;
-using Apollo.Core.Host.Properties;
 using QuickGraph;
 using QuickGraph.Algorithms.RankedShortestPath;
 
@@ -25,12 +23,24 @@ namespace Nuclei.Plugins.Discovery
         /// <summary>
         /// The object used to lock on.
         /// </summary>
-        private readonly object m_Lock = new object();
+        private readonly object _lock = new object();
+
+        /// <summary>
+        /// The collection that keeps track of all the known parts and their definitions.
+        /// </summary>
+        private readonly Dictionary<TypeIdentity, Tuple<PartDefinition, PluginFileInfo>> _parts
+            = new Dictionary<TypeIdentity, Tuple<PartDefinition, PluginFileInfo>>();
+
+        /// <summary>
+        /// The collection that keeps track of all the known plugin files.
+        /// </summary>
+        private readonly List<PluginFileInfo> _pluginFiles
+            = new List<PluginFileInfo>();
 
         /// <summary>
         /// The collection that keeps track of all the known types and their definitions.
         /// </summary>
-        private readonly Dictionary<TypeIdentity, TypeDefinition> m_Types
+        private readonly Dictionary<TypeIdentity, TypeDefinition> _types
             = new Dictionary<TypeIdentity, TypeDefinition>();
 
         /// <summary>
@@ -39,92 +49,46 @@ namespace Nuclei.Plugins.Discovery
         /// <remarks>
         /// Note that edges run from the more derived type to the less derived type.
         /// </remarks>
-        private readonly BidirectionalGraph<TypeIdentity, Edge<TypeIdentity>> m_TypeGraph
+        private readonly BidirectionalGraph<TypeIdentity, Edge<TypeIdentity>> _typeGraph
             = new BidirectionalGraph<TypeIdentity, Edge<TypeIdentity>>();
 
         /// <summary>
-        /// The collection that keeps track of all the known parts and their definitions.
+        /// Adds a new part to the repository.
         /// </summary>
-        private readonly Dictionary<TypeIdentity, Tuple<PartDefinition, PluginFileInfo>> m_Parts
-            = new Dictionary<TypeIdentity, Tuple<PartDefinition, PluginFileInfo>>();
-
-        /// <summary>
-        /// The collection that keeps track of all the known groups and their definitions.
-        /// </summary>
-        private readonly Dictionary<GroupRegistrationId, Tuple<GroupDefinition, PluginFileInfo>> m_Groups
-            = new Dictionary<GroupRegistrationId, Tuple<GroupDefinition, PluginFileInfo>>();
-
-        /// <summary>
-        /// The collection that keeps track of all the known plugin files.
-        /// </summary>
-        private readonly List<PluginFileInfo> m_PluginFiles
-            = new List<PluginFileInfo>();
-
-        /// <summary>
-        /// Returns a collection containing the descriptions of all the known plugins.
-        /// </summary>
-        /// <returns>
-        /// A collection containing the descriptions of all the known plugins.
-        /// </returns>
-        public IEnumerable<PluginFileInfo> KnownPluginFiles()
-        {
-            lock (m_Lock)
-            {
-                return m_PluginFiles.ToList();
-            }
-        }
-
-        /// <summary>
-        /// Removes all the plugins related to the given plugin files.
-        /// </summary>
-        /// <param name="deletedFiles">The collection of plugin file paths that were removed.</param>
+        /// <param name="part">The part definition.</param>
+        /// <param name="pluginFileInfo">The file info of the assembly which owns the part.</param>
         /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="deletedFiles"/> is <see langword="null" />.
+        ///     Thrown if <paramref name="part"/> is <see langword="null" />.
         /// </exception>
-        public void RemovePlugins(IEnumerable<string> deletedFiles)
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="pluginFileInfo"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="DuplicatePartDefinitionException">
+        ///     Thrown if <paramref name="part"/> is already registered with the repository.
+        /// </exception>
+        public void AddPart(PartDefinition part, PluginFileInfo pluginFileInfo)
         {
+            lock (_lock)
             {
-                Lokad.Enforce.Argument(() => deletedFiles);
-            }
-
-            lock (m_Lock)
-            {
-                var filesToDelete = m_PluginFiles
-                    .Join(
-                        deletedFiles,
-                        pluginFile => pluginFile.Path,
-                        filePath => filePath,
-                        (pluginFile, filePath) => pluginFile)
-                    .ToList();
-                foreach (var file in filesToDelete)
+                if (part == null)
                 {
-                    m_PluginFiles.Remove(file);
+                    throw new ArgumentNullException("part");
                 }
 
-                var groupsToDelete = m_Groups
-                    .Join(
-                        filesToDelete,
-                        p => p.Value.Item2,
-                        file => file,
-                        (pair, file) => pair.Key)
-                    .ToList();
-                foreach (var group in groupsToDelete)
+                if (pluginFileInfo == null)
                 {
-                    m_Groups.Remove(group);
+                    throw new ArgumentNullException("pluginFileInfo");
                 }
 
-                var typesToDelete = m_Parts
-                    .Join(
-                        filesToDelete,
-                        p => p.Value.Item2,
-                        file => file,
-                        (pair, file) => pair.Key)
-                    .ToList();
-                foreach (var type in typesToDelete)
+                if (_parts.ContainsKey(part.Identity))
                 {
-                    m_Parts.Remove(type);
-                    m_Types.Remove(type);
-                    m_TypeGraph.RemoveVertex(type);
+                    throw new DuplicatePartDefinitionException();
+                }
+
+                _parts.Add(part.Identity, new Tuple<PartDefinition, PluginFileInfo>(part, pluginFileInfo));
+                if (!_pluginFiles.Contains(pluginFileInfo))
+                {
+                    _pluginFiles.Add(pluginFileInfo);
                 }
             }
         }
@@ -141,23 +105,26 @@ namespace Nuclei.Plugins.Discovery
         /// </exception>
         public void AddType(TypeDefinition type)
         {
-            lock (m_Lock)
+            lock (_lock)
             {
+                if (type == null)
                 {
-                    Lokad.Enforce.Argument(() => type);
-                    Lokad.Enforce.With<DuplicateTypeDefinitionException>(
-                        !m_Types.ContainsKey(type.Identity),
-                        Resources.Exceptions_Messages_DuplicateTypeDefinition);
+                    throw new ArgumentNullException("type");
+                }
+
+                if (_types.ContainsKey(type.Identity))
+                {
+                    throw new DuplicateTypeDefinitionException();
                 }
 
                 AddTypeToGraph(type);
-                m_Types.Add(type.Identity, type);
+                _types.Add(type.Identity, type);
             }
         }
 
         private void AddTypeToGraph(TypeDefinition type)
         {
-            var derivedTypes = m_Types
+            var derivedTypes = _types
                 .Where(
                     p =>
                     {
@@ -168,97 +135,28 @@ namespace Nuclei.Plugins.Discovery
                 .Select(p => p.Key)
                 .ToList();
 
-            m_TypeGraph.AddVertex(type.Identity);
-            if ((type.BaseType != null) && m_TypeGraph.ContainsVertex(type.BaseType))
+            _typeGraph.AddVertex(type.Identity);
+            if ((type.BaseType != null) && _typeGraph.ContainsVertex(type.BaseType))
             {
-                m_TypeGraph.AddEdge(new Edge<TypeIdentity>(type.Identity, type.BaseType));
+                _typeGraph.AddEdge(new Edge<TypeIdentity>(type.Identity, type.BaseType));
             }
 
-            if ((type.GenericTypeDefinition != null) && m_TypeGraph.ContainsVertex(type.GenericTypeDefinition))
+            if ((type.GenericTypeDefinition != null) && _typeGraph.ContainsVertex(type.GenericTypeDefinition))
             {
-                m_TypeGraph.AddEdge(new Edge<TypeIdentity>(type.Identity, type.GenericTypeDefinition));
+                _typeGraph.AddEdge(new Edge<TypeIdentity>(type.Identity, type.GenericTypeDefinition));
             }
 
             foreach (var baseInterface in type.BaseInterfaces)
             {
-                if ((baseInterface != null) && m_TypeGraph.ContainsVertex(baseInterface))
+                if ((baseInterface != null) && _typeGraph.ContainsVertex(baseInterface))
                 {
-                    m_TypeGraph.AddEdge(new Edge<TypeIdentity>(type.Identity, baseInterface));
+                    _typeGraph.AddEdge(new Edge<TypeIdentity>(type.Identity, baseInterface));
                 }
             }
 
             foreach (var derivedType in derivedTypes)
             {
-                m_TypeGraph.AddEdge(new Edge<TypeIdentity>(derivedType, type.Identity));
-            }
-        }
-
-        /// <summary>
-        /// Adds a new part to the repository.
-        /// </summary>
-        /// <param name="part">The part definition.</param>
-        /// <param name="pluginFileInfo">The file info of the assembly which owns the part.</param>
-        public void AddPart(PartDefinition part, PluginFileInfo pluginFileInfo)
-        {
-            lock (m_Lock)
-            {
-                {
-                    Lokad.Enforce.Argument(() => part);
-                    Lokad.Enforce.Argument(() => pluginFileInfo);
-                    Lokad.Enforce.With<DuplicatePartDefinitionException>(
-                        !m_Parts.ContainsKey(part.Identity), 
-                        Resources.Exceptions_Messages_DuplicatePartDefinition);
-                }
-
-                m_Parts.Add(part.Identity, new Tuple<PartDefinition, PluginFileInfo>(part, pluginFileInfo));
-                if (!m_PluginFiles.Contains(pluginFileInfo))
-                {
-                    m_PluginFiles.Add(pluginFileInfo);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Adds a new part group to the repository.
-        /// </summary>
-        /// <param name="group">The part group definition.</param>
-        /// <param name="pluginFileInfo">The file info of the assembly which owns the group.</param>
-        public void AddGroup(GroupDefinition group, PluginFileInfo pluginFileInfo)
-        {
-            lock (m_Lock)
-            {
-                {
-                    Lokad.Enforce.Argument(() => group);
-                    Lokad.Enforce.Argument(() => pluginFileInfo);
-                    Lokad.Enforce.With<DuplicateGroupDefinitionException>(
-                        !m_Groups.ContainsKey(group.Id),
-                        Resources.Exceptions_Messages_DuplicateGroupDefinition);
-                }
-
-                m_Groups.Add(group.Id, new Tuple<GroupDefinition, PluginFileInfo>(group, pluginFileInfo));
-                if (!m_PluginFiles.Contains(pluginFileInfo))
-                {
-                    m_PluginFiles.Add(pluginFileInfo);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns a value indicating if the repository contains a <see cref="TypeDefinition"/>
-        /// for the given type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>
-        /// <see langword="true" /> if the repository contains the <c>TypeDefinition</c> for the given type;
-        /// otherwise, <see langword="false" />.
-        /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
-            Justification = "Documentation can start with a language keyword")]
-        public bool ContainsDefinitionForType(TypeIdentity type)
-        {
-            lock (m_Lock)
-            {
-                return (type != null) && m_Types.ContainsKey(type);
+                _typeGraph.AddEdge(new Edge<TypeIdentity>(derivedType, type.Identity));
             }
         }
 
@@ -271,13 +169,36 @@ namespace Nuclei.Plugins.Discovery
         /// <see langword="true" /> if the repository contains the <c>TypeDefinition</c> for the given type;
         /// otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool ContainsDefinitionForType(string fullyQualifiedName)
         {
-            lock (m_Lock)
+            lock (_lock)
             {
-                return !string.IsNullOrWhiteSpace(fullyQualifiedName) && m_Types.Any(p => p.Key.AssemblyQualifiedName.Equals(fullyQualifiedName));
+                return !string.IsNullOrWhiteSpace(fullyQualifiedName) && _types.Any(p => p.Key.AssemblyQualifiedName.Equals(fullyQualifiedName));
+            }
+        }
+
+        /// <summary>
+        /// Returns a value indicating if the repository contains a <see cref="TypeDefinition"/>
+        /// for the given type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>
+        /// <see langword="true" /> if the repository contains the <c>TypeDefinition</c> for the given type;
+        /// otherwise, <see langword="false" />.
+        /// </returns>
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+            Justification = "Documentation can start with a language keyword")]
+        public bool ContainsDefinitionForType(TypeIdentity type)
+        {
+            lock (_lock)
+            {
+                return (type != null) && _types.ContainsKey(type);
             }
         }
 
@@ -293,43 +214,9 @@ namespace Nuclei.Plugins.Discovery
                 Lokad.Enforce.Argument(() => fullyQualifiedName, Lokad.Rules.StringIs.NotEmpty);
             }
 
-            lock (m_Lock)
+            lock (_lock)
             {
-                return m_Types.Where(p => p.Key.AssemblyQualifiedName.Equals(fullyQualifiedName)).Select(p => p.Key).FirstOrDefault();
-            }
-        }
-
-        /// <summary>
-        /// Returns the <see cref="TypeDefinition"/> for the given type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The requested type definition.</returns>
-        public TypeDefinition TypeByIdentity(TypeIdentity type)
-        {
-            lock (m_Lock)
-            {
-                {
-                    Lokad.Enforce.Argument(() => type);
-                    Lokad.Enforce.With<UnknownTypeDefinitionException>(
-                        m_Types.ContainsKey(type),
-                        Resources.Exceptions_Messages_UnknownTypeDefinition);
-                }
-
-                return m_Types[type];
-            }
-        }
-
-        /// <summary>
-        /// Returns the <see cref="TypeDefinition"/> for the type with the given name.
-        /// </summary>
-        /// <param name="fullyQualifiedName">The fully qualified name for the type.</param>
-        /// <returns>The requested type definition.</returns>
-        public TypeDefinition TypeByName(string fullyQualifiedName)
-        {
-            lock (m_Lock)
-            {
-                var typeIdentity = IdentityByName(fullyQualifiedName);
-                return TypeByIdentity(typeIdentity);
+                return _types.Where(p => p.Key.AssemblyQualifiedName.Equals(fullyQualifiedName)).Select(p => p.Key).FirstOrDefault();
             }
         }
 
@@ -341,12 +228,14 @@ namespace Nuclei.Plugins.Discovery
         /// <returns>
         /// <see langword="true" /> if the child derives from the given parent; otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool IsSubTypeOf(TypeIdentity parent, TypeIdentity child)
         {
             var algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<TypeIdentity, Edge<TypeIdentity>>(
-                m_TypeGraph,
+                _typeGraph,
                 e => 1.0);
 
             algorithm.ShortestPathCount = 10;
@@ -355,14 +244,16 @@ namespace Nuclei.Plugins.Discovery
         }
 
         /// <summary>
-        /// Returns a collection containing all known parts.
+        /// Returns a collection containing the descriptions of all the known plugins.
         /// </summary>
-        /// <returns>The collection containing all known parts.</returns>
-        public IEnumerable<PartDefinition> Parts()
+        /// <returns>
+        /// A collection containing the descriptions of all the known plugins.
+        /// </returns>
+        public IEnumerable<PluginFileInfo> KnownPluginFiles()
         {
-            lock (m_Lock)
+            lock (_lock)
             {
-                return m_Parts.Select(p => p.Value.Item1).ToList();
+                return _pluginFiles.ToList();
             }
         }
 
@@ -373,48 +264,106 @@ namespace Nuclei.Plugins.Discovery
         /// <returns>The requested part.</returns>
         public PartDefinition Part(TypeIdentity type)
         {
-            lock (m_Lock)
+            lock (_lock)
             {
                 {
                     Lokad.Enforce.Argument(() => type);
                     Lokad.Enforce.With<UnknownPartDefinitionException>(
-                        m_Parts.ContainsKey(type),
+                        _parts.ContainsKey(type),
                         Resources.Exceptions_Messages_UnknownPartDefinition);
                 }
 
-                return m_Parts[type].Item1;
+                return _parts[type].Item1;
             }
         }
 
         /// <summary>
-        /// Returns a collection containing all known groups.
+        /// Returns a collection containing all known parts.
         /// </summary>
-        /// <returns>The collection containing all known groups.</returns>
-        public IEnumerable<GroupDefinition> Groups()
+        /// <returns>The collection containing all known parts.</returns>
+        public IEnumerable<PartDefinition> Parts()
         {
-            lock (m_Lock)
+            lock (_lock)
             {
-                return m_Groups.Select(p => p.Value.Item1).ToList();
+                return _parts.Select(p => p.Value.Item1).ToList();
             }
         }
 
         /// <summary>
-        /// Returns the group that was registered with the given ID.
+        /// Removes all the plugins related to the given plugin files.
         /// </summary>
-        /// <param name="groupRegistrationId">The registration ID.</param>
-        /// <returns>The requested type.</returns>
-        public GroupDefinition Group(GroupRegistrationId groupRegistrationId)
+        /// <param name="deletedFiles">The collection of plugin file paths that were removed.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="deletedFiles"/> is <see langword="null" />.
+        /// </exception>
+        public void RemovePlugins(IEnumerable<string> deletedFiles)
         {
-            lock (m_Lock)
+            if (deletedFiles == null)
             {
+                throw new ArgumentNullException("deletedFiles");
+            }
+
+            lock (_lock)
+            {
+                var filesToDelete = _pluginFiles
+                    .Join(
+                        deletedFiles,
+                        pluginFile => pluginFile.Path,
+                        filePath => filePath,
+                        (pluginFile, filePath) => pluginFile)
+                    .ToList();
+                foreach (var file in filesToDelete)
                 {
-                    Lokad.Enforce.Argument(() => groupRegistrationId);
-                    Lokad.Enforce.With<UnknownGroupDefinitionException>(
-                        m_Groups.ContainsKey(groupRegistrationId),
-                        Resources.Exceptions_Messages_UnknownGroupDefinition);
+                    _pluginFiles.Remove(file);
                 }
 
-                return m_Groups[groupRegistrationId].Item1;
+                var typesToDelete = _parts
+                    .Join(
+                        filesToDelete,
+                        p => p.Value.Item2,
+                        file => file,
+                        (pair, file) => pair.Key)
+                    .ToList();
+                foreach (var type in typesToDelete)
+                {
+                    _parts.Remove(type);
+                    _types.Remove(type);
+                    _typeGraph.RemoveVertex(type);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the <see cref="TypeDefinition"/> for the given type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>The requested type definition.</returns>
+        public TypeDefinition TypeByIdentity(TypeIdentity type)
+        {
+            lock (_lock)
+            {
+                {
+                    Lokad.Enforce.Argument(() => type);
+                    Lokad.Enforce.With<UnknownTypeDefinitionException>(
+                        _types.ContainsKey(type),
+                        Resources.Exceptions_Messages_UnknownTypeDefinition);
+                }
+
+                return _types[type];
+            }
+        }
+
+        /// <summary>
+        /// Returns the <see cref="TypeDefinition"/> for the type with the given name.
+        /// </summary>
+        /// <param name="fullyQualifiedName">The fully qualified name for the type.</param>
+        /// <returns>The requested type definition.</returns>
+        public TypeDefinition TypeByName(string fullyQualifiedName)
+        {
+            lock (_lock)
+            {
+                var typeIdentity = IdentityByName(fullyQualifiedName);
+                return TypeByIdentity(typeIdentity);
             }
         }
     }

@@ -7,7 +7,7 @@
 
 using System;
 using System.Runtime.Serialization;
-using Apollo.Core.Host.Properties;
+using Nuclei.Plugins.Discovery.Properties;
 
 namespace Nuclei.Plugins.Discovery
 {
@@ -29,7 +29,7 @@ namespace Nuclei.Plugins.Discovery
         /// Initializes a new instance of the <see cref="DuplicatePartDefinitionException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public DuplicatePartDefinitionException(string message) 
+        public DuplicatePartDefinitionException(string message)
             : base(message)
         {
         }
