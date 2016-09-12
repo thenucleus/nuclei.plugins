@@ -20,7 +20,7 @@ namespace Nuclei.Plugins.Discovery
     /// Provides an <see cref="IAssemblyScanner"/> wrapper that loads the actual scanner into a <c>AppDomain</c>, provides the data
     /// to that scanner and then unloads the <c>AppDomain</c> when the scanning process is complete.
     /// </summary>
-    internal sealed class AppDomainOwningPluginScanner : IAssemblyScanner
+    public sealed class AppDomainOwningPluginScanner : IAssemblyScanner
     {
         /// <summary>
         /// The name for the plugins directory.

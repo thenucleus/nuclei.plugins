@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Nuclei.Plugins;
+using Nuclei.Plugins.Discovery.Properties;
 using QuickGraph;
 using QuickGraph.Algorithms.RankedShortestPath;
 
@@ -18,7 +18,7 @@ namespace Nuclei.Plugins.Discovery
     /// <summary>
     /// Stores information about all the known type, part and group definitions.
     /// </summary>
-    internal sealed class PluginRepository : IPluginRepository
+    public sealed class PluginRepository : IPluginRepository
     {
         /// <summary>
         /// The object used to lock on.
@@ -68,18 +68,18 @@ namespace Nuclei.Plugins.Discovery
         /// </exception>
         public void AddPart(PartDefinition part, PluginFileInfo pluginFileInfo)
         {
+            if (part == null)
+            {
+                throw new ArgumentNullException("part");
+            }
+
+            if (pluginFileInfo == null)
+            {
+                throw new ArgumentNullException("pluginFileInfo");
+            }
+
             lock (_lock)
             {
-                if (part == null)
-                {
-                    throw new ArgumentNullException("part");
-                }
-
-                if (pluginFileInfo == null)
-                {
-                    throw new ArgumentNullException("pluginFileInfo");
-                }
-
                 if (_parts.ContainsKey(part.Identity))
                 {
                     throw new DuplicatePartDefinitionException();
@@ -105,13 +105,13 @@ namespace Nuclei.Plugins.Discovery
         /// </exception>
         public void AddType(TypeDefinition type)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
             lock (_lock)
             {
-                if (type == null)
-                {
-                    throw new ArgumentNullException("type");
-                }
-
                 if (_types.ContainsKey(type.Identity))
                 {
                     throw new DuplicateTypeDefinitionException();
@@ -207,11 +207,22 @@ namespace Nuclei.Plugins.Discovery
         /// </summary>
         /// <param name="fullyQualifiedName">The fully qualified name of the type.</param>
         /// <returns>The requested type.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="fullyQualifiedName"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if <paramref name="fullyQualifiedName"/> is an empty string.
+        /// </exception>
         public TypeIdentity IdentityByName(string fullyQualifiedName)
         {
+            if (fullyQualifiedName == null)
             {
-                Lokad.Enforce.Argument(() => fullyQualifiedName);
-                Lokad.Enforce.Argument(() => fullyQualifiedName, Lokad.Rules.StringIs.NotEmpty);
+                throw new ArgumentNullException("fullyQualifiedName");
+            }
+
+            if (string.IsNullOrWhiteSpace(fullyQualifiedName))
+            {
+                throw new ArgumentException(Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString, "fullyQualifiedName");
             }
 
             lock (_lock)
@@ -262,15 +273,24 @@ namespace Nuclei.Plugins.Discovery
         /// </summary>
         /// <param name="type">The declaring type.</param>
         /// <returns>The requested part.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="type"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="UnknownPartDefinitionException">
+        ///     Thrown if there are no parts of the given <paramref name="type"/>.
+        /// </exception>
         public PartDefinition Part(TypeIdentity type)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
             lock (_lock)
             {
+                if (_parts.ContainsKey(type))
                 {
-                    Lokad.Enforce.Argument(() => type);
-                    Lokad.Enforce.With<UnknownPartDefinitionException>(
-                        _parts.ContainsKey(type),
-                        Resources.Exceptions_Messages_UnknownPartDefinition);
+                    throw new UnknownPartDefinitionException();
                 }
 
                 return _parts[type].Item1;
@@ -338,15 +358,24 @@ namespace Nuclei.Plugins.Discovery
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>The requested type definition.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="type"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="UnknownTypeDefinitionException">
+        ///     Thrown if no type with the given identity is known.
+        /// </exception>
         public TypeDefinition TypeByIdentity(TypeIdentity type)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
             lock (_lock)
             {
+                if (_types.ContainsKey(type))
                 {
-                    Lokad.Enforce.Argument(() => type);
-                    Lokad.Enforce.With<UnknownTypeDefinitionException>(
-                        _types.ContainsKey(type),
-                        Resources.Exceptions_Messages_UnknownTypeDefinition);
+                    throw new UnknownTypeDefinitionException();
                 }
 
                 return _types[type];

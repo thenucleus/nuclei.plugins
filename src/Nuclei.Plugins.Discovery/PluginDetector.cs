@@ -20,7 +20,7 @@ namespace Nuclei.Plugins.Discovery
     /// <summary>
     /// Provides the methods to find and scan plugins available in assembly files.
     /// </summary>
-    internal sealed class PluginDetector
+    public sealed class PluginDetector
     {
         /// <summary>
         /// The objects that provides the diagnostics methods for the application.
@@ -161,7 +161,7 @@ namespace Nuclei.Plugins.Discovery
             var knownFiles = _repository.KnownPluginFiles();
 
             var changedKnownFiles = knownFiles
-                .Where(p => files.Exists(f => string.Equals(p.Path, f, StringComparison.OrdinalIgnoreCase)))
+                .Where(p => files.Any(f => string.Equals(p.Path, f, StringComparison.OrdinalIgnoreCase)))
                 .Where(p => _fileSystem.File.GetLastWriteTimeUtc(p.Path) > p.LastWriteTimeUtc)
                 .Select(p => p.Path);
 

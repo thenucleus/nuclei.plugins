@@ -13,7 +13,7 @@ namespace Nuclei.Plugins.Discovery
     /// <summary>
     /// Defines the interface for objects that handle plugin requests.
     /// </summary>
-    internal interface ISatisfyPluginRequests
+    public interface ISatisfyPluginRequests
     {
         /// <summary>
         /// Returns a value indicating if the repository contains a <see cref="TypeDefinition"/>

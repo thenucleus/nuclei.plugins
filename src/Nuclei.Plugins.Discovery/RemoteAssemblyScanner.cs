@@ -18,13 +18,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Apollo.Core.Base.Plugins;
-using Apollo.Core.Base.Scheduling;
-using Nuclei.Plugins;
-using Apollo.Core.Host.Properties;
-using Apollo.Utilities;
-using Nuclei;
 using Nuclei.Diagnostics.Logging;
+using Nuclei.Plugins.Discovery.Properties;
 
 namespace Nuclei.Plugins.Discovery
 {
@@ -33,19 +28,24 @@ namespace Nuclei.Plugins.Discovery
     /// </summary>
     internal sealed class RemoteAssemblyScanner : MarshalByRefObject, IAssemblyScanner
     {
-        private static Type ExtractRequiredType(IEnumerable<Attribute> memberAttributes, Type memberType)
+        private static SerializableImportDefinition CreateConstructorParameterImport(
+            ContractBasedImportDefinition import,
+            Func<Type, TypeIdentity> identityGenerator)
         {
-            // This is really rather ugly but we can't get the RequiredTypeIdentity straight from the import
-            // (eventhough it has a property named as such) because we want an actual type and the 
-            // MEF ImportDefinition.RequiredTypeIdentity is a string that has been mangled, e.g. for 
-            // delegates the type name is <RETURNTYPE>(<PARAMETERTYPES>), which means we don't know
-            // exactly what the type is. Also MEF strips the Lazy<T> type and replaces it with T. Hence
-            // we go straight to the actual import attribute and get it from there.
-            var attribute = memberAttributes.OfType<ImportAttribute>().FirstOrDefault();
-            Debug.Assert(attribute != null, "There should be an import attribute.");
+            var parameterInfo = ReflectionModelServices.GetImportingParameter(import);
+            var requiredType = ExtractRequiredType(parameterInfo.Value.GetCustomAttributes(), parameterInfo.Value.ParameterType);
+            if (requiredType == null)
+            {
+                return null;
+            }
 
-            var requiredType = attribute.ContractType ?? memberType;
-            return requiredType;
+            return ConstructorBasedImportDefinition.CreateDefinition(
+                import.ContractName,
+                TypeIdentity.CreateDefinition(requiredType),
+                import.Cardinality,
+                import.RequiredCreationPolicy,
+                parameterInfo.Value,
+                identityGenerator);
         }
 
         private static SerializableExportDefinition CreateMethodExport(
@@ -53,8 +53,11 @@ namespace Nuclei.Plugins.Discovery
             LazyMemberInfo memberInfo,
             Func<Type, TypeIdentity> identityGenerator)
         {
-            Debug.Assert(memberInfo.GetAccessors().Count() == 1, "Only expecting one accessor for a method export.");
-            Debug.Assert(memberInfo.GetAccessors().First() is MethodInfo, "Expecting the method export to be an MethodInfo object.");
+            {
+                Debug.Assert(memberInfo.GetAccessors().Count() == 1, "Only expecting one accessor for a method export.");
+                Debug.Assert(memberInfo.GetAccessors().First() is MethodInfo, "Expecting the method export to be an MethodInfo object.");
+            }
+
             return MethodBasedExportDefinition.CreateDefinition(
                 export.ContractName,
                 memberInfo.GetAccessors().First() as MethodInfo,
@@ -72,22 +75,10 @@ namespace Nuclei.Plugins.Discovery
             var getMember = memberInfo.GetAccessors().First(m => m.Name.Contains("get_"));
             var name = getMember.Name.Substring("get_".Length);
             var property = getMember.DeclaringType.GetProperty(name);
+
             return PropertyBasedExportDefinition.CreateDefinition(
                 export.ContractName,
                 property,
-                identityGenerator);
-        }
-
-        private static SerializableExportDefinition CreateTypeExport(
-            ExportDefinition export,
-            LazyMemberInfo memberInfo,
-            Func<Type, TypeIdentity> identityGenerator)
-        {
-            Debug.Assert(memberInfo.GetAccessors().Count() == 1, "Only expecting one accessor for a type export.");
-            Debug.Assert(memberInfo.GetAccessors().First() is Type, "Expecting the export to be a Type.");
-            return TypeBasedExportDefinition.CreateDefinition(
-                export.ContractName,
-                memberInfo.GetAccessors().First() as Type,
                 identityGenerator);
         }
 
@@ -124,45 +115,51 @@ namespace Nuclei.Plugins.Discovery
                 identityGenerator);
         }
 
-        private static SerializableImportDefinition CreateConstructorParameterImport(
-            ContractBasedImportDefinition import,
+        private static SerializableExportDefinition CreateTypeExport(
+            ExportDefinition export,
+            LazyMemberInfo memberInfo,
             Func<Type, TypeIdentity> identityGenerator)
         {
-            var parameterInfo = ReflectionModelServices.GetImportingParameter(import);
-            var requiredType = ExtractRequiredType(parameterInfo.Value.GetCustomAttributes(), parameterInfo.Value.ParameterType);
-            if (requiredType == null)
             {
-                return null;
+                Debug.Assert(memberInfo.GetAccessors().Count() == 1, "Only expecting one accessor for a type export.");
+                Debug.Assert(memberInfo.GetAccessors().First() is Type, "Expecting the export to be a Type.");
             }
 
-            return ConstructorBasedImportDefinition.CreateDefinition(
-                import.ContractName,
-                TypeIdentity.CreateDefinition(requiredType),
-                import.Cardinality,
-                import.RequiredCreationPolicy,
-                parameterInfo.Value,
+            return TypeBasedExportDefinition.CreateDefinition(
+                export.ContractName,
+                memberInfo.GetAccessors().First() as Type,
                 identityGenerator);
         }
 
-        /// <summary>
-        /// The object that stores all the information about the parts and the part groups.
-        /// </summary>
-        private readonly IPluginRepository m_Repository;
+        private static Type ExtractRequiredType(IEnumerable<Attribute> memberAttributes, Type memberType)
+        {
+            // This is really rather ugly but we can't get the RequiredTypeIdentity straight from the import
+            // (eventhough it has a property named as such) because we want an actual type and the
+            // MEF ImportDefinition.RequiredTypeIdentity is a string that has been mangled, e.g. for
+            // delegates the type name is <RETURNTYPE>(<PARAMETERTYPES>), which means we don't know
+            // exactly what the type is. Also MEF strips the Lazy<T> type and replaces it with T. Hence
+            // we go straight to the actual import attribute and get it from there.
+            var attribute = memberAttributes.OfType<ImportAttribute>().FirstOrDefault();
+            Debug.Assert(attribute != null, "There should be an import attribute.");
+
+            var requiredType = attribute.ContractType ?? memberType;
+            return requiredType;
+        }
 
         /// <summary>
         /// The object that provides methods for part import matching.
         /// </summary>
-        private readonly IConnectParts m_ImportEngine;
+        private readonly IConnectParts _importEngine;
 
         /// <summary>
         /// The object that will pass through the log messages.
         /// </summary>
-        private readonly ILogMessagesFromRemoteAppDomains m_Logger;
+        private readonly ILogMessagesFromRemoteAppDomains _logger;
 
         /// <summary>
-        /// The function that creates schedule building objects.
+        /// The object that stores all the information about the parts and the part groups.
         /// </summary>
-        private readonly Func<IBuildFixedSchedules> m_ScheduleBuilder;
+        private readonly IPluginRepository _repository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteAssemblyScanner"/> class.
@@ -170,7 +167,6 @@ namespace Nuclei.Plugins.Discovery
         /// <param name="repository">The object that stores all the information about the parts and the part groups.</param>
         /// <param name="importEngine">The object that provides methods for part import matching.</param>
         /// <param name="logger">The object that passes through the log messages.</param>
-        /// <param name="scheduleBuilder">The function that returns a schedule building object.</param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="repository"/> is <see langword="null" />.
         /// </exception>
@@ -180,195 +176,32 @@ namespace Nuclei.Plugins.Discovery
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="logger"/> is <see langword="null" />.
         /// </exception>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="scheduleBuilder"/> is <see langword="null" />.
-        /// </exception>
         public RemoteAssemblyScanner(
             IPluginRepository repository,
             IConnectParts importEngine,
-            ILogMessagesFromRemoteAppDomains logger, 
-            Func<IBuildFixedSchedules> scheduleBuilder)
+            ILogMessagesFromRemoteAppDomains logger)
         {
+            if (repository == null)
             {
-                Lokad.Enforce.Argument(() => repository);
-                Lokad.Enforce.Argument(() => importEngine);
-                Lokad.Enforce.Argument(() => logger);
-                Lokad.Enforce.Argument(() => scheduleBuilder);
+                throw new ArgumentNullException("repository");
             }
 
-            m_Repository = repository;
-            m_ImportEngine = importEngine;
-            m_Logger = logger;
-            m_ScheduleBuilder = scheduleBuilder;
+            if (importEngine == null)
+            {
+                throw new ArgumentNullException("importEngine");
+            }
+
+            if (logger == null)
+            {
+                throw new ArgumentNullException("logger");
+            }
+
+            _importEngine = importEngine;
+            _logger = logger;
+            _repository = repository;
         }
 
-        /// <summary>
-        /// Scans the assemblies for which the given file paths have been provided and 
-        /// returns the plugin description information.
-        /// </summary>
-        /// <param name="assemblyFilesToScan">
-        /// The collection that contains the file paths to all the assemblies to be scanned.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="assemblyFilesToScan"/> is <see langword="null" />.
-        /// </exception>
-        public void Scan(IEnumerable<string> assemblyFilesToScan)
-        {
-            {
-                Lokad.Enforce.Argument(() => assemblyFilesToScan);
-            }
-
-            // It is expected that the loading of an assembly will take more
-            // time than the scanning of that assembly. 
-            // Because we're dealing with disk IO we want to optimize the load
-            // process so we load the assemblies one-by-one (thus reducing disk
-            // search times etc.)
-            Parallel.ForEach(
-                assemblyFilesToScan,
-                a => 
-                { 
-                    var assembly = LoadAssembly(a);
-                    ScanAssembly(assembly);
-                });
-        }
-
-        private Assembly LoadAssembly(string file)
-        {
-            if (file == null)
-            {
-                return null;
-            }
-
-            if (file.Length == 0)
-            {
-                return null;
-            }
-
-            // Check if the file exists.
-            if (!File.Exists(file))
-            {
-                return null;
-            }
-
-            // Try to load the assembly. If we can't load the assembly
-            // we log the exception / problem and return a null reference
-            // for the assembly.
-            string fileName = Path.GetFileNameWithoutExtension(file);
-            try
-            {
-                // Only use the file name of the assembly
-                return Assembly.Load(fileName);
-            }
-            catch (FileNotFoundException e)
-            {
-                // The file does not exist. Only possible if somebody removes the file
-                // between the check and the loading.
-                m_Logger.Log(
-                    LevelToLog.Error,
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Resources.Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
-                        fileName,
-                        e));
-            }
-            catch (FileLoadException e)
-            {
-                // Could not load the assembly.
-                m_Logger.Log(
-                    LevelToLog.Error,
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Resources.Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
-                        fileName,
-                        e));
-            }
-            catch (BadImageFormatException e)
-            {
-                // incorrectly formatted assembly.
-                m_Logger.Log(
-                    LevelToLog.Error,
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Resources.Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
-                        fileName,
-                        e));
-            }
-
-            return null;
-        }
-        
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes",
-            Justification = "Will catch an log here because we don't actually know what exceptions can happen due to the ExtractGroups() call.")]
-        private void ScanAssembly(Assembly assembly)
-        {
-            try
-            {
-                m_Logger.Log(
-                    LevelToLog.Trace,
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Resources.RemoteAssemblyScanner_LogMessage_ScanningAssembly_WithName,
-                        assembly.FullName));
-
-                var file = new FileInfo(assembly.LocalFilePath());
-                var fileInfo = new PluginFileInfo(file.FullName, file.LastWriteTimeUtc);
-
-                var createTypeIdentity = TypeIdentityBuilder.IdentityFactory(m_Repository, new Dictionary<Type, TypeIdentity>());
-                var mefParts = ExtractImportsAndExports(assembly, createTypeIdentity);
-                var parts = mefParts.Select(p => ExtractActionsAndConditions(p.Item1, p.Item2, createTypeIdentity));
-                foreach (var part in parts)
-                {
-                    m_Logger.Log(
-                        LevelToLog.Trace,
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            Resources.RemoteAssemblyScanner_LogMessage_AddingPartToRepository_WithPartInformation,
-                            part.Identity));
-
-                    m_Repository.AddPart(part, fileInfo);
-                }
-
-                var groupExporters = assembly.GetTypes().Where(t => typeof(IExportGroupDefinitions).IsAssignableFrom(t));
-                foreach (var t in groupExporters)
-                {
-                    try
-                    {
-                        m_Logger.Log(
-                            LevelToLog.Trace,
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                Resources.RemoteAssemblyScanner_LogMessage_RegisteringGroupsViaExporter_WithExporterType,
-                                t.AssemblyQualifiedName));
-
-                        var builder = new GroupDefinitionBuilder(
-                            m_Repository,
-                            m_ImportEngine, 
-                            createTypeIdentity,
-                            m_ScheduleBuilder,
-                            fileInfo);
-
-                        var exporter = Activator.CreateInstance(t) as IExportGroupDefinitions;
-                        exporter.RegisterGroups(builder);
-                    }
-                    catch (Exception e)
-                    {
-                        m_Logger.Log(LevelToLog.Warn, e.ToString());
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                m_Logger.Log(
-                    LevelToLog.Error,
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Resources.Plugins_LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException,
-                        assembly.GetName().FullName,
-                        e));
-            }
-        }
-
-        private IEnumerable<Tuple<Type, PartDefinition>> ExtractImportsAndExports(Assembly assembly, Func<Type, TypeIdentity> createTypeIdentity)
+        private IEnumerable<PartDefinition> ExtractImportsAndExports(Assembly assembly, Func<Type, TypeIdentity> createTypeIdentity)
         {
             var catalog = new AssemblyCatalog(assembly);
             foreach (var part in catalog.Parts)
@@ -397,16 +230,16 @@ namespace Nuclei.Plugins.Discovery
                     if (exportDefinition != null)
                     {
                         exports.Add(exportDefinition);
-                        m_Logger.Log(
+                        _logger.Log(
                             LevelToLog.Info,
                             string.Format(
                                 CultureInfo.InvariantCulture,
                                 "Discovered export: {0}",
                                 exportDefinition));
                     }
-                    else 
+                    else
                     {
-                        m_Logger.Log(
+                        _logger.Log(
                             LevelToLog.Warn,
                             string.Format(
                                 CultureInfo.InvariantCulture,
@@ -429,7 +262,7 @@ namespace Nuclei.Plugins.Discovery
                     if (importDefinition != null)
                     {
                         imports.Add(importDefinition);
-                        m_Logger.Log(
+                        _logger.Log(
                             LevelToLog.Info,
                             string.Format(
                                 CultureInfo.InvariantCulture,
@@ -438,7 +271,7 @@ namespace Nuclei.Plugins.Discovery
                     }
                     else
                     {
-                        m_Logger.Log(
+                        _logger.Log(
                             LevelToLog.Warn,
                             string.Format(
                                 CultureInfo.InvariantCulture,
@@ -448,98 +281,141 @@ namespace Nuclei.Plugins.Discovery
                 }
 
                 var type = ReflectionModelServices.GetPartType(part).Value;
-                yield return new Tuple<Type, PartDefinition>( 
-                    type,
-                    new PartDefinition
-                        {
-                            Identity = createTypeIdentity(type),
-                            Exports = exports,
-                            Imports = imports,
-                            Actions = Enumerable.Empty<ScheduleActionDefinition>(),
-                            Conditions = Enumerable.Empty<ScheduleConditionDefinition>(),
-                        });
+                yield return new PartDefinition
+                    {
+                        Identity = createTypeIdentity(type),
+                        Exports = exports,
+                        Imports = imports,
+                    };
             }
         }
 
-        private PartDefinition ExtractActionsAndConditions(Type type, PartDefinition part, Func<Type, TypeIdentity> createTypeIdentity)
+        private Assembly LoadAssembly(string file)
         {
-            var actions = new List<ScheduleActionDefinition>();
-            var conditions = new List<ScheduleConditionDefinition>();
-            foreach (var method in type.GetMethods())
+            if (file == null)
             {
-                if (method.ReturnType == typeof(void) && !method.GetParameters().Any())
-                {
-                    var actionAttribute = method.GetCustomAttribute<ScheduleActionAttribute>(true);
-                    if (actionAttribute != null)
-                    {
-                        var actionDefinition = ScheduleActionDefinition.CreateDefinition(
-                            actionAttribute.Name, 
-                            method, 
-                            createTypeIdentity);
-                        actions.Add(actionDefinition);
-                            
-                        m_Logger.Log(
-                            LevelToLog.Info,
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                "Discovered action: {0}",
-                                actionDefinition));
-                    }
-
-                    continue;
-                }
-
-                if (method.ReturnType == typeof(bool) && !method.GetParameters().Any())
-                {
-                    var conditionAttribute = method.GetCustomAttribute<ScheduleConditionAttribute>(true);
-                    if (conditionAttribute != null)
-                    {
-                        var conditionDefinition = MethodBasedScheduleConditionDefinition.CreateDefinition(
-                            conditionAttribute.Name,
-                            method,
-                            createTypeIdentity);
-                        conditions.Add(conditionDefinition);
-
-                        m_Logger.Log(
-                            LevelToLog.Info,
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                "Discovered condition: {0}",
-                                conditionDefinition));
-                    }
-                }
+                return null;
             }
 
-            foreach (var property in type.GetProperties())
+            if (file.Length == 0)
             {
-                if (property.PropertyType == typeof(bool))
-                {
-                    var conditionAttribute = property.GetCustomAttribute<ScheduleConditionAttribute>(true);
-                    if (conditionAttribute != null)
-                    {
-                        var conditionDefinition = PropertyBasedScheduleConditionDefinition.CreateDefinition(
-                            conditionAttribute.Name,
-                            property,
-                            createTypeIdentity);
-                        conditions.Add(conditionDefinition);
+                return null;
+            }
 
-                        m_Logger.Log(
-                            LevelToLog.Info,
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                "Discovered condition: {0}",
-                                conditionDefinition));
-                    }
+            if (!File.Exists(file))
+            {
+                return null;
+            }
+
+            string fileName = Path.GetFileNameWithoutExtension(file);
+            try
+            {
+                return Assembly.Load(fileName);
+            }
+            catch (FileNotFoundException e)
+            {
+                // The file does not exist. Only possible if somebody removes the file
+                // between the check and the loading.
+                _logger.Log(
+                    LevelToLog.Error,
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        Resources.Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
+                        fileName,
+                        e));
+            }
+            catch (FileLoadException e)
+            {
+                _logger.Log(
+                    LevelToLog.Error,
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        Resources.Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
+                        fileName,
+                        e));
+            }
+            catch (BadImageFormatException e)
+            {
+                _logger.Log(
+                    LevelToLog.Error,
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        Resources.Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
+                        fileName,
+                        e));
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Scans the assemblies for which the given file paths have been provided and
+        /// returns the plugin description information.
+        /// </summary>
+        /// <param name="assemblyFilesToScan">
+        /// The collection that contains the file paths to all the assemblies to be scanned.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="assemblyFilesToScan"/> is <see langword="null" />.
+        /// </exception>
+        public void Scan(IEnumerable<string> assemblyFilesToScan)
+        {
+            if (assemblyFilesToScan == null)
+            {
+                throw new ArgumentNullException("assemblyFilesToScan");
+            }
+
+            Parallel.ForEach(
+                assemblyFilesToScan,
+                a =>
+                {
+                    var assembly = LoadAssembly(a);
+                    ScanAssembly(assembly);
+                });
+        }
+
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1031:DoNotCatchGeneralExceptionTypes",
+            Justification = "Will catch an log here because we don't actually know what exceptions can happen due to the ExtractGroups() call.")]
+        private void ScanAssembly(Assembly assembly)
+        {
+            try
+            {
+                _logger.Log(
+                    LevelToLog.Trace,
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        Resources.RemoteAssemblyScanner_LogMessage_ScanningAssembly_WithName,
+                        assembly.FullName));
+
+                var file = new FileInfo(assembly.LocalFilePath());
+                var fileInfo = new PluginFileInfo(file.FullName, file.LastWriteTimeUtc);
+
+                var createTypeIdentity = TypeIdentityBuilder.IdentityFactory(_repository, new Dictionary<Type, TypeIdentity>());
+                var mefParts = ExtractImportsAndExports(assembly, createTypeIdentity);
+                foreach (var pair in mefParts)
+                {
+                    _logger.Log(
+                        LevelToLog.Trace,
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            Resources.RemoteAssemblyScanner_LogMessage_AddingPartToRepository_WithPartInformation,
+                            pair.Identity));
+
+                    _repository.AddPart(pair, fileInfo);
                 }
             }
-
-            if (actions.Count > 0 || conditions.Count > 0)
+            catch (Exception e)
             {
-                part.Actions = actions;
-                part.Conditions = conditions;
+                _logger.Log(
+                    LevelToLog.Error,
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        Resources.Plugins_LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException,
+                        assembly.GetName().FullName,
+                        e));
             }
-
-            return part;
         }
     }
 }

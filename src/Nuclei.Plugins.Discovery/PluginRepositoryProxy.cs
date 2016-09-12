@@ -7,10 +7,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using Apollo.Core.Base.Plugins;
-using Nuclei.Plugins;
 
 namespace Nuclei.Plugins.Discovery
 {
@@ -19,7 +16,7 @@ namespace Nuclei.Plugins.Discovery
     /// </summary>
     /// <design>
     /// This class is meant to serve as a proxy for the real plugin repository in a remote <c>AppDomain</c>
-    /// so that the <see cref="RemoteAssemblyScanner"/> is able to refer to the plugin repository without 
+    /// so that the <see cref="RemoteAssemblyScanner"/> is able to refer to the plugin repository without
     /// needing duplicates of the repository.
     /// </design>
     internal sealed class PluginRepositoryProxy : MarshalByRefObject, IPluginRepository
@@ -27,48 +24,23 @@ namespace Nuclei.Plugins.Discovery
         /// <summary>
         /// The object that stores all the part and part group information.
         /// </summary>
-        private readonly IPluginRepository m_Repository;
+        private readonly IPluginRepository _repository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PluginRepositoryProxy"/> class.
         /// </summary>
         /// <param name="repository">The object that stores all the parts and part groups.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="repository"/> is <see langword="null" />.
+        /// </exception>
         public PluginRepositoryProxy(IPluginRepository repository)
         {
+            if (repository == null)
             {
-                Debug.Assert(repository != null, "The repository object should not be a null reference.");
+                throw new ArgumentNullException("repository");
             }
 
-            m_Repository = repository;
-        }
-
-        /// <summary>
-        /// Returns a collection containing the descriptions of all the known plugins.
-        /// </summary>
-        /// <returns>
-        /// A collection containing the descriptions of all the known plugins.
-        /// </returns>
-        public IEnumerable<PluginFileInfo> KnownPluginFiles()
-        {
-            return m_Repository.KnownPluginFiles();
-        }
-
-        /// <summary>
-        /// Removes all the plugins related to the given plugin files.
-        /// </summary>
-        /// <param name="deletedFiles">The collection of plugin file paths that were removed.</param>
-        public void RemovePlugins(IEnumerable<string> deletedFiles)
-        {
-            m_Repository.RemovePlugins(deletedFiles);
-        }
-
-        /// <summary>
-        /// Adds a new type definition to the repository.
-        /// </summary>
-        /// <param name="type">The type definition.</param>
-        public void AddType(TypeDefinition type)
-        {
-            m_Repository.AddType(type);
+            _repository = repository;
         }
 
         /// <summary>
@@ -78,33 +50,16 @@ namespace Nuclei.Plugins.Discovery
         /// <param name="pluginFileInfo">The file info of the assembly which owns the part.</param>
         public void AddPart(PartDefinition part, PluginFileInfo pluginFileInfo)
         {
-            m_Repository.AddPart(part, pluginFileInfo);
+            _repository.AddPart(part, pluginFileInfo);
         }
 
         /// <summary>
-        /// Adds a new part group to the repository.
+        /// Adds a new type definition to the repository.
         /// </summary>
-        /// <param name="group">The part group definition.</param>
-        /// <param name="pluginFileInfo">The file info of the assembly which owns the group.</param>
-        public void AddGroup(GroupDefinition group, PluginFileInfo pluginFileInfo)
+        /// <param name="type">The type definition.</param>
+        public void AddType(TypeDefinition type)
         {
-            m_Repository.AddGroup(group, pluginFileInfo);
-        }
-
-        /// <summary>
-        /// Returns a value indicating if the repository contains a <see cref="TypeDefinition"/>
-        /// for the given type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>
-        /// <see langword="true" /> if the repository contains the <c>TypeDefinition</c> for the given type;
-        /// otherwise, <see langword="false" />.
-        /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
-            Justification = "Documentation can start with a language keyword")]
-        public bool ContainsDefinitionForType(TypeIdentity type)
-        {
-            return m_Repository.ContainsDefinitionForType(type);
+            _repository.AddType(type);
         }
 
         /// <summary>
@@ -116,11 +71,31 @@ namespace Nuclei.Plugins.Discovery
         /// <see langword="true" /> if the repository contains the <c>TypeDefinition</c> for the given type;
         /// otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool ContainsDefinitionForType(string fullyQualifiedName)
         {
-            return m_Repository.ContainsDefinitionForType(fullyQualifiedName);
+            return _repository.ContainsDefinitionForType(fullyQualifiedName);
+        }
+
+        /// <summary>
+        /// Returns a value indicating if the repository contains a <see cref="TypeDefinition"/>
+        /// for the given type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>
+        /// <see langword="true" /> if the repository contains the <c>TypeDefinition</c> for the given type;
+        /// otherwise, <see langword="false" />.
+        /// </returns>
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+            Justification = "Documentation can start with a language keyword")]
+        public bool ContainsDefinitionForType(TypeIdentity type)
+        {
+            return _repository.ContainsDefinitionForType(type);
         }
 
         /// <summary>
@@ -130,27 +105,7 @@ namespace Nuclei.Plugins.Discovery
         /// <returns>The requested type.</returns>
         public TypeIdentity IdentityByName(string fullyQualifiedName)
         {
-            return m_Repository.IdentityByName(fullyQualifiedName);
-        }
-
-        /// <summary>
-        /// Returns the <see cref="TypeDefinition"/> for the given type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The requested type definition.</returns>
-        public TypeDefinition TypeByIdentity(TypeIdentity type)
-        {
-            return m_Repository.TypeByIdentity(type);
-        }
-
-        /// <summary>
-        /// Returns the <see cref="TypeDefinition"/> for the type with the given name.
-        /// </summary>
-        /// <param name="fullyQualifiedName">The fully qualified name for the type.</param>
-        /// <returns>The requested type definition.</returns>
-        public TypeDefinition TypeByName(string fullyQualifiedName)
-        {
-            return m_Repository.TypeByName(fullyQualifiedName);
+            return _repository.IdentityByName(fullyQualifiedName);
         }
 
         /// <summary>
@@ -161,20 +116,24 @@ namespace Nuclei.Plugins.Discovery
         /// <returns>
         /// <see langword="true" /> if the child derives from the given parent; otherwise, <see langword="false" />.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public bool IsSubTypeOf(TypeIdentity parent, TypeIdentity child)
         {
-            return m_Repository.IsSubTypeOf(parent, child);
+            return _repository.IsSubTypeOf(parent, child);
         }
 
         /// <summary>
-        /// Returns a collection containing all known parts.
+        /// Returns a collection containing the descriptions of all the known plugins.
         /// </summary>
-        /// <returns>The collection containing all known parts.</returns>
-        public IEnumerable<PartDefinition> Parts()
+        /// <returns>
+        /// A collection containing the descriptions of all the known plugins.
+        /// </returns>
+        public IEnumerable<PluginFileInfo> KnownPluginFiles()
         {
-            return m_Repository.Parts();
+            return _repository.KnownPluginFiles();
         }
 
         /// <summary>
@@ -184,26 +143,45 @@ namespace Nuclei.Plugins.Discovery
         /// <returns>The requested part.</returns>
         public PartDefinition Part(TypeIdentity type)
         {
-            return m_Repository.Part(type);
+            return _repository.Part(type);
         }
 
         /// <summary>
-        /// Returns a collection containing all known groups.
+        /// Returns a collection containing all known parts.
         /// </summary>
-        /// <returns>The collection containing all known groups.</returns>
-        public IEnumerable<GroupDefinition> Groups()
+        /// <returns>The collection containing all known parts.</returns>
+        public IEnumerable<PartDefinition> Parts()
         {
-            return m_Repository.Groups();
+            return _repository.Parts();
         }
 
         /// <summary>
-        /// Returns the group that was registered with the given ID.
+        /// Removes all the plugins related to the given plugin files.
         /// </summary>
-        /// <param name="groupRegistrationId">The registration ID.</param>
-        /// <returns>The requested type.</returns>
-        public GroupDefinition Group(GroupRegistrationId groupRegistrationId)
+        /// <param name="deletedFiles">The collection of plugin file paths that were removed.</param>
+        public void RemovePlugins(IEnumerable<string> deletedFiles)
         {
-            return m_Repository.Group(groupRegistrationId);
+            _repository.RemovePlugins(deletedFiles);
+        }
+
+        /// <summary>
+        /// Returns the <see cref="TypeDefinition"/> for the given type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>The requested type definition.</returns>
+        public TypeDefinition TypeByIdentity(TypeIdentity type)
+        {
+            return _repository.TypeByIdentity(type);
+        }
+
+        /// <summary>
+        /// Returns the <see cref="TypeDefinition"/> for the type with the given name.
+        /// </summary>
+        /// <param name="fullyQualifiedName">The fully qualified name for the type.</param>
+        /// <returns>The requested type definition.</returns>
+        public TypeDefinition TypeByName(string fullyQualifiedName)
+        {
+            return _repository.TypeByName(fullyQualifiedName);
         }
     }
 }

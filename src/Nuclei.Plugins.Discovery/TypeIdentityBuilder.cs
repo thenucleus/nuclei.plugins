@@ -8,7 +8,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Apollo.Core.Base.Plugins;
 
 namespace Nuclei.Plugins.Discovery
 {

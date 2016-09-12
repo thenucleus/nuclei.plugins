@@ -12,7 +12,7 @@ namespace Nuclei.Plugins.Discovery
     /// <summary>
     /// Defines the interface for objects that perform scanning of plugin assemblies.
     /// </summary>
-    internal interface IAssemblyScanner
+    public interface IAssemblyScanner
     {
         /// <summary>
         /// Scans the assemblies for which the given file paths have been provided and 

@@ -14,7 +14,7 @@ namespace Nuclei.Plugins.Discovery
     /// Describes the location and last write time for a plugin assembly.
     /// </summary>
     [Serializable]
-    internal sealed class PluginFileInfo
+    public sealed class PluginFileInfo
     {
         /// <summary>
         /// The file path of the plugin file.
@@ -56,17 +56,6 @@ namespace Nuclei.Plugins.Discovery
         }
 
         /// <summary>
-        /// Gets the file path for the plugin file.
-        /// </summary>
-        public string Path
-        {
-            get
-            {
-                return _path;
-            }
-        }
-
-        /// <summary>
         /// Gets the last time, in coordinated universal time (UTC), that the plugin file was modified.
         /// </summary>
         public DateTimeOffset LastWriteTimeUtc
@@ -74,6 +63,17 @@ namespace Nuclei.Plugins.Discovery
             get
             {
                 return _lastWriteTimeUtc;
+            }
+        }
+
+        /// <summary>
+        /// Gets the file path for the plugin file.
+        /// </summary>
+        public string Path
+        {
+            get
+            {
+                return _path;
             }
         }
     }

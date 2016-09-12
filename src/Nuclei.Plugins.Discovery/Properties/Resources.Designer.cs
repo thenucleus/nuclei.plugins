@@ -97,6 +97,24 @@ namespace Nuclei.Plugins.Discovery.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The requested part definition is not registered..
+        /// </summary>
+        internal static string Exceptions_Messages_UnknownPartDefinition {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_UnknownPartDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The requested type definition is not registered..
+        /// </summary>
+        internal static string Exceptions_Messages_UnknownTypeDefinition {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_UnknownTypeDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Plugin discovery process completed..
         /// </summary>
         internal static string Plugins_LogMessage_Detector_FileScanCompleted {
@@ -147,6 +165,24 @@ namespace Nuclei.Plugins.Discovery.Properties {
         internal static string Plugins_PluginScanDomainName {
             get {
                 return ResourceManager.GetString("Plugins_PluginScanDomainName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding new part [{0}] to repository..
+        /// </summary>
+        internal static string RemoteAssemblyScanner_LogMessage_AddingPartToRepository_WithPartInformation {
+            get {
+                return ResourceManager.GetString("RemoteAssemblyScanner_LogMessage_AddingPartToRepository_WithPartInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scanning assembly [{0}] for plugins..
+        /// </summary>
+        internal static string RemoteAssemblyScanner_LogMessage_ScanningAssembly_WithName {
+            get {
+                return ResourceManager.GetString("RemoteAssemblyScanner_LogMessage_ScanningAssembly_WithName", resourceCulture);
             }
         }
     }

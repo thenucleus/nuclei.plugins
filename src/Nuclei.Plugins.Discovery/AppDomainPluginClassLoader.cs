@@ -31,22 +31,9 @@ namespace Nuclei.Plugins.Discovery
         {
             try
             {
-                var builder = new ContainerBuilder();
-                {
-                    builder.Register(c => new PartImportEngine(
-                            c.Resolve<ISatisfyPluginRequests>()))
-                        .As<IConnectParts>();
-
-                    builder.RegisterInstance(repository)
-                        .As<IPluginRepository>()
-                        .As<ISatisfyPluginRequests>();
-                }
-
-                var container = builder.Build();
-
                 return new RemoteAssemblyScanner(
-                    container.Resolve<IPluginRepository>(),
-                    container.Resolve<IConnectParts>(),
+                    repository,
+                    new PartImportEngine(repository),
                     logger);
             }
             catch (Exception e)

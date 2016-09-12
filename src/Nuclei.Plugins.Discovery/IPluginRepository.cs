@@ -12,7 +12,7 @@ namespace Nuclei.Plugins.Discovery
     /// <summary>
     /// Defines the interface for objects that store all the information about the parts and the part groups.
     /// </summary>
-    internal interface IPluginRepository : ISatisfyPluginRequests
+    public interface IPluginRepository : ISatisfyPluginRequests
     {
         /// <summary>
         /// Returns a collection containing the descriptions of all the known plugins.
