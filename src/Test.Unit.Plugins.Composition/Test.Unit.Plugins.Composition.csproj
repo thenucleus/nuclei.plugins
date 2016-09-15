@@ -4,11 +4,11 @@
     <SolutionDir Condition="'$(SolutionDir)' == '' or '$(SolutionDir)' == '*undefined*'">$(MSBuildProjectDirectory)\..</SolutionDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{02274A5E-5428-4413-A9C5-92037620A544}</ProjectGuid>
+    <ProjectGuid>{7A5F87F3-2969-4165-9FBF-8CC95F4BDEED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nuclei.Plugins.Discovery</RootNamespace>
-    <AssemblyName>Test.Unit.Plugins.Discovery</AssemblyName>
+    <RootNamespace>Nuclei.Plugins.Composition</RootNamespace>
+    <AssemblyName>Test.Unit.Plugins.Composition</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -62,26 +62,14 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.IO.Abstractions, Version=2.0.0.124, Culture=neutral, PublicKeyToken=d480b5b72fb413da, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.Abstractions.2.0.0.124\lib\net40\System.IO.Abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.IO.Abstractions.TestingHelpers, Version=2.0.0.124, Culture=neutral, PublicKeyToken=d480b5b72fb413da, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.Abstractions.TestingHelpers.2.0.0.124\lib\net40\System.IO.Abstractions.TestingHelpers.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DuplicateContractNameExceptionTest.cs" />
-    <Compile Include="DuplicatePartDefinitionExceptionTest.cs" />
-    <Compile Include="DuplicateTypeDefinitionExceptionTest.cs" />
-    <Compile Include="PartImportEngineTest.cs" />
-    <Compile Include="PluginDetectorTest.cs" />
-    <Compile Include="PluginRepositoryTest.cs" />
+    <Compile Include="ConstructionOfPluginTypeFailedExceptionTest.cs" />
+    <Compile Include="InstanceLayerTest.cs" />
+    <Compile Include="PartCompositionIdTest.cs" />
+    <Compile Include="PartInstanceIdTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoteAssemblyScannerTest.cs" />
-    <Compile Include="UnknownPartDefinitionExceptionTest.cs" />
-    <Compile Include="UnknownTypeDefinitionExceptionTest.cs" />
+    <Compile Include="UnableToLoadPluginTypeExceptionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -92,9 +80,9 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
-      <Project>{89667ade-301d-455c-88c9-e2d5c9ae18cd}</Project>
-      <Name>Nuclei.Plugins.Discovery</Name>
+    <ProjectReference Include="..\Nuclei.Plugins.Composition\Nuclei.Plugins.Composition.csproj">
+      <Project>{1c7534b2-2e24-487c-bbf8-7af10dc8165e}</Project>
+      <Name>Nuclei.Plugins.Instantiation</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
       <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>

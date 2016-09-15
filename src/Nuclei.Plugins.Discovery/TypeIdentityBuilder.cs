@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Nuclei.Plugins.Core;
 
 namespace Nuclei.Plugins.Discovery
 {

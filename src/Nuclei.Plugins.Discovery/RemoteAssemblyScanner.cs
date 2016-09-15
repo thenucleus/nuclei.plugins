@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Nuclei.Diagnostics.Logging;
+using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Discovery.Properties;
 
 namespace Nuclei.Plugins.Discovery

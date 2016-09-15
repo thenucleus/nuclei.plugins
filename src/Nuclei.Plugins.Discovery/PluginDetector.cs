@@ -13,6 +13,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using Nuclei.Diagnostics;
 using Nuclei.Diagnostics.Logging;
+using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Discovery.Properties;
 
 namespace Nuclei.Plugins.Discovery

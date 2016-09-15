@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using Nuclei.Plugins.Core;
 
 namespace Nuclei.Plugins.Discovery
 {

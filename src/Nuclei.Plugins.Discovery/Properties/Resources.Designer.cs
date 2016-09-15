@@ -70,47 +70,11 @@ namespace Nuclei.Plugins.Discovery.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A part with the given type identity is already registered..
-        /// </summary>
-        internal static string Exceptions_Messages_DuplicatePartDefinition {
-            get {
-                return ResourceManager.GetString("Exceptions_Messages_DuplicatePartDefinition", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A type with the given type identity is already registered..
-        /// </summary>
-        internal static string Exceptions_Messages_DuplicateTypeDefinition {
-            get {
-                return ResourceManager.GetString("Exceptions_Messages_DuplicateTypeDefinition", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The parameter should not be an empty string..
         /// </summary>
         internal static string Exceptions_Messages_ParameterShouldNotBeAnEmptyString {
             get {
                 return ResourceManager.GetString("Exceptions_Messages_ParameterShouldNotBeAnEmptyString", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The requested part definition is not registered..
-        /// </summary>
-        internal static string Exceptions_Messages_UnknownPartDefinition {
-            get {
-                return ResourceManager.GetString("Exceptions_Messages_UnknownPartDefinition", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The requested type definition is not registered..
-        /// </summary>
-        internal static string Exceptions_Messages_UnknownTypeDefinition {
-            get {
-                return ResourceManager.GetString("Exceptions_Messages_UnknownTypeDefinition", resourceCulture);
             }
         }
         

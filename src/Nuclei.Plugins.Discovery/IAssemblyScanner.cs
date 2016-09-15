@@ -15,7 +15,7 @@ namespace Nuclei.Plugins.Discovery
     public interface IAssemblyScanner
     {
         /// <summary>
-        /// Scans the assemblies for which the given file paths have been provided and 
+        /// Scans the assemblies for which the given file paths have been provided and
         /// returns the plugin description information.
         /// </summary>
         /// <param name="assemblyFilesToScan">

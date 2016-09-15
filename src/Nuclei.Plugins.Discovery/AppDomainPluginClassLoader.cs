@@ -8,6 +8,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Nuclei.Diagnostics.Logging;
+using Nuclei.Plugins.Core;
 
 namespace Nuclei.Plugins.Discovery
 {

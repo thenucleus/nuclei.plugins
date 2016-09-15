@@ -117,34 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Exceptions_Messages_DuplicateContractName" xml:space="preserve">
-    <value>The given contract name is already registered.</value>
+  <data name="Exceptions_Messages_CannotMapExportToImport" xml:space="preserve">
+    <value>The given export cannot be mapped to the given import.</value>
+  </data>
+  <data name="Exceptions_Messages_DuplicatePartDefinition" xml:space="preserve">
+    <value>A part with the given type identity is already registered.</value>
+  </data>
+  <data name="Exceptions_Messages_DuplicateTypeDefinition" xml:space="preserve">
+    <value>A type with the given type identity is already registered.</value>
   </data>
   <data name="Exceptions_Messages_ParameterShouldNotBeAnEmptyString" xml:space="preserve">
     <value>The parameter should not be an empty string.</value>
   </data>
-  <data name="Plugins_LogMessage_Detector_FileScanCompleted" xml:space="preserve">
-    <value>Plugin discovery process completed.</value>
+  <data name="Exceptions_Messages_UnknownExportDefinition" xml:space="preserve">
+    <value>The requested export definition was not found.</value>
   </data>
-  <data name="Plugins_LogMessage_Detector_FileScanFailed_WithDirectoryAndException" xml:space="preserve">
-    <value>Discovering all the files in {0} failed due to an exception. Exception information is: {1}</value>
+  <data name="Exceptions_Messages_UnknownImportDefinition" xml:space="preserve">
+    <value>The requested import definition was not found.</value>
   </data>
-  <data name="Plugins_LogMessage_Detector_FileScanStarted_WithDirectory" xml:space="preserve">
-    <value>Discovering plugins in {0}.</value>
+  <data name="Exceptions_Messages_UnknownPartDefinition" xml:space="preserve">
+    <value>The requested part definition is not registered.</value>
   </data>
-  <data name="Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException" xml:space="preserve">
-    <value>The loading of the plugin assembly {0} failed. Exception information is: {1}</value>
+  <data name="Exceptions_Messages_UnknownPluginType" xml:space="preserve">
+    <value>The type of plugin class or interface has not been registered.</value>
   </data>
-  <data name="Plugins_LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException" xml:space="preserve">
-    <value>Extracting information from Assembly {0} failed. Exception information is: {1}</value>
-  </data>
-  <data name="Plugins_PluginScanDomainName" xml:space="preserve">
-    <value>Nuclei.Plugins.Discovery: plugin scan AppDomain</value>
-  </data>
-  <data name="RemoteAssemblyScanner_LogMessage_AddingPartToRepository_WithPartInformation" xml:space="preserve">
-    <value>Adding new part [{0}] to repository.</value>
-  </data>
-  <data name="RemoteAssemblyScanner_LogMessage_ScanningAssembly_WithName" xml:space="preserve">
-    <value>Scanning assembly [{0}] for plugins.</value>
+  <data name="Exceptions_Messages_UnknownTypeDefinition" xml:space="preserve">
+    <value>The requested type definition is not registered.</value>
   </data>
 </root>
