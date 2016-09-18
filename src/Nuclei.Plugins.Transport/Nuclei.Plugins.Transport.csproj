@@ -5,11 +5,11 @@
     <SolutionDir Condition="'$(SolutionDir)' == '' or '$(SolutionDir)' == '*undefined*'">$(MSBuildProjectDirectory)\..</SolutionDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{92AE0855-7FBC-41E2-8E17-326617576650}</ProjectGuid>
+    <ProjectGuid>{5F17EE69-7E86-4DEE-8026-FB233988249D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nuclei.Plugins.Composition.Mef</RootNamespace>
-    <AssemblyName>Nuclei.Plugins.Composition.Mef</AssemblyName>
+    <RootNamespace>Nuclei.Plugins.Transport</RootNamespace>
+    <AssemblyName>Nuclei.Plugins.Transport</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -37,7 +37,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,8 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamicCatalog.cs" />
+    <Compile Include="MirroringRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
+      <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
+      <Name>Nuclei.Plugins.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -57,12 +62,6 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
-      <Project>{E39027F6-757D-4F16-9014-EA3FA25C0D0C}</Project>
-      <Name>Nuclei.Plugins.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
