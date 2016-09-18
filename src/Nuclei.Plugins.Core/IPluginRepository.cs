@@ -26,7 +26,7 @@ namespace Nuclei.Plugins.Core
         /// Removes all the plugins related to the given plugin files.
         /// </summary>
         /// <param name="deletedFiles">The collection of plugin file paths that were removed.</param>
-        void RemovePlugins(IEnumerable<string> deletedFiles);
+        void RemovePlugins(IEnumerable<PluginOrigin> deletedFiles);
 
         /// <summary>
         /// Adds a new type definition to the repository.

@@ -46,7 +46,7 @@ namespace Nuclei.Plugins.Discovery
             var repository = new Mock<IPluginRepository>();
             {
                 repository.Setup(r => r.KnownPluginFiles())
-                    .Returns(Enumerable.Empty<PluginFileInfo>());
+                    .Returns(Enumerable.Empty<PluginFileOrigin>());
             }
 
             var files = new List<string> 
@@ -86,10 +86,10 @@ namespace Nuclei.Plugins.Discovery
                             @"c:\temp\foobar2.dll"
                         };
 
-            var pluginFiles = new List<PluginFileInfo> 
+            var pluginFiles = new List<PluginFileOrigin> 
                 {
-                    new PluginFileInfo(files[0], DateTimeOffset.Now.AddHours(-2)),
-                    new PluginFileInfo(files[1], DateTimeOffset.Now.AddHours(-2)),
+                    new PluginFileOrigin(files[0], DateTimeOffset.Now.AddHours(-2)),
+                    new PluginFileOrigin(files[1], DateTimeOffset.Now.AddHours(-2)),
                 };
             
             var repository = new Mock<IPluginRepository>();
@@ -130,10 +130,10 @@ namespace Nuclei.Plugins.Discovery
                             @"c:\temp\foobar2.dll"
                         };
 
-            var pluginFiles = new List<PluginFileInfo> 
+            var pluginFiles = new List<PluginFileOrigin> 
                 {
-                    new PluginFileInfo(files[0], DateTimeOffset.Now),
-                    new PluginFileInfo(files[1], DateTimeOffset.Now.AddHours(-2)),
+                    new PluginFileOrigin(files[0], DateTimeOffset.Now),
+                    new PluginFileOrigin(files[1], DateTimeOffset.Now.AddHours(-2)),
                 };
 
             var repository = new Mock<IPluginRepository>();
@@ -168,10 +168,10 @@ namespace Nuclei.Plugins.Discovery
         [Test]
         public void SearchWithDeletedFilesOnly()
         {
-            var pluginFiles = new List<PluginFileInfo> 
+            var pluginFiles = new List<PluginFileOrigin> 
                 {
-                    new PluginFileInfo(@"c:\temp\foobar.dll", DateTimeOffset.Now),
-                    new PluginFileInfo(@"c:\temp\foobar2.dll", DateTimeOffset.Now.AddHours(-2)),
+                    new PluginFileOrigin(@"c:\temp\foobar.dll", DateTimeOffset.Now),
+                    new PluginFileOrigin(@"c:\temp\foobar2.dll", DateTimeOffset.Now.AddHours(-2)),
                 };
 
             var repository = new Mock<IPluginRepository>();

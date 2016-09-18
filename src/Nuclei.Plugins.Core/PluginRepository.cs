@@ -316,7 +316,7 @@ namespace Nuclei.Plugins.Core
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="deletedFiles"/> is <see langword="null" />.
         /// </exception>
-        public void RemovePlugins(IEnumerable<string> deletedFiles)
+        public void RemovePlugins(IEnumerable<PluginOrigin> deletedFiles)
         {
             if (deletedFiles == null)
             {
@@ -328,7 +328,7 @@ namespace Nuclei.Plugins.Core
                 var filesToDelete = _pluginFiles
                     .Join(
                         deletedFiles,
-                        pluginFile => pluginFile.Path,
+                        pluginFile => pluginFile,
                         filePath => filePath,
                         (pluginFile, filePath) => pluginFile)
                     .ToList();

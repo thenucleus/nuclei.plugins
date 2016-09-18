@@ -97,7 +97,7 @@ namespace Nuclei.Plugins.Discovery
 
         private void RemoveDeletedPlugins(IEnumerable<string> changedFilePaths)
         {
-            var deletedFiles = changedFilePaths.Where(file => !_fileSystem.File.Exists(file));
+            var deletedFiles = changedFilePaths.Where(file => !_fileSystem.File.Exists(file)).Select(file => new PluginFileOrigin(file));
             _repository.RemovePlugins(deletedFiles);
         }
 
@@ -159,15 +159,15 @@ namespace Nuclei.Plugins.Discovery
                 return;
             }
 
-            var knownFiles = _repository.KnownPluginFiles();
+            var knownFiles = _repository.KnownPluginFiles().OfType<PluginFileOrigin>();
 
             var changedKnownFiles = knownFiles
-                .Where(p => files.Any(f => string.Equals(p.Path, f, StringComparison.OrdinalIgnoreCase)))
-                .Where(p => _fileSystem.File.GetLastWriteTimeUtc(p.Path) > p.LastWriteTimeUtc)
-                .Select(p => p.Path);
+                .Where(p => files.Any(f => string.Equals(p.FilePath, f, StringComparison.OrdinalIgnoreCase)))
+                .Where(p => _fileSystem.File.GetLastWriteTimeUtc(p.FilePath) > p.LastWriteTimeUtc)
+                .Select(p => p.FilePath);
 
             var changedFilePaths = new HashSet<string>(files);
-            changedFilePaths.SymmetricExceptWith(knownFiles.Select(p => p.Path));
+            changedFilePaths.SymmetricExceptWith(knownFiles.Select(p => p.FilePath));
 
             var newFiles = changedFilePaths.Where(file => _fileSystem.File.Exists(file));
 

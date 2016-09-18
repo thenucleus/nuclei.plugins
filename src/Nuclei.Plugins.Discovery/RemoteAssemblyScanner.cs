@@ -391,7 +391,7 @@ namespace Nuclei.Plugins.Discovery
                         assembly.FullName));
 
                 var file = new FileInfo(assembly.LocalFilePath());
-                var fileInfo = new PluginFileInfo(file.FullName, file.LastWriteTimeUtc);
+                var fileInfo = new PluginFileOrigin(file.FullName, file.LastWriteTimeUtc);
 
                 var createTypeIdentity = TypeIdentityBuilder.IdentityFactory(_repository, new Dictionary<Type, TypeIdentity>());
                 var mefParts = ExtractImportsAndExports(assembly, createTypeIdentity);

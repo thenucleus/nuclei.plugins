@@ -15,9 +15,9 @@ using Nuclei.Build;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Nuclei.Plugins.Instantiation.Autofac")]
+[assembly: AssemblyTitle("Nuclei.Plugins.Composition.Autofac")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyProduct("Nuclei.Plugins.Instantiation.Autofac")]
+[assembly: AssemblyProduct("Nuclei.Plugins.Composition.Autofac")]
 
 // Resources
 [assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.MainAssembly)]

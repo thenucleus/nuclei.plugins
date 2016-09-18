@@ -75,10 +75,10 @@ namespace Nuclei.Plugins.Discovery
                         .Returns(parts);
                     repository.Setup(r => r.AddType(It.IsAny<TypeDefinition>()))
                         .Callback<TypeDefinition>(types.Add);
-                    repository.Setup(r => r.AddPart(It.IsAny<PartDefinition>(), It.IsAny<PluginFileInfo>()))
-                        .Callback<PartDefinition, PluginFileInfo>((p, f) => parts.Add(p));
-                    repository.Setup(r => r.AddGroup(It.IsAny<GroupDefinition>(), It.IsAny<PluginFileInfo>()))
-                        .Callback<GroupDefinition, PluginFileInfo>((g, f) => groups.Add(g));
+                    repository.Setup(r => r.AddPart(It.IsAny<PartDefinition>(), It.IsAny<PluginFileOrigin>()))
+                        .Callback<PartDefinition, PluginFileOrigin>((p, f) => parts.Add(p));
+                    repository.Setup(r => r.AddGroup(It.IsAny<GroupDefinition>(), It.IsAny<PluginFileOrigin>()))
+                        .Callback<GroupDefinition, PluginFileOrigin>((g, f) => groups.Add(g));
                 }
 
                 var importEngine = new Mock<IConnectParts>();

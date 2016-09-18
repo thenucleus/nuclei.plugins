@@ -76,7 +76,7 @@
     <Compile Include="PartImportEngine.cs" />
     <Compile Include="PluginDetector.cs" />
     <Compile Include="PluginDiscoveryConfigurationKeys.cs" />
-    <Compile Include="PluginFileInfo.cs" />
+    <Compile Include="PluginFileOrigin.cs" />
     <Compile Include="PluginRepositoryProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

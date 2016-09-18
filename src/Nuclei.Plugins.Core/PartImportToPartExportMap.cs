@@ -39,9 +39,14 @@ namespace Nuclei.Plugins.Core
         /// </exception>
         public PartImportToPartExportMap(ImportRegistrationId import, IEnumerable<ExportRegistrationId> exports)
         {
+            if (import == null)
             {
-                Lokad.Enforce.Argument(() => import);
-                Lokad.Enforce.Argument(() => exports);
+                throw new ArgumentNullException("import");
+            }
+
+            if (exports == null)
+            {
+                throw new ArgumentNullException("exports");
             }
 
             _import = import;

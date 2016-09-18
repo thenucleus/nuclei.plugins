@@ -49,7 +49,7 @@ namespace Nuclei.Plugins.Discovery
         /// </summary>
         /// <param name="part">The part definition.</param>
         /// <param name="pluginFileInfo">The file info of the assembly which owns the part.</param>
-        public void AddPart(PartDefinition part, PluginFileInfo pluginFileInfo)
+        public void AddPart(PartDefinition part, PluginOrigin pluginFileInfo)
         {
             _repository.AddPart(part, pluginFileInfo);
         }
@@ -132,7 +132,7 @@ namespace Nuclei.Plugins.Discovery
         /// <returns>
         /// A collection containing the descriptions of all the known plugins.
         /// </returns>
-        public IEnumerable<PluginFileInfo> KnownPluginFiles()
+        public IEnumerable<PluginOrigin> KnownPluginFiles()
         {
             return _repository.KnownPluginFiles();
         }
@@ -160,7 +160,7 @@ namespace Nuclei.Plugins.Discovery
         /// Removes all the plugins related to the given plugin files.
         /// </summary>
         /// <param name="deletedFiles">The collection of plugin file paths that were removed.</param>
-        public void RemovePlugins(IEnumerable<string> deletedFiles)
+        public void RemovePlugins(IEnumerable<PluginOrigin> deletedFiles)
         {
             _repository.RemovePlugins(deletedFiles);
         }

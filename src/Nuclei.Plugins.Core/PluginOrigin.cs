@@ -1,52 +1,25 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
+﻿//--------------------------------------------;---------------------------
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
+// </copyright>
+//-----------------------------------------------------------------------
+
+using System;
 
 namespace Nuclei.Plugins.Core
 {
+    /// <summary>
+    /// Defines the origin for a plugin.
+    /// </summary>
+    [Serializable]
     public abstract class PluginOrigin : Id<PluginOrigin, string>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PluginOrigin"/> class.
         /// </summary>
         /// <param name="value">The value.</param>
-        [SuppressMessage(
-            "Microsoft.Design",
-            "CA1062:Validate arguments of public methods",
-            MessageId = "0",
-            Justification = "Unfortunately we cannot validate this before using it because it's being passed to the base constructor.")]
-        public PluginOrigin(PackageName value)
-            : base(
-                string.Format(
-                    CultureInfo.InvariantCulture,
-                    "Package: {0}.{1}",
-                    value.Id,
-                    value.Version.ToString()))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PluginOrigin"/> class.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        [SuppressMessage(
-            "Microsoft.Design",
-            "CA1062:Validate arguments of public methods",
-            MessageId = "0",
-            Justification = "Unfortunately we cannot validate this before using it because it's being passed to the base constructor.")]
-        public PluginOrigin(FileInfo value)
-            : base(
-                string.Format(
-                    CultureInfo.InvariantCulture,
-                    "File: {0}",
-                    value.FullName))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PluginOrigin"/> class.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        private PluginOrigin(string value)
+        protected PluginOrigin(string value)
             : base(value)
         {
         }
@@ -58,10 +31,7 @@ namespace Nuclei.Plugins.Core
         /// <returns>
         /// A copy of the current ID number.
         /// </returns>
-        protected override PluginOrigin Clone(string value)
-        {
-            return new PluginOrigin(value);
-        }
+        protected override abstract PluginOrigin Clone(string value);
 
         /// <summary>
         /// Returns a <see cref="string"/> that represents this instance.

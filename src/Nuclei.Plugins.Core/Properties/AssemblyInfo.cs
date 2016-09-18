@@ -15,9 +15,9 @@ using Nuclei.Build;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Nuclei.Plugins")]
+[assembly: AssemblyTitle("Nuclei.Plugins.Core")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyProduct("Nuclei.Plugins")]
+[assembly: AssemblyProduct("Nuclei.Plugins.Core")]
 
 // Resources
 [assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.MainAssembly)]

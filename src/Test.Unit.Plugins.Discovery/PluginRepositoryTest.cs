@@ -231,7 +231,7 @@ namespace Nuclei.Plugins.Discovery
                     Identity = identityGenerator(typeof(ExportOnProperty)),
                 };
             
-            var fileInfo = new PluginFileInfo("a", DateTimeOffset.Now);
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
             repository.AddPart(definition, fileInfo);
             
             var parts = repository.Parts();
@@ -250,7 +250,7 @@ namespace Nuclei.Plugins.Discovery
             var repository = new PluginRepository();
             var definition = new GroupDefinition("a");
 
-            var fileInfo = new PluginFileInfo("a", DateTimeOffset.Now);
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
             repository.AddGroup(definition, fileInfo);
 
             var groups = repository.Groups();
@@ -275,17 +275,17 @@ namespace Nuclei.Plugins.Discovery
                     Identity = identityGenerator(typeof(ExportOnProperty)),
                 };
 
-            var partFileInfo = new PluginFileInfo("a", DateTimeOffset.Now);
+            var partFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
             repository.AddPart(partDefinition, partFileInfo);
             
             var groupDefinition = new GroupDefinition("b");
-            var groupFileInfo = new PluginFileInfo("c", DateTimeOffset.Now);
+            var groupFileInfo = new PluginFileOrigin("c", DateTimeOffset.Now);
             repository.AddGroup(groupDefinition, groupFileInfo);
 
             Assert.That(
                 repository.KnownPluginFiles(),
                 Is.EquivalentTo(
-                    new List<PluginFileInfo> 
+                    new List<PluginFileOrigin> 
                     { 
                         partFileInfo,
                         groupFileInfo,
@@ -300,7 +300,7 @@ namespace Nuclei.Plugins.Discovery
             Assert.That(
                 repository.KnownPluginFiles(),
                 Is.EquivalentTo(
-                    new List<PluginFileInfo> 
+                    new List<PluginFileOrigin> 
                     { 
                         groupFileInfo,
                     }));
@@ -321,7 +321,7 @@ namespace Nuclei.Plugins.Discovery
                     Identity = identityGenerator(typeof(MockExportingInterfaceImplementation)),
                 };
 
-            var parentFileInfo = new PluginFileInfo("a", DateTimeOffset.Now);
+            var parentFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
             repository.AddPart(parentDefinition, parentFileInfo);
 
             PartDefinition childDefinition = new PartDefinition
@@ -329,7 +329,7 @@ namespace Nuclei.Plugins.Discovery
                     Identity = identityGenerator(typeof(MockChildExportingInterfaceImplementation)),
                 };
 
-            var childFileInfo = new PluginFileInfo("b", DateTimeOffset.Now);
+            var childFileInfo = new PluginFileOrigin("b", DateTimeOffset.Now);
             repository.AddPart(childDefinition, childFileInfo);
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockExportingInterfaceImplementation))));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockChildExportingInterfaceImplementation))));
@@ -355,7 +355,7 @@ namespace Nuclei.Plugins.Discovery
                 Identity = identityGenerator(typeof(MockExportingInterfaceImplementation)),
             };
 
-            var parentFileInfo = new PluginFileInfo("a", DateTimeOffset.Now);
+            var parentFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
             repository.AddPart(parentDefinition, parentFileInfo);
 
             PartDefinition childDefinition = new PartDefinition
@@ -363,7 +363,7 @@ namespace Nuclei.Plugins.Discovery
                 Identity = identityGenerator(typeof(MockChildExportingInterfaceImplementation)),
             };
 
-            var childFileInfo = new PluginFileInfo("b", DateTimeOffset.Now);
+            var childFileInfo = new PluginFileOrigin("b", DateTimeOffset.Now);
             repository.AddPart(childDefinition, childFileInfo);
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockExportingInterfaceImplementation))));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockChildExportingInterfaceImplementation))));
