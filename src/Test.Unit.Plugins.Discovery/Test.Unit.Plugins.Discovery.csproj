@@ -41,6 +41,10 @@
       <HintPath>..\..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Consul, Version=0.6.4.7, Culture=neutral, PublicKeyToken=20a6ad9a81df1d95, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Consul.0.6.4.7\lib\net45\Consul.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Moq, Version=4.5.21.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Moq.4.5.21\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
@@ -53,6 +57,14 @@
       <HintPath>..\..\packages\Nuclei.Build.0.9.0\lib\net40\Nuclei.Build.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Nuclei.Configuration, Version=0.9.0.0, Culture=neutral, PublicKeyToken=ee5b68ec5ad4ef93, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Nuclei.Configuration.0.9.0\lib\net452\Nuclei.Configuration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nuclei.Diagnostics, Version=0.10.0.0, Culture=neutral, PublicKeyToken=ee5b68ec5ad4ef93, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Nuclei.Diagnostics.0.10.0\lib\net452\Nuclei.Diagnostics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Nuclei.Nunit.Extensions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ee5b68ec5ad4ef93, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Nuclei.Nunit.Extensions.2.6.2\lib\net40\Nuclei.Nunit.Extensions.dll</HintPath>
       <Private>True</Private>
@@ -62,6 +74,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.IO.Abstractions, Version=2.0.0.124, Culture=neutral, PublicKeyToken=d480b5b72fb413da, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.IO.Abstractions.2.0.0.124\lib\net40\System.IO.Abstractions.dll</HintPath>
       <Private>True</Private>
@@ -72,16 +85,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Test.SourceOnly\Mocks\Exports.cs">
+      <Link>Mocks\Exports.cs</Link>
+    </Compile>
+    <Compile Include="..\Test.SourceOnly\Mocks\Imports.cs">
+      <Link>Mocks\Imports.cs</Link>
+    </Compile>
+    <Compile Include="..\Test.SourceOnly\Mocks\MockDirectory.cs">
+      <Link>Mocks\MockDirectory.cs</Link>
+    </Compile>
+    <Compile Include="..\Test.SourceOnly\Mocks\MockFile.cs">
+      <Link>Mocks\MockFile.cs</Link>
+    </Compile>
+    <Compile Include="..\Test.SourceOnly\Mocks\MockPath.cs">
+      <Link>Mocks\MockPath.cs</Link>
+    </Compile>
     <Compile Include="DuplicateContractNameExceptionTest.cs" />
-    <Compile Include="DuplicatePartDefinitionExceptionTest.cs" />
-    <Compile Include="DuplicateTypeDefinitionExceptionTest.cs" />
     <Compile Include="PartImportEngineTest.cs" />
     <Compile Include="PluginDetectorTest.cs" />
-    <Compile Include="PluginRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteAssemblyScannerTest.cs" />
-    <Compile Include="UnknownPartDefinitionExceptionTest.cs" />
-    <Compile Include="UnknownTypeDefinitionExceptionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -92,13 +115,13 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
+      <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
+      <Name>Nuclei.Plugins.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
       <Project>{89667ade-301d-455c-88c9-e2d5c9ae18cd}</Project>
       <Name>Nuclei.Plugins.Discovery</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
-      <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
-      <Name>Nuclei.Plugins</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

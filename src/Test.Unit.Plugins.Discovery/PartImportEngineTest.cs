@@ -11,33 +11,19 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Apollo.Core.Base.Plugins;
 using Moq;
+using Nuclei.Plugins.Core;
 using NUnit.Framework;
 
 namespace Nuclei.Plugins.Discovery
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-                Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class PartImportEngineTest
     {
-        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "input",
-            Justification = "This parameter is used by reflection")]
-        public static void MockInput(string input)
-        {
-            // Do nothing
-        }
-
-        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "first",
-            Justification = "This parameter is used by reflection")]
-        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "second",
-            Justification = "This parameter is used by reflection")]
-        public static void MockInput(string first, string second)
-        {
-            // Do nothing
-        }
-
         private static Func<Type, TypeIdentity> IdentityFactory(List<TypeDefinition> typeStorage, IDictionary<Type, TypeIdentity> currentlyBuilding)
         {
             // Fake out the compiler because we need the function inside the function itself
@@ -107,38 +93,39 @@ namespace Nuclei.Plugins.Discovery
             return false;
         }
 
-        [Test]
-        public void AcceptsWithNonmatchingContractName()
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1801:ReviewUnusedParameters",
+            MessageId = "input",
+            Justification = "This parameter is used by reflection")]
+        public static void MockInput(string input)
         {
-            var types = new List<TypeDefinition>();
-            var createTypeIdentity = IdentityFactory(types, new Dictionary<Type, TypeIdentity>());
-
-            var repository = new Mock<ISatisfyPluginRequests>();
-            {
-                repository.Setup(r => r.IdentityByName(It.IsAny<string>()))
-                    .Returns<string>(n => types.Where(t => t.Identity.AssemblyQualifiedName.Equals(n)).Select(t => t.Identity).FirstOrDefault());
-                repository.Setup(r => r.TypeByIdentity(It.IsAny<TypeIdentity>()))
-                    .Returns<TypeIdentity>(id => types.Where(t => t.Identity.Equals(id)).FirstOrDefault());
-                repository.Setup(r => r.IsSubTypeOf(It.IsAny<TypeIdentity>(), It.IsAny<TypeIdentity>()))
-                    .Returns<TypeIdentity, TypeIdentity>((parent, child) => IsSubTypeOf(types, parent, child));
-            }
-
-            var importEngine = new PartImportEngine(repository.Object);
-
-            var importDefinition = PropertyBasedImportDefinition.CreateDefinition(
-                "A",
-                createTypeIdentity(typeof(int)),
-                ImportCardinality.ExactlyOne,
-                true,
-                CreationPolicy.NonShared,
-                typeof(string).GetProperty("Length"),
-                createTypeIdentity);
-            var exportDefinition = PropertyBasedExportDefinition.CreateDefinition(
-                "B",
-                typeof(string).GetProperty("Length"),
-                createTypeIdentity);
-            Assert.IsFalse(importEngine.Accepts(importDefinition, exportDefinition));
+            // Do nothing
         }
+
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1801:ReviewUnusedParameters",
+            MessageId = "first",
+            Justification = "This parameter is used by reflection")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1801:ReviewUnusedParameters",
+            MessageId = "second",
+            Justification = "This parameter is used by reflection")]
+        public static void MockInput(string first, string second)
+        {
+            // Do nothing
+        }
+
+
+
+
+
+
+
+
+
 
         [Test]
         public void AcceptsWithExportTypeMatchesImportType()
@@ -277,7 +264,7 @@ namespace Nuclei.Plugins.Discovery
         }
 
         [Test]
-        public void AcceptsWithImportIsSingleArgumentFunc()
+        public void AcceptsWithImportIsMultipleArgumentAction()
         {
             var types = new List<TypeDefinition>();
             var createTypeIdentity = IdentityFactory(types, new Dictionary<Type, TypeIdentity>());
@@ -296,15 +283,15 @@ namespace Nuclei.Plugins.Discovery
 
             var importDefinition = PropertyBasedImportDefinition.CreateDefinition(
                 "A",
-                createTypeIdentity(typeof(Func<int>)),
+                createTypeIdentity(typeof(Action<string, string>)),
                 ImportCardinality.ExactlyOne,
                 true,
                 CreationPolicy.NonShared,
                 typeof(string).GetProperty("Length"),
                 createTypeIdentity);
-            var exportDefinition = PropertyBasedExportDefinition.CreateDefinition(
+            var exportDefinition = MethodBasedExportDefinition.CreateDefinition(
                 "A",
-                typeof(string).GetProperty("Length"),
+                this.GetType().GetMethod("MockInput", new[] { typeof(string), typeof(string) }),
                 createTypeIdentity);
 
             Assert.IsTrue(importEngine.Accepts(importDefinition, exportDefinition));
@@ -379,7 +366,7 @@ namespace Nuclei.Plugins.Discovery
         }
 
         [Test]
-        public void AcceptsWithImportIsMultipleArgumentAction()
+        public void AcceptsWithImportIsSingleArgumentFunc()
         {
             var types = new List<TypeDefinition>();
             var createTypeIdentity = IdentityFactory(types, new Dictionary<Type, TypeIdentity>());
@@ -398,18 +385,51 @@ namespace Nuclei.Plugins.Discovery
 
             var importDefinition = PropertyBasedImportDefinition.CreateDefinition(
                 "A",
-                createTypeIdentity(typeof(Action<string, string>)),
+                createTypeIdentity(typeof(Func<int>)),
                 ImportCardinality.ExactlyOne,
                 true,
                 CreationPolicy.NonShared,
                 typeof(string).GetProperty("Length"),
                 createTypeIdentity);
-            var exportDefinition = MethodBasedExportDefinition.CreateDefinition(
+            var exportDefinition = PropertyBasedExportDefinition.CreateDefinition(
                 "A",
-                this.GetType().GetMethod("MockInput", new[] { typeof(string), typeof(string) }),
+                typeof(string).GetProperty("Length"),
                 createTypeIdentity);
 
             Assert.IsTrue(importEngine.Accepts(importDefinition, exportDefinition));
+        }
+
+        [Test]
+        public void AcceptsWithNonmatchingContractName()
+        {
+            var types = new List<TypeDefinition>();
+            var createTypeIdentity = IdentityFactory(types, new Dictionary<Type, TypeIdentity>());
+
+            var repository = new Mock<ISatisfyPluginRequests>();
+            {
+                repository.Setup(r => r.IdentityByName(It.IsAny<string>()))
+                    .Returns<string>(n => types.Where(t => t.Identity.AssemblyQualifiedName.Equals(n)).Select(t => t.Identity).FirstOrDefault());
+                repository.Setup(r => r.TypeByIdentity(It.IsAny<TypeIdentity>()))
+                    .Returns<TypeIdentity>(id => types.Where(t => t.Identity.Equals(id)).FirstOrDefault());
+                repository.Setup(r => r.IsSubTypeOf(It.IsAny<TypeIdentity>(), It.IsAny<TypeIdentity>()))
+                    .Returns<TypeIdentity, TypeIdentity>((parent, child) => IsSubTypeOf(types, parent, child));
+            }
+
+            var importEngine = new PartImportEngine(repository.Object);
+
+            var importDefinition = PropertyBasedImportDefinition.CreateDefinition(
+                "A",
+                createTypeIdentity(typeof(int)),
+                ImportCardinality.ExactlyOne,
+                true,
+                CreationPolicy.NonShared,
+                typeof(string).GetProperty("Length"),
+                createTypeIdentity);
+            var exportDefinition = PropertyBasedExportDefinition.CreateDefinition(
+                "B",
+                typeof(string).GetProperty("Length"),
+                createTypeIdentity);
+            Assert.IsFalse(importEngine.Accepts(importDefinition, exportDefinition));
         }
 
         [Test]

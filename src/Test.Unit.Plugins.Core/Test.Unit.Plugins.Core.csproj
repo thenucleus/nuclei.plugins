@@ -84,12 +84,15 @@
     <Compile Include="CannotMapExportToImportExceptionTest.cs" />
     <Compile Include="ConstructorBasedImportDefinitionTest.cs" />
     <Compile Include="ConstructorDefinitionTest.cs" />
+    <Compile Include="DuplicatePartDefinitionExceptionTest.cs" />
+    <Compile Include="DuplicateTypeDefinitionExceptionTest.cs" />
     <Compile Include="ExportRegistrationIdTest.cs" />
     <Compile Include="ImportRegistrationIdTest.cs" />
     <Compile Include="MethodBasedExportDefinitionTest.cs" />
     <Compile Include="MethodDefinitionTest.cs" />
     <Compile Include="ParameterDefinitionTest.cs" />
     <Compile Include="PartRegistrationIdTest.cs" />
+    <Compile Include="PluginRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyBasedExportDefinitionTest.cs" />
     <Compile Include="PropertyBasedImportDefinitionTest.cs" />
@@ -99,7 +102,9 @@
     <Compile Include="TypeIdentityTest.cs" />
     <Compile Include="UnknownExportDefinitionExceptionTest.cs" />
     <Compile Include="UnknownImportDefinitionExceptionTest.cs" />
+    <Compile Include="UnknownPartDefinitionExceptionTest.cs" />
     <Compile Include="UnknownPluginTypeExceptionTest.cs" />
+    <Compile Include="UnknownTypeDefinitionExceptionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -112,7 +117,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
       <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
-      <Name>Nuclei.Plugins</Name>
+      <Name>Nuclei.Plugins.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

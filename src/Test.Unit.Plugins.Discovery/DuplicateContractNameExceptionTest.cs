@@ -12,8 +12,10 @@ using NUnit.Framework;
 namespace Nuclei.Plugins.Discovery
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-                Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class DuplicateContractNameExceptionTest : ExceptionContractVerifier<DuplicateContractNameException>
     {
     }

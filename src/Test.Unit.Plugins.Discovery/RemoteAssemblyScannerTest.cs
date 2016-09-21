@@ -12,239 +12,55 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using Apollo.Core.Base.Plugins;
-using Apollo.Core.Base.Scheduling;
-using Nuclei.Plugins;
-using Apollo.Core.Extensions.Scheduling;
-using Apollo.Utilities;
 using Moq;
-using Nuclei;
+using Nuclei.Plugins.Core;
 using NUnit.Framework;
 using Test.Mocks;
 
 namespace Nuclei.Plugins.Discovery
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class RemoteAssemblyScannerTest
     {
-        private static IEnumerable<TypeDefinition> s_Types;
-        private static IEnumerable<PartDefinition> s_Parts;
-        private static IEnumerable<GroupDefinition> s_Groups;
-
-        private static bool AreVerticesEqual(IScheduleVertex first, IScheduleVertex second)
-        {
-            if (first.GetType() != second.GetType())
-            {
-                return false;
-            }
-
-            var executingActionVertex = first as ExecutingActionVertex;
-            if (executingActionVertex != null)
-            {
-                return executingActionVertex.ActionToExecute == ((ExecutingActionVertex)second).ActionToExecute;
-            }
-
-            var subScheduleVertex = first as SubScheduleVertex;
-            if (subScheduleVertex != null)
-            {
-                return subScheduleVertex.ScheduleToExecute == ((SubScheduleVertex)second).ScheduleToExecute;
-            }
-
-            return true;
-        }
-
-        [TestFixtureSetUp]
-        public void Setup()
-        {
-            try
-            {
-                var types = new List<TypeDefinition>();
-                var parts = new List<PartDefinition>();
-                var groups = new List<GroupDefinition>();
-                var repository = new Mock<IPluginRepository>();
-                {
-                    repository.Setup(r => r.ContainsDefinitionForType(It.IsAny<string>()))
-                        .Returns<string>(n => types.Any(t => t.Identity.AssemblyQualifiedName.Equals(n)));
-                    repository.Setup(r => r.ContainsDefinitionForType(It.IsAny<TypeIdentity>()))
-                        .Returns<TypeIdentity>(n => types.Any(t => t.Identity.Equals(n)));
-                    repository.Setup(r => r.IdentityByName(It.IsAny<string>()))
-                        .Returns<string>(n => types.Where(t => t.Identity.AssemblyQualifiedName.Equals(n)).Select(t => t.Identity).First());
-                    repository.Setup(r => r.Parts())
-                        .Returns(parts);
-                    repository.Setup(r => r.AddType(It.IsAny<TypeDefinition>()))
-                        .Callback<TypeDefinition>(types.Add);
-                    repository.Setup(r => r.AddPart(It.IsAny<PartDefinition>(), It.IsAny<PluginFileOrigin>()))
-                        .Callback<PartDefinition, PluginFileOrigin>((p, f) => parts.Add(p));
-                    repository.Setup(r => r.AddGroup(It.IsAny<GroupDefinition>(), It.IsAny<PluginFileOrigin>()))
-                        .Callback<GroupDefinition, PluginFileOrigin>((g, f) => groups.Add(g));
-                }
-
-                var importEngine = new Mock<IConnectParts>();
-                {
-                    importEngine.Setup(i => i.Accepts(It.IsAny<SerializableImportDefinition>(), It.IsAny<SerializableExportDefinition>()))
-                        .Returns(true);
-                }
-
-                var scanner = new RemoteAssemblyScanner(
-                    repository.Object,
-                    importEngine.Object,
-                    new Mock<ILogMessagesFromRemoteAppDomains>().Object,
-                    () => new FixedScheduleBuilder());
-
-                var localPath = Assembly.GetExecutingAssembly().LocalFilePath();
-                scanner.Scan(new List<string> { localPath });
-
-                s_Types = types;
-                s_Parts = parts;
-                s_Groups = groups;
-            }
-            catch (Exception e)
-            {
-                Trace.WriteLine(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "Exception in RemoteAssemblyScannerTest.Setup: {0}",
-                        e));
-
-                throw;
-            }
-        }
+        private static IEnumerable<TypeDefinition> _types;
+        private static IEnumerable<PartDefinition> _parts;
 
         [Test]
-        public void ExportOnTypeWithName()
+        public void ExportOnMethod()
         {
-            var id = TypeIdentity.CreateDefinition(typeof(ExportOnTypeWithName));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            var id = TypeIdentity.CreateDefinition(typeof(ExportOnMethod));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
             Assert.IsFalse(plugin.Imports.Any());
             Assert.AreEqual(1, plugin.Exports.Count());
 
-            var export = plugin.Exports.First() as TypeBasedExportDefinition;
+            var export = plugin.Exports.First() as MethodBasedExportDefinition;
             Assert.IsNotNull(export);
-            Assert.AreEqual("OnTypeWithName", export.ContractName);
-            Assert.AreEqual(id, export.DeclaringType);
-        }
 
-        [Test]
-        public void ExportOnTypeWithType()
-        {
-            var id = TypeIdentity.CreateDefinition(typeof(ExportOnTypeWithType));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
-
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
-            Assert.IsTrue(plugins.Count() == 1);
-
-            var plugin = plugins.First();
-            Assert.IsFalse(plugin.Imports.Any());
-            Assert.AreEqual(1, plugin.Exports.Count());
-
-            var export = plugin.Exports.First() as TypeBasedExportDefinition;
-            Assert.IsNotNull(export);
-            Assert.AreEqual(typeof(IExportingInterface).FullName, export.ContractName);
-            Assert.AreEqual(id, export.DeclaringType);
-        }
-
-        [Test]
-        public void ExportOnType()
-        {
-            var id = TypeIdentity.CreateDefinition(typeof(ExportOnType));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
-
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
-            Assert.IsTrue(plugins.Count() == 1);
-
-            var plugin = plugins.First();
-            Assert.IsFalse(plugin.Imports.Any());
-            Assert.AreEqual(1, plugin.Exports.Count());
-
-            var export = plugin.Exports.First() as TypeBasedExportDefinition;
-            Assert.IsNotNull(export);
-            Assert.AreEqual(typeof(ExportOnType).FullName, export.ContractName);
-            Assert.AreEqual(id, export.DeclaringType);
-        }
-
-        [Test]
-        public void ExportOnPropertyWithName()
-        {
-            var id = TypeIdentity.CreateDefinition(typeof(ExportOnPropertyWithName));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
-
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
-            Assert.IsTrue(plugins.Count() == 1);
-
-            var plugin = plugins.First();
-            Assert.IsFalse(plugin.Imports.Any());
-            Assert.AreEqual(1, plugin.Exports.Count());
-
-            var export = plugin.Exports.First() as PropertyBasedExportDefinition;
-            Assert.IsNotNull(export);
-            Assert.AreEqual("OnPropertyWithName", export.ContractName);
+            // for some unknown reason MEF adds () to the exported type on a method. No clue why what so ever....!!!
+            Assert.AreEqual(typeof(IExportingInterface).FullName + "()", export.ContractName);
             Assert.AreEqual(id, export.DeclaringType);
             Assert.AreEqual(
-                PropertyDefinition.CreateDefinition(
-                    typeof(ExportOnPropertyWithName).GetProperty("ExportingProperty")),
-                export.Property);
-        }
-
-        [Test]
-        public void ExportOnPropertyWithType()
-        {
-            var id = TypeIdentity.CreateDefinition(typeof(ExportOnPropertyWithType));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
-
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
-            Assert.IsTrue(plugins.Count() == 1);
-
-            var plugin = plugins.First();
-            Assert.IsFalse(plugin.Imports.Any());
-            Assert.AreEqual(1, plugin.Exports.Count());
-
-            var export = plugin.Exports.First() as PropertyBasedExportDefinition;
-            Assert.IsNotNull(export);
-            Assert.AreEqual(typeof(IExportingInterface).FullName, export.ContractName);
-            Assert.AreEqual(id, export.DeclaringType);
-            Assert.AreEqual(
-                PropertyDefinition.CreateDefinition(
-                    typeof(ExportOnPropertyWithType).GetProperty("ExportingProperty")),
-                export.Property);
-        }
-
-        [Test]
-        public void ExportOnProperty()
-        {
-            var id = TypeIdentity.CreateDefinition(typeof(ExportOnProperty));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
-
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
-            Assert.IsTrue(plugins.Count() == 1);
-
-            var plugin = plugins.First();
-            Assert.IsFalse(plugin.Imports.Any());
-            Assert.AreEqual(1, plugin.Exports.Count());
-
-            var export = plugin.Exports.First() as PropertyBasedExportDefinition;
-            Assert.IsNotNull(export);
-            Assert.AreEqual(typeof(IExportingInterface).FullName, export.ContractName);
-            Assert.AreEqual(id, export.DeclaringType);
-            Assert.AreEqual(
-                PropertyDefinition.CreateDefinition(
-                    typeof(ExportOnProperty).GetProperty("ExportingProperty")),
-                export.Property);
+                MethodDefinition.CreateDefinition(
+                    typeof(ExportOnMethod).GetMethod("ExportingMethod")),
+                export.Method);
         }
 
         [Test]
         public void ExportOnMethodWithName()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ExportOnMethodWithName));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
@@ -265,9 +81,9 @@ namespace Nuclei.Plugins.Discovery
         public void ExportOnMethodWithType()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ExportOnMethodWithType));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
@@ -285,91 +101,138 @@ namespace Nuclei.Plugins.Discovery
         }
 
         [Test]
-        public void ExportOnMethod()
+        public void ExportOnProperty()
         {
-            var id = TypeIdentity.CreateDefinition(typeof(ExportOnMethod));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            var id = TypeIdentity.CreateDefinition(typeof(ExportOnProperty));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
             Assert.IsFalse(plugin.Imports.Any());
             Assert.AreEqual(1, plugin.Exports.Count());
 
-            var export = plugin.Exports.First() as MethodBasedExportDefinition;
+            var export = plugin.Exports.First() as PropertyBasedExportDefinition;
             Assert.IsNotNull(export);
-
-            // for some unknown reason MEF adds () to the exported type on a method. No clue why what so ever....!!!
-            Assert.AreEqual(typeof(IExportingInterface).FullName + "()", export.ContractName);
+            Assert.AreEqual(typeof(IExportingInterface).FullName, export.ContractName);
             Assert.AreEqual(id, export.DeclaringType);
             Assert.AreEqual(
-                MethodDefinition.CreateDefinition(
-                    typeof(ExportOnMethod).GetMethod("ExportingMethod")),
-                export.Method);
+                PropertyDefinition.CreateDefinition(
+                    typeof(ExportOnProperty).GetProperty("ExportingProperty")),
+                export.Property);
         }
 
         [Test]
-        public void ImportOnConstructorWithName()
+        public void ExportOnPropertyWithName()
         {
-            var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithName));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            var id = TypeIdentity.CreateDefinition(typeof(ExportOnPropertyWithName));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
-            Assert.AreEqual(1, plugin.Imports.Count());
+            Assert.IsFalse(plugin.Imports.Any());
+            Assert.AreEqual(1, plugin.Exports.Count());
 
-            var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
-            Assert.IsNotNull(import);
-            Assert.AreEqual("ImportOnConstructor", import.ContractName);
-            Assert.AreEqual(id, import.DeclaringType);
-            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            var export = plugin.Exports.First() as PropertyBasedExportDefinition;
+            Assert.IsNotNull(export);
+            Assert.AreEqual("OnPropertyWithName", export.ContractName);
+            Assert.AreEqual(id, export.DeclaringType);
             Assert.AreEqual(
-                ConstructorDefinition.CreateDefinition(
-                    typeof(ImportOnConstructorWithName).GetConstructor(new[] { typeof(IExportingInterface) })),
-                import.Constructor);
-            Assert.AreEqual(
-                ParameterDefinition.CreateDefinition(
-                    typeof(ImportOnConstructorWithName).GetConstructor(new[] { typeof(IExportingInterface) }).GetParameters().First()),
-                import.Parameter);
+                PropertyDefinition.CreateDefinition(
+                    typeof(ExportOnPropertyWithName).GetProperty("ExportingProperty")),
+                export.Property);
         }
 
         [Test]
-        public void ImportOnConstructorWithType()
+        public void ExportOnPropertyWithType()
         {
-            var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithType));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            var id = TypeIdentity.CreateDefinition(typeof(ExportOnPropertyWithType));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
-            Assert.AreEqual(1, plugin.Imports.Count());
+            Assert.IsFalse(plugin.Imports.Any());
+            Assert.AreEqual(1, plugin.Exports.Count());
 
-            var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
-            Assert.IsNotNull(import);
-            Assert.AreEqual(typeof(IExportingInterface).FullName, import.ContractName);
-            Assert.AreEqual(id, import.DeclaringType);
-            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            var export = plugin.Exports.First() as PropertyBasedExportDefinition;
+            Assert.IsNotNull(export);
+            Assert.AreEqual(typeof(IExportingInterface).FullName, export.ContractName);
+            Assert.AreEqual(id, export.DeclaringType);
             Assert.AreEqual(
-                ConstructorDefinition.CreateDefinition(
-                    typeof(ImportOnConstructorWithType).GetConstructor(new[] { typeof(IExportingInterface) })),
-                import.Constructor);
-            Assert.AreEqual(
-                ParameterDefinition.CreateDefinition(
-                    typeof(ImportOnConstructorWithType).GetConstructor(new[] { typeof(IExportingInterface) }).GetParameters().First()),
-                import.Parameter);
+                PropertyDefinition.CreateDefinition(
+                    typeof(ExportOnPropertyWithType).GetProperty("ExportingProperty")),
+                export.Property);
+        }
+
+        [Test]
+        public void ExportOnType()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ExportOnType));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.IsFalse(plugin.Imports.Any());
+            Assert.AreEqual(1, plugin.Exports.Count());
+
+            var export = plugin.Exports.First() as TypeBasedExportDefinition;
+            Assert.IsNotNull(export);
+            Assert.AreEqual(typeof(ExportOnType).FullName, export.ContractName);
+            Assert.AreEqual(id, export.DeclaringType);
+        }
+
+        [Test]
+        public void ExportOnTypeWithName()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ExportOnTypeWithName));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.IsFalse(plugin.Imports.Any());
+            Assert.AreEqual(1, plugin.Exports.Count());
+
+            var export = plugin.Exports.First() as TypeBasedExportDefinition;
+            Assert.IsNotNull(export);
+            Assert.AreEqual("OnTypeWithName", export.ContractName);
+            Assert.AreEqual(id, export.DeclaringType);
+        }
+
+        [Test]
+        public void ExportOnTypeWithType()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ExportOnTypeWithType));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.IsFalse(plugin.Imports.Any());
+            Assert.AreEqual(1, plugin.Exports.Count());
+
+            var export = plugin.Exports.First() as TypeBasedExportDefinition;
+            Assert.IsNotNull(export);
+            Assert.AreEqual(typeof(IExportingInterface).FullName, export.ContractName);
+            Assert.AreEqual(id, export.DeclaringType);
         }
 
         [Test]
         public void ImportOnConstructor()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructor));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
@@ -394,9 +257,9 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnConstructorWithEnumerable()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithEnumerable));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
@@ -414,37 +277,10 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual(
                 ParameterDefinition.CreateDefinition(
                     typeof(ImportOnConstructorWithEnumerable).GetConstructor(
-                        new[] 
-                        { 
-                            typeof(IEnumerable<IExportingInterface>) 
+                        new[]
+                        {
+                            typeof(IEnumerable<IExportingInterface>)
                         }).GetParameters().First()),
-                import.Parameter);
-        }
-
-        [Test]
-        public void ImportOnConstructorWithLazy()
-        {
-            var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithLazy));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
-
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
-            Assert.IsTrue(plugins.Count() == 1);
-
-            var plugin = plugins.First();
-            Assert.AreEqual(1, plugin.Imports.Count());
-
-            var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
-            Assert.IsNotNull(import);
-            Assert.AreEqual("ContractName", import.ContractName);
-            Assert.AreEqual(id, import.DeclaringType);
-            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Lazy<IExportingInterface>)), import.RequiredTypeIdentity);
-            Assert.AreEqual(
-                ConstructorDefinition.CreateDefinition(
-                    typeof(ImportOnConstructorWithLazy).GetConstructor(new[] { typeof(Lazy<IExportingInterface>) })),
-                import.Constructor);
-            Assert.AreEqual(
-                ParameterDefinition.CreateDefinition(
-                    typeof(ImportOnConstructorWithLazy).GetConstructor(new[] { typeof(Lazy<IExportingInterface>) }).GetParameters().First()),
                 import.Parameter);
         }
 
@@ -452,9 +288,9 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnConstructorWithFunc()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithFunc));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
@@ -476,58 +312,93 @@ namespace Nuclei.Plugins.Discovery
         }
 
         [Test]
-        public void ImportOnPropertyWithName()
+        public void ImportOnConstructorWithLazy()
         {
-            var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithName));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithLazy));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
             Assert.AreEqual(1, plugin.Imports.Count());
 
-            var import = plugin.Imports.First() as PropertyBasedImportDefinition;
+            var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
             Assert.IsNotNull(import);
-            Assert.AreEqual("ImportOnProperty", import.ContractName);
+            Assert.AreEqual("ContractName", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
-            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Lazy<IExportingInterface>)), import.RequiredTypeIdentity);
             Assert.AreEqual(
-                PropertyDefinition.CreateDefinition(
-                    typeof(ImportOnPropertyWithName).GetProperty("ImportingProperty")),
-                import.Property);
+                ConstructorDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithLazy).GetConstructor(new[] { typeof(Lazy<IExportingInterface>) })),
+                import.Constructor);
+            Assert.AreEqual(
+                ParameterDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithLazy).GetConstructor(new[] { typeof(Lazy<IExportingInterface>) }).GetParameters().First()),
+                import.Parameter);
         }
 
         [Test]
-        public void ImportOnPropertyWithType()
+        public void ImportOnConstructorWithName()
         {
-            var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithType));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithName));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
             Assert.AreEqual(1, plugin.Imports.Count());
 
-            var import = plugin.Imports.First() as PropertyBasedImportDefinition;
+            var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual("ImportOnConstructor", import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            Assert.AreEqual(
+                ConstructorDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithName).GetConstructor(new[] { typeof(IExportingInterface) })),
+                import.Constructor);
+            Assert.AreEqual(
+                ParameterDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithName).GetConstructor(new[] { typeof(IExportingInterface) }).GetParameters().First()),
+                import.Parameter);
+        }
+
+        [Test]
+        public void ImportOnConstructorWithType()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithType));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.AreEqual(1, plugin.Imports.Count());
+
+            var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
             Assert.IsNotNull(import);
             Assert.AreEqual(typeof(IExportingInterface).FullName, import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
             Assert.AreEqual(
-                PropertyDefinition.CreateDefinition(
-                    typeof(ImportOnPropertyWithType).GetProperty("ImportingProperty")),
-                import.Property);
+                ConstructorDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithType).GetConstructor(new[] { typeof(IExportingInterface) })),
+                import.Constructor);
+            Assert.AreEqual(
+                ParameterDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithType).GetConstructor(new[] { typeof(IExportingInterface) }).GetParameters().First()),
+                import.Parameter);
         }
 
         [Test]
         public void ImportOnProperty()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnProperty));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
@@ -548,9 +419,9 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnPropertyWithEnumerable()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithEnumerable));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
@@ -568,35 +439,12 @@ namespace Nuclei.Plugins.Discovery
         }
 
         [Test]
-        public void ImportOnPropertyWithLazy()
-        {
-            var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithLazy));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
-
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
-            Assert.IsTrue(plugins.Count() == 1);
-
-            var plugin = plugins.First();
-            Assert.AreEqual(1, plugin.Imports.Count());
-
-            var import = plugin.Imports.First() as PropertyBasedImportDefinition;
-            Assert.IsNotNull(import);
-            Assert.AreEqual("ContractName", import.ContractName);
-            Assert.AreEqual(id, import.DeclaringType);
-            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Lazy<IExportingInterface>)), import.RequiredTypeIdentity);
-            Assert.AreEqual(
-                PropertyDefinition.CreateDefinition(
-                    typeof(ImportOnPropertyWithLazy).GetProperty("ImportingProperty")),
-                import.Property);
-        }
-
-        [Test]
         public void ImportOnPropertyWithFunc()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithFunc));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
@@ -614,110 +462,125 @@ namespace Nuclei.Plugins.Discovery
         }
 
         [Test]
-        public void ActionOnMethod()
+        public void ImportOnPropertyWithLazy()
         {
-            var id = TypeIdentity.CreateDefinition(typeof(ActionOnMethod));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithLazy));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
 
             var plugin = plugins.First();
-            Assert.IsFalse(plugin.Imports.Any());
-            Assert.AreEqual(1, plugin.Actions.Count());
+            Assert.AreEqual(1, plugin.Imports.Count());
 
-            var action = plugin.Actions.First();
-            Assert.IsNotNull(action);
-            Assert.AreEqual("ActionMethod", action.ContractName);
-            Assert.AreEqual(
-                MethodDefinition.CreateDefinition(
-                    typeof(ActionOnMethod).GetMethod("ActionMethod")), 
-                action.Method);
-        }
-
-        [Test]
-        public void ConditionOnMethod()
-        {
-            var id = TypeIdentity.CreateDefinition(typeof(ConditionOnMethod));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
-
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
-            Assert.IsTrue(plugins.Count() == 1);
-
-            var plugin = plugins.First();
-            Assert.AreEqual(1, plugin.Conditions.Count());
-
-            var condition = plugin.Conditions.First() as MethodBasedScheduleConditionDefinition;
-            Assert.IsNotNull(condition);
-            Assert.AreEqual("OnMethod", condition.ContractName);
-            Assert.AreEqual(
-                MethodDefinition.CreateDefinition(
-                    typeof(ConditionOnMethod).GetMethod("ConditionMethod")),
-                condition.Method);
-        }
-
-        [Test]
-        public void ConditionOnProperty()
-        {
-            var id = TypeIdentity.CreateDefinition(typeof(ConditionOnProperty));
-            Assert.IsTrue(s_Types.Exists(s => s.Identity.Equals(id)));
-
-            var plugins = s_Parts.Where(p => p.Identity.Equals(id));
-            Assert.IsTrue(plugins.Count() == 1);
-
-            var plugin = plugins.First();
-            Assert.AreEqual(1, plugin.Conditions.Count());
-
-            var condition = plugin.Conditions.First() as PropertyBasedScheduleConditionDefinition;
-            Assert.IsNotNull(condition);
-            Assert.AreEqual("OnProperty", condition.ContractName);
+            var import = plugin.Imports.First() as PropertyBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual("ContractName", import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Lazy<IExportingInterface>)), import.RequiredTypeIdentity);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
-                    typeof(ConditionOnProperty).GetProperty("ConditionProperty")),
-                condition.Property);
+                    typeof(ImportOnPropertyWithLazy).GetProperty("ImportingProperty")),
+                import.Property);
         }
 
         [Test]
-        public void GroupWithExport()
+        public void ImportOnPropertyWithName()
         {
-            Assert.AreEqual(3, s_Groups.Count());
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithName));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var group = s_Groups.First();
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
 
-            Assert.AreEqual(new GroupRegistrationId(GroupExporter.GroupName1), group.GroupExport.ContainingGroup);
-            Assert.AreEqual(GroupExporter.GroupExportName, group.GroupExport.ContractName);
+            var plugin = plugins.First();
+            Assert.AreEqual(1, plugin.Imports.Count());
 
-            Assert.AreEqual(4, group.GroupExport.ProvidedExports.Count());
+            var import = plugin.Imports.First() as PropertyBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual("ImportOnProperty", import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            Assert.AreEqual(
+                PropertyDefinition.CreateDefinition(
+                    typeof(ImportOnPropertyWithName).GetProperty("ImportingProperty")),
+                import.Property);
         }
 
         [Test]
-        public void GroupWithImport()
+        public void ImportOnPropertyWithType()
         {
-            Assert.AreEqual(3, s_Groups.Count());
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithType));
+            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
 
-            var group = s_Groups.First();
-            Assert.AreEqual(new GroupRegistrationId(GroupExporter.GroupName1), group.GroupImports.First().ContainingGroup);
-            Assert.IsNotNull(group.GroupImports.First().ScheduleInsertPosition);
-            
-            Assert.AreEqual(4, group.Schedule.Schedule.Vertices.Count());
-            Assert.IsTrue(
-                AreVerticesEqual(
-                    group.Schedule.Schedule.Start,
-                    group.Schedule.Schedule.Vertices.ElementAt(0)));
-            Assert.IsTrue(
-                AreVerticesEqual(
-                    new ExecutingActionVertex(2, group.Schedule.Actions.First().Key),
-                    group.Schedule.Schedule.Vertices.ElementAt(1)));
-            Assert.IsTrue(
-                AreVerticesEqual(
-                    new InsertVertex(3),
-                    group.Schedule.Schedule.Vertices.ElementAt(2)));
-            Assert.IsTrue(
-                AreVerticesEqual(
-                    group.Schedule.Schedule.End,
-                    group.Schedule.Schedule.Vertices.ElementAt(3)));
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
 
-            Assert.AreEqual(1, group.GroupImports.First().ImportsToMatch.Count());
+            var plugin = plugins.First();
+            Assert.AreEqual(1, plugin.Imports.Count());
+
+            var import = plugin.Imports.First() as PropertyBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual(typeof(IExportingInterface).FullName, import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            Assert.AreEqual(
+                PropertyDefinition.CreateDefinition(
+                    typeof(ImportOnPropertyWithType).GetProperty("ImportingProperty")),
+                import.Property);
+        }
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            try
+            {
+                var types = new List<TypeDefinition>();
+                var parts = new List<PartDefinition>();
+                var repository = new Mock<IPluginRepository>();
+                {
+                    repository.Setup(r => r.ContainsDefinitionForType(It.IsAny<string>()))
+                        .Returns<string>(n => types.Any(t => t.Identity.AssemblyQualifiedName.Equals(n)));
+                    repository.Setup(r => r.ContainsDefinitionForType(It.IsAny<TypeIdentity>()))
+                        .Returns<TypeIdentity>(n => types.Any(t => t.Identity.Equals(n)));
+                    repository.Setup(r => r.IdentityByName(It.IsAny<string>()))
+                        .Returns<string>(n => types.Where(t => t.Identity.AssemblyQualifiedName.Equals(n)).Select(t => t.Identity).First());
+                    repository.Setup(r => r.Parts())
+                        .Returns(parts);
+                    repository.Setup(r => r.AddType(It.IsAny<TypeDefinition>()))
+                        .Callback<TypeDefinition>(types.Add);
+                    repository.Setup(r => r.AddPart(It.IsAny<PartDefinition>(), It.IsAny<PluginFileOrigin>()))
+                        .Callback<PartDefinition, PluginFileOrigin>((p, f) => parts.Add(p));
+                }
+
+                var importEngine = new Mock<IConnectParts>();
+                {
+                    importEngine.Setup(i => i.Accepts(It.IsAny<SerializableImportDefinition>(), It.IsAny<SerializableExportDefinition>()))
+                        .Returns(true);
+                }
+
+                var scanner = new RemoteAssemblyScanner(
+                    repository.Object,
+                    importEngine.Object,
+                    new Mock<ILogMessagesFromRemoteAppDomains>().Object,
+                    () => new FixedScheduleBuilder());
+
+                var localPath = Assembly.GetExecutingAssembly().LocalFilePath();
+                scanner.Scan(new List<string> { localPath });
+
+                _types = types;
+                _parts = parts;
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Exception in RemoteAssemblyScannerTest.Setup: {0}",
+                        e));
+
+                throw;
+            }
         }
     }
 }
