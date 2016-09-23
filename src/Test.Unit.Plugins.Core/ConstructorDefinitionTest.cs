@@ -13,93 +13,29 @@ using System.Reflection;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins
+namespace Nuclei.Plugins.Core
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class ConstructorDefinitionTest : EqualityContractVerifierTest
     {
-        private sealed class ConstructorDefinitionEqualityContractVerifier : EqualityContractVerifier<ConstructorDefinition>
-        {
-            private readonly ConstructorDefinition m_First = ConstructorDefinition.CreateDefinition(typeof(object).GetConstructor(new Type[0]));
-
-            private readonly ConstructorDefinition m_Second = ConstructorDefinition.CreateDefinition(typeof(List<int>).GetConstructor(new Type[0]));
-
-            protected override ConstructorDefinition Copy(ConstructorDefinition original)
-            {
-                if (original.DeclaringType.Equals(typeof(object)))
-                {
-                    return ConstructorDefinition.CreateDefinition(typeof(object).GetConstructor(new Type[0]));
-                }
-
-                return ConstructorDefinition.CreateDefinition(typeof(List<int>).GetConstructor(new Type[0]));
-            }
-
-            protected override ConstructorDefinition FirstInstance
-            {
-                get
-                {
-                    return m_First;
-                }
-            }
-
-            protected override ConstructorDefinition SecondInstance
-            {
-                get
-                {
-                    return m_Second;
-                }
-            }
-
-            protected override bool HasOperatorOverloads
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class ConstructorDefinitionHashcodeContractVerfier : HashcodeContractVerifier
-        {
-            private readonly IEnumerable<ConstructorDefinition> m_DistinctInstances
-                = new List<ConstructorDefinition> 
-                     {
-                        ConstructorDefinition.CreateDefinition(
-                            typeof(string).GetConstructor(new[] 
-                                { 
-                                    typeof(char[])
-                                })),
-                        ConstructorDefinition.CreateDefinition(typeof(object).GetConstructor(new Type[0])),
-                        ConstructorDefinition.CreateDefinition(typeof(List<int>).GetConstructor(new Type[0])),
-                        ConstructorDefinition.CreateDefinition(
-                            typeof(Uri).GetConstructor(new[] 
-                            {
-                                typeof(string)
-                            })),
-                     };
-
-            protected override IEnumerable<int> GetHashcodes()
-            {
-                return m_DistinctInstances.Select(i => i.GetHashCode());
-            }
-        }
-
         private static ConstructorInfo GetConstructorForString()
         {
             return typeof(string).GetConstructor(new[] { typeof(char[]) });
         }
 
-        private readonly ConstructorDefinitionHashcodeContractVerfier m_HashcodeVerifier = new ConstructorDefinitionHashcodeContractVerfier();
+        private readonly ConstructorDefinitionHashcodeContractVerfier _hashCodeVerifier = new ConstructorDefinitionHashcodeContractVerfier();
 
-        private readonly ConstructorDefinitionEqualityContractVerifier m_EqualityVerifier = new ConstructorDefinitionEqualityContractVerifier();
+        private readonly ConstructorDefinitionEqualityContractVerifier _equalityVerifier = new ConstructorDefinitionEqualityContractVerifier();
 
-        protected override HashcodeContractVerifier HashContract
+        protected override HashCodeContractVerifier HashContract
         {
             get
             {
-                return m_HashcodeVerifier;
+                return _hashCodeVerifier;
             }
         }
 
@@ -107,7 +43,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_EqualityVerifier;
+                return _equalityVerifier;
             }
         }
 
@@ -130,6 +66,72 @@ namespace Nuclei.Plugins
                 obj.Parameters,
                 Is.EquivalentTo(constructor.GetParameters().Select(p => ParameterDefinition.CreateDefinition(p))));
             Assert.AreEqual(TypeIdentity.CreateDefinition(constructor.DeclaringType), obj.DeclaringType);
+        }
+
+        private sealed class ConstructorDefinitionEqualityContractVerifier : EqualityContractVerifier<ConstructorDefinition>
+        {
+            private readonly ConstructorDefinition _first = ConstructorDefinition.CreateDefinition(typeof(object).GetConstructor(new Type[0]));
+
+            private readonly ConstructorDefinition _second = ConstructorDefinition.CreateDefinition(typeof(List<int>).GetConstructor(new Type[0]));
+
+            protected override ConstructorDefinition Copy(ConstructorDefinition original)
+            {
+                if (original.DeclaringType.Equals(typeof(object)))
+                {
+                    return ConstructorDefinition.CreateDefinition(typeof(object).GetConstructor(new Type[0]));
+                }
+
+                return ConstructorDefinition.CreateDefinition(typeof(List<int>).GetConstructor(new Type[0]));
+            }
+
+            protected override ConstructorDefinition FirstInstance
+            {
+                get
+                {
+                    return _first;
+                }
+            }
+
+            protected override ConstructorDefinition SecondInstance
+            {
+                get
+                {
+                    return _second;
+                }
+            }
+
+            protected override bool HasOperatorOverloads
+            {
+                get
+                {
+                    return true;
+                }
+            }
+        }
+
+        private sealed class ConstructorDefinitionHashcodeContractVerfier : HashCodeContractVerifier
+        {
+            private readonly IEnumerable<ConstructorDefinition> _distinctInstances
+                = new List<ConstructorDefinition>
+                     {
+                        ConstructorDefinition.CreateDefinition(
+                            typeof(string).GetConstructor(new[]
+                                {
+                                    typeof(char[])
+                                })),
+                        ConstructorDefinition.CreateDefinition(typeof(object).GetConstructor(new Type[0])),
+                        ConstructorDefinition.CreateDefinition(typeof(List<int>).GetConstructor(new Type[0])),
+                        ConstructorDefinition.CreateDefinition(
+                            typeof(Uri).GetConstructor(new[]
+                            {
+                                typeof(string)
+                            })),
+                     };
+
+            protected override IEnumerable<int> GetHashCodes()
+            {
+                return _distinctInstances.Select(i => i.GetHashCode());
+            }
         }
     }
 }

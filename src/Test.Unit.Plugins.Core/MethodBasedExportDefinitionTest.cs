@@ -13,20 +13,68 @@ using System.Reflection;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins
+namespace Nuclei.Plugins.Core
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class MethodBasedExportDefinitionTest : EqualityContractVerifierTest
     {
+        private static MethodInfo GetMethodForInt()
+        {
+            return typeof(int).GetMethod("CompareTo", new[] { typeof(int) });
+        }
+
+        private readonly MethodBasedExportDefinitionHashcodeContractVerfier _hashCodeVerifier
+            = new MethodBasedExportDefinitionHashcodeContractVerfier();
+
+        private readonly MethodBasedExportDefinitionEqualityContractVerifier _equalityVerifier
+            = new MethodBasedExportDefinitionEqualityContractVerifier();
+
+        protected override HashCodeContractVerifier HashContract
+        {
+            get
+            {
+                return _hashCodeVerifier;
+            }
+        }
+
+        protected override IEqualityContractVerifier EqualityContract
+        {
+            get
+            {
+                return _equalityVerifier;
+            }
+        }
+
+        [Test]
+        public void RoundtripSerialize()
+        {
+            var original = MethodBasedExportDefinition.CreateDefinition("B", GetMethodForInt());
+            var copy = AssertExtensions.RoundTripSerialize(original);
+
+            Assert.AreEqual(original, copy);
+        }
+
+        [Test]
+        public void Create()
+        {
+            var obj = MethodBasedExportDefinition.CreateDefinition("B", GetMethodForInt());
+
+            Assert.AreEqual("B", obj.ContractName);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(int)), obj.DeclaringType);
+            Assert.AreEqual(MethodDefinition.CreateDefinition(GetMethodForInt()), obj.Method);
+        }
+
         private sealed class MethodBasedExportDefinitionEqualityContractVerifier : EqualityContractVerifier<MethodBasedExportDefinition>
         {
-            private readonly MethodBasedExportDefinition m_First = MethodBasedExportDefinition.CreateDefinition(
+            private readonly MethodBasedExportDefinition _first = MethodBasedExportDefinition.CreateDefinition(
                 "A",
                 typeof(string).GetMethod("Contains"));
 
-            private readonly MethodBasedExportDefinition m_Second = MethodBasedExportDefinition.CreateDefinition(
+            private readonly MethodBasedExportDefinition _second = MethodBasedExportDefinition.CreateDefinition(
                 "B",
                 typeof(int).GetMethod("CompareTo", new[] { typeof(int) }));
 
@@ -48,7 +96,7 @@ namespace Nuclei.Plugins
             {
                 get
                 {
-                    return m_First;
+                    return _first;
                 }
             }
 
@@ -56,7 +104,7 @@ namespace Nuclei.Plugins
             {
                 get
                 {
-                    return m_Second;
+                    return _second;
                 }
             }
 
@@ -69,78 +117,32 @@ namespace Nuclei.Plugins
             }
         }
 
-        private sealed class MethodBasedExportDefinitionHashcodeContractVerfier : HashcodeContractVerifier
+        private sealed class MethodBasedExportDefinitionHashcodeContractVerfier : HashCodeContractVerifier
         {
-            private readonly IEnumerable<MethodBasedExportDefinition> m_DistinctInstances
-                = new List<MethodBasedExportDefinition> 
+            private readonly IEnumerable<MethodBasedExportDefinition> _distinctInstances
+                = new List<MethodBasedExportDefinition>
                      {
                         MethodBasedExportDefinition.CreateDefinition(
-                            "A", 
+                            "A",
                             typeof(string).GetMethod("Contains")),
                         MethodBasedExportDefinition.CreateDefinition(
-                            "B", 
+                            "B",
                             typeof(int).GetMethod("CompareTo", new[] { typeof(int) })),
                         MethodBasedExportDefinition.CreateDefinition(
-                            "C", 
+                            "C",
                             typeof(double).GetMethod("CompareTo", new[] { typeof(double) })),
                         MethodBasedExportDefinition.CreateDefinition(
-                            "D", 
+                            "D",
                             typeof(IComparable).GetMethod("CompareTo")),
                         MethodBasedExportDefinition.CreateDefinition(
-                            "E", 
+                            "E",
                             typeof(IComparable<>).GetMethod("CompareTo")),
                      };
 
-            protected override IEnumerable<int> GetHashcodes()
+            protected override IEnumerable<int> GetHashCodes()
             {
-                return m_DistinctInstances.Select(i => i.GetHashCode());
+                return _distinctInstances.Select(i => i.GetHashCode());
             }
-        }
-
-        private readonly MethodBasedExportDefinitionHashcodeContractVerfier m_HashcodeVerifier 
-            = new MethodBasedExportDefinitionHashcodeContractVerfier();
-
-        private readonly MethodBasedExportDefinitionEqualityContractVerifier m_EqualityVerifier 
-            = new MethodBasedExportDefinitionEqualityContractVerifier();
-
-        protected override HashcodeContractVerifier HashContract
-        {
-            get
-            {
-                return m_HashcodeVerifier;
-            }
-        }
-
-        protected override IEqualityContractVerifier EqualityContract
-        {
-            get
-            {
-                return m_EqualityVerifier;
-            }
-        }
-
-        private static MethodInfo GetMethodForInt()
-        {
-            return typeof(int).GetMethod("CompareTo", new[] { typeof(int) });
-        }
-
-        [Test]
-        public void RoundtripSerialize()
-        {
-            var original = MethodBasedExportDefinition.CreateDefinition("B", GetMethodForInt());
-            var copy = AssertExtensions.RoundTripSerialize(original);
-
-            Assert.AreEqual(original, copy);
-        }
-
-        [Test]
-        public void Create()
-        {
-            var obj = MethodBasedExportDefinition.CreateDefinition("B", GetMethodForInt());
-
-            Assert.AreEqual("B", obj.ContractName);
-            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(int)), obj.DeclaringType);
-            Assert.AreEqual(MethodDefinition.CreateDefinition(GetMethodForInt()), obj.Method);
         }
     }
 }

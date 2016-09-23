@@ -10,16 +10,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Apollo.Core.Base.Plugins;
-using Nuclei.Plugins;
 using NUnit.Framework;
 using Test.Mocks;
 
-namespace Nuclei.Plugins.Discovery
+namespace Nuclei.Plugins.Core
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class PluginRepositoryTest
     {
         [Test]
@@ -191,7 +191,7 @@ namespace Nuclei.Plugins.Discovery
 
             Assert.IsTrue(
                 repository.IsSubTypeOf(
-                    TypeIdentity.CreateDefinition(typeof(IEnumerable<>)), 
+                    TypeIdentity.CreateDefinition(typeof(IEnumerable<>)),
                     TypeIdentity.CreateDefinition(typeof(List<>))));
         }
 
@@ -206,7 +206,7 @@ namespace Nuclei.Plugins.Discovery
 
             Assert.IsTrue(repository.ContainsDefinitionForType(typeof(List<>).AssemblyQualifiedName));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(List<>))));
-            
+
             var enumerableDefinition = TypeDefinition.CreateDefinition(typeof(IEnumerable<>), identityGenerator);
             repository.AddType(enumerableDefinition);
 
@@ -215,7 +215,7 @@ namespace Nuclei.Plugins.Discovery
 
             Assert.IsTrue(
                 repository.IsSubTypeOf(
-                    TypeIdentity.CreateDefinition(typeof(IEnumerable<>)), 
+                    TypeIdentity.CreateDefinition(typeof(IEnumerable<>)),
                     TypeIdentity.CreateDefinition(typeof(List<>))));
         }
 
@@ -227,13 +227,13 @@ namespace Nuclei.Plugins.Discovery
 
             Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
             PartDefinition definition = new PartDefinition
-                {
-                    Identity = identityGenerator(typeof(ExportOnProperty)),
-                };
-            
+            {
+                Identity = identityGenerator(typeof(ExportOnProperty)),
+            };
+
             var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
             repository.AddPart(definition, fileInfo);
-            
+
             var parts = repository.Parts();
             Assert.AreEqual(1, parts.Count());
             Assert.AreSame(definition, parts.First());
@@ -241,7 +241,7 @@ namespace Nuclei.Plugins.Discovery
 
             var files = repository.KnownPluginFiles();
             Assert.AreEqual(1, files.Count());
-            Assert.AreSame(fileInfo, files.First()); 
+            Assert.AreSame(fileInfo, files.First());
         }
 
         [Test]
@@ -260,7 +260,7 @@ namespace Nuclei.Plugins.Discovery
 
             var files = repository.KnownPluginFiles();
             Assert.AreEqual(1, files.Count());
-            Assert.AreSame(fileInfo, files.First()); 
+            Assert.AreSame(fileInfo, files.First());
         }
 
         [Test]
@@ -271,13 +271,13 @@ namespace Nuclei.Plugins.Discovery
 
             Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
             PartDefinition partDefinition = new PartDefinition
-                {
-                    Identity = identityGenerator(typeof(ExportOnProperty)),
-                };
+            {
+                Identity = identityGenerator(typeof(ExportOnProperty)),
+            };
 
             var partFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
             repository.AddPart(partDefinition, partFileInfo);
-            
+
             var groupDefinition = new GroupDefinition("b");
             var groupFileInfo = new PluginFileOrigin("c", DateTimeOffset.Now);
             repository.AddGroup(groupDefinition, groupFileInfo);
@@ -285,8 +285,8 @@ namespace Nuclei.Plugins.Discovery
             Assert.That(
                 repository.KnownPluginFiles(),
                 Is.EquivalentTo(
-                    new List<PluginFileOrigin> 
-                    { 
+                    new List<PluginFileOrigin>
+                    {
                         partFileInfo,
                         groupFileInfo,
                     }));
@@ -300,8 +300,8 @@ namespace Nuclei.Plugins.Discovery
             Assert.That(
                 repository.KnownPluginFiles(),
                 Is.EquivalentTo(
-                    new List<PluginFileOrigin> 
-                    { 
+                    new List<PluginFileOrigin>
+                    {
                         groupFileInfo,
                     }));
             Assert.AreEqual(0, repository.Parts().Count());
@@ -317,17 +317,17 @@ namespace Nuclei.Plugins.Discovery
 
             Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
             PartDefinition parentDefinition = new PartDefinition
-                {
-                    Identity = identityGenerator(typeof(MockExportingInterfaceImplementation)),
-                };
+            {
+                Identity = identityGenerator(typeof(MockExportingInterfaceImplementation)),
+            };
 
             var parentFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
             repository.AddPart(parentDefinition, parentFileInfo);
 
             PartDefinition childDefinition = new PartDefinition
-                {
-                    Identity = identityGenerator(typeof(MockChildExportingInterfaceImplementation)),
-                };
+            {
+                Identity = identityGenerator(typeof(MockChildExportingInterfaceImplementation)),
+            };
 
             var childFileInfo = new PluginFileOrigin("b", DateTimeOffset.Now);
             repository.AddPart(childDefinition, childFileInfo);

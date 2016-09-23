@@ -12,77 +12,24 @@ using System.Linq;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins
+namespace Nuclei.Plugins.Core
 {
-    // Note that it is not possible to use the Gallio Comparison contract verifiers because they require that the
-    // class implements the overloaded operators directly which ID derivative classes do not do (and could only do if we
-    // move all the overloads of Equals(object) and GetHashCode() to the ID derivative class).
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-                Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class PartRegistrationIdTest : EqualityContractVerifierTest
     {
-        private sealed class PartRegistrationIdEqualityContractVerifier : EqualityContractVerifier<PartRegistrationId>
-        {
-            private readonly PartRegistrationId m_First = new PartRegistrationId(typeof(string).FullName, 0);
+        private readonly PartRegistrationIdHashcodeContractVerfier _hashCodeVerifier = new PartRegistrationIdHashcodeContractVerfier();
 
-            private readonly PartRegistrationId m_Second = new PartRegistrationId(typeof(int).FullName, 0);
+        private readonly PartRegistrationIdEqualityContractVerifier _equalityVerifier = new PartRegistrationIdEqualityContractVerifier();
 
-            protected override PartRegistrationId Copy(PartRegistrationId original)
-            {
-                return original.Clone();
-            }
-
-            protected override PartRegistrationId FirstInstance
-            {
-                get
-                {
-                    return m_First;
-                }
-            }
-
-            protected override PartRegistrationId SecondInstance
-            {
-                get
-                {
-                    return m_Second;
-                }
-            }
-
-            protected override bool HasOperatorOverloads
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class PartRegistrationIdHashcodeContractVerfier : HashcodeContractVerifier
-        {
-            private readonly IEnumerable<PartRegistrationId> m_DistinctInstances
-                = new List<PartRegistrationId> 
-                     {
-                        new PartRegistrationId(typeof(string).FullName, 0),
-                        new PartRegistrationId(typeof(int).FullName, 0),
-                        new PartRegistrationId(typeof(string).FullName, 1),
-                     };
-
-            protected override IEnumerable<int> GetHashcodes()
-            {
-                return m_DistinctInstances.Select(i => i.GetHashCode());
-            }
-        }
-
-        private readonly PartRegistrationIdHashcodeContractVerfier m_HashcodeVerifier = new PartRegistrationIdHashcodeContractVerfier();
-
-        private readonly PartRegistrationIdEqualityContractVerifier m_EqualityVerifier = new PartRegistrationIdEqualityContractVerifier();
-
-        protected override HashcodeContractVerifier HashContract
+        protected override HashCodeContractVerifier HashContract
         {
             get
             {
-                return m_HashcodeVerifier;
+                return _hashCodeVerifier;
             }
         }
 
@@ -90,7 +37,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_EqualityVerifier;
+                return _equalityVerifier;
             }
         }
 
@@ -254,6 +201,58 @@ namespace Nuclei.Plugins
             object second = new object();
 
             Assert.Throws<ArgumentException>(() => first.CompareTo(second));
+        }
+
+        private sealed class PartRegistrationIdEqualityContractVerifier : EqualityContractVerifier<PartRegistrationId>
+        {
+            private readonly PartRegistrationId _first = new PartRegistrationId(typeof(string).FullName, 0);
+
+            private readonly PartRegistrationId _second = new PartRegistrationId(typeof(int).FullName, 0);
+
+            protected override PartRegistrationId Copy(PartRegistrationId original)
+            {
+                return original.Clone();
+            }
+
+            protected override PartRegistrationId FirstInstance
+            {
+                get
+                {
+                    return _first;
+                }
+            }
+
+            protected override PartRegistrationId SecondInstance
+            {
+                get
+                {
+                    return _second;
+                }
+            }
+
+            protected override bool HasOperatorOverloads
+            {
+                get
+                {
+                    return true;
+                }
+            }
+        }
+
+        private sealed class PartRegistrationIdHashcodeContractVerfier : HashCodeContractVerifier
+        {
+            private readonly IEnumerable<PartRegistrationId> _distinctInstances
+                = new List<PartRegistrationId>
+                     {
+                        new PartRegistrationId(typeof(string).FullName, 0),
+                        new PartRegistrationId(typeof(int).FullName, 0),
+                        new PartRegistrationId(typeof(string).FullName, 1),
+                     };
+
+            protected override IEnumerable<int> GetHashCodes()
+            {
+                return _distinctInstances.Select(i => i.GetHashCode());
+            }
         }
     }
 }

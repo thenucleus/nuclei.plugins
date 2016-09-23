@@ -13,83 +13,24 @@ using System.Reflection;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins
+namespace Nuclei.Plugins.Core
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class PropertyDefinitionTest : EqualityContractVerifierTest
     {
-        private sealed class PropertyDefinitionEqualityContractVerifier : EqualityContractVerifier<PropertyDefinition>
-        {
-            private readonly PropertyDefinition m_First
-                = PropertyDefinition.CreateDefinition(typeof(string).GetProperty("Length"));
+        private readonly PropertyDefinitionHashcodeContractVerfier _hashCodeVerifier = new PropertyDefinitionHashcodeContractVerfier();
 
-            private readonly PropertyDefinition m_Second
-                = PropertyDefinition.CreateDefinition(typeof(Version).GetProperty("Build"));
+        private readonly PropertyDefinitionEqualityContractVerifier _equalityVerifier = new PropertyDefinitionEqualityContractVerifier();
 
-            protected override PropertyDefinition Copy(PropertyDefinition original)
-            {
-                if (original.DeclaringType.Equals(typeof(string)))
-                {
-                    return PropertyDefinition.CreateDefinition(typeof(string).GetProperty("Length"));
-                }
-
-                return PropertyDefinition.CreateDefinition(typeof(Version).GetProperty("Build"));
-            }
-
-            protected override PropertyDefinition FirstInstance
-            {
-                get
-                {
-                    return m_First;
-                }
-            }
-
-            protected override PropertyDefinition SecondInstance
-            {
-                get
-                {
-                    return m_Second;
-                }
-            }
-
-            protected override bool HasOperatorOverloads
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class PropertyDefinitionHashcodeContractVerfier : HashcodeContractVerifier
-        {
-            private readonly IEnumerable<PropertyDefinition> m_DistinctInstances
-                = new List<PropertyDefinition> 
-                     {
-                        PropertyDefinition.CreateDefinition(typeof(string).GetProperty("Length")),
-                        PropertyDefinition.CreateDefinition(typeof(Version).GetProperty("Build")),
-                        PropertyDefinition.CreateDefinition(typeof(List<int>).GetProperty("Count")),
-                        PropertyDefinition.CreateDefinition(typeof(TimeZone).GetProperty("StandardName")),
-                        PropertyDefinition.CreateDefinition(typeof(TimeZoneInfo).GetProperty("StandardName")),
-                     };
-
-            protected override IEnumerable<int> GetHashcodes()
-            {
-                return m_DistinctInstances.Select(i => i.GetHashCode());
-            }
-        }
-
-        private readonly PropertyDefinitionHashcodeContractVerfier m_HashcodeVerifier = new PropertyDefinitionHashcodeContractVerfier();
-
-        private readonly PropertyDefinitionEqualityContractVerifier m_EqualityVerifier = new PropertyDefinitionEqualityContractVerifier();
-
-        protected override HashcodeContractVerifier HashContract
+        protected override HashCodeContractVerifier HashContract
         {
             get
             {
-                return m_HashcodeVerifier;
+                return _hashCodeVerifier;
             }
         }
 
@@ -97,7 +38,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_EqualityVerifier;
+                return _equalityVerifier;
             }
         }
 
@@ -124,6 +65,67 @@ namespace Nuclei.Plugins
             Assert.AreEqual(property.Name, obj.PropertyName);
             Assert.AreEqual(TypeIdentity.CreateDefinition(property.PropertyType), obj.PropertyType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(property.DeclaringType), obj.DeclaringType);
+        }
+
+        private sealed class PropertyDefinitionEqualityContractVerifier : EqualityContractVerifier<PropertyDefinition>
+        {
+            private readonly PropertyDefinition _first
+                = PropertyDefinition.CreateDefinition(typeof(string).GetProperty("Length"));
+
+            private readonly PropertyDefinition _second
+                = PropertyDefinition.CreateDefinition(typeof(Version).GetProperty("Build"));
+
+            protected override PropertyDefinition Copy(PropertyDefinition original)
+            {
+                if (original.DeclaringType.Equals(typeof(string)))
+                {
+                    return PropertyDefinition.CreateDefinition(typeof(string).GetProperty("Length"));
+                }
+
+                return PropertyDefinition.CreateDefinition(typeof(Version).GetProperty("Build"));
+            }
+
+            protected override PropertyDefinition FirstInstance
+            {
+                get
+                {
+                    return _first;
+                }
+            }
+
+            protected override PropertyDefinition SecondInstance
+            {
+                get
+                {
+                    return _second;
+                }
+            }
+
+            protected override bool HasOperatorOverloads
+            {
+                get
+                {
+                    return true;
+                }
+            }
+        }
+
+        private sealed class PropertyDefinitionHashcodeContractVerfier : HashCodeContractVerifier
+        {
+            private readonly IEnumerable<PropertyDefinition> _distinctInstances
+                = new List<PropertyDefinition>
+                     {
+                        PropertyDefinition.CreateDefinition(typeof(string).GetProperty("Length")),
+                        PropertyDefinition.CreateDefinition(typeof(Version).GetProperty("Build")),
+                        PropertyDefinition.CreateDefinition(typeof(List<int>).GetProperty("Count")),
+                        PropertyDefinition.CreateDefinition(typeof(TimeZone).GetProperty("StandardName")),
+                        PropertyDefinition.CreateDefinition(typeof(TimeZoneInfo).GetProperty("StandardName")),
+                     };
+
+            protected override IEnumerable<int> GetHashCodes()
+            {
+                return _distinctInstances.Select(i => i.GetHashCode());
+            }
         }
     }
 }

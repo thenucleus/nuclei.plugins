@@ -12,86 +12,26 @@ using System.Linq;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins
+namespace Nuclei.Plugins.Core
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class TypeBasedExportDefinitionTest : EqualityContractVerifierTest
     {
-        private sealed class TypeBasedExportDefinitionEqualityContractVerifier : EqualityContractVerifier<TypeBasedExportDefinition>
-        {
-            private readonly TypeBasedExportDefinition m_First = TypeBasedExportDefinition.CreateDefinition("A", typeof(string));
-
-            private readonly TypeBasedExportDefinition m_Second = TypeBasedExportDefinition.CreateDefinition("B", typeof(object));
-
-            protected override TypeBasedExportDefinition Copy(TypeBasedExportDefinition original)
-            {
-                if (original.ContractName.Equals("A"))
-                {
-                    return TypeBasedExportDefinition.CreateDefinition("A", typeof(string));
-                }
-
-                return TypeBasedExportDefinition.CreateDefinition("B", typeof(object));
-            }
-
-            protected override TypeBasedExportDefinition FirstInstance
-            {
-                get
-                {
-                    return m_First;
-                }
-            }
-
-            protected override TypeBasedExportDefinition SecondInstance
-            {
-                get
-                {
-                    return m_Second;
-                }
-            }
-
-            protected override bool HasOperatorOverloads
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class TypeBasedExportDefinitionHashcodeContractVerfier : HashcodeContractVerifier
-        {
-            private readonly IEnumerable<TypeBasedExportDefinition> m_DistinctInstances
-                = new List<TypeBasedExportDefinition> 
-                     {
-                        TypeBasedExportDefinition.CreateDefinition("A", typeof(string)),
-                        TypeBasedExportDefinition.CreateDefinition("B", typeof(object)),
-                        TypeBasedExportDefinition.CreateDefinition("C", typeof(int)),
-                        TypeBasedExportDefinition.CreateDefinition("D", typeof(IComparable)),
-                        TypeBasedExportDefinition.CreateDefinition("E", typeof(IComparable<>)),
-                        TypeBasedExportDefinition.CreateDefinition("F", typeof(List<int>)),
-                        TypeBasedExportDefinition.CreateDefinition("G", typeof(double)),
-                        TypeBasedExportDefinition.CreateDefinition("H", typeof(void)),
-                     };
-
-            protected override IEnumerable<int> GetHashcodes()
-            {
-                return m_DistinctInstances.Select(i => i.GetHashCode());
-            }
-        }
-
-        private readonly TypeBasedExportDefinitionHashcodeContractVerfier m_HashcodeVerifier 
+        private readonly TypeBasedExportDefinitionHashcodeContractVerfier _hashCodeVerifier
             = new TypeBasedExportDefinitionHashcodeContractVerfier();
 
-        private readonly TypeBasedExportDefinitionEqualityContractVerifier m_EqualityVerifier 
+        private readonly TypeBasedExportDefinitionEqualityContractVerifier _equalityVerifier
             = new TypeBasedExportDefinitionEqualityContractVerifier();
 
-        protected override HashcodeContractVerifier HashContract
+        protected override HashCodeContractVerifier HashContract
         {
             get
             {
-                return m_HashcodeVerifier;
+                return _hashCodeVerifier;
             }
         }
 
@@ -99,11 +39,13 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_EqualityVerifier;
+                return _equalityVerifier;
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible",
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1034:NestedTypesShouldNotBeVisible",
             Justification = "Type has to be public for it to be used for reflection.")]
         public sealed class Nested<TKey, TValue>
         {
@@ -144,6 +86,68 @@ namespace Nuclei.Plugins
 
             Assert.AreEqual("A", obj.ContractName);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<>)), obj.DeclaringType);
+        }
+
+        private sealed class TypeBasedExportDefinitionEqualityContractVerifier : EqualityContractVerifier<TypeBasedExportDefinition>
+        {
+            private readonly TypeBasedExportDefinition _first = TypeBasedExportDefinition.CreateDefinition("A", typeof(string));
+
+            private readonly TypeBasedExportDefinition _second = TypeBasedExportDefinition.CreateDefinition("B", typeof(object));
+
+            protected override TypeBasedExportDefinition Copy(TypeBasedExportDefinition original)
+            {
+                if (original.ContractName.Equals("A"))
+                {
+                    return TypeBasedExportDefinition.CreateDefinition("A", typeof(string));
+                }
+
+                return TypeBasedExportDefinition.CreateDefinition("B", typeof(object));
+            }
+
+            protected override TypeBasedExportDefinition FirstInstance
+            {
+                get
+                {
+                    return _first;
+                }
+            }
+
+            protected override TypeBasedExportDefinition SecondInstance
+            {
+                get
+                {
+                    return _second;
+                }
+            }
+
+            protected override bool HasOperatorOverloads
+            {
+                get
+                {
+                    return true;
+                }
+            }
+        }
+
+        private sealed class TypeBasedExportDefinitionHashcodeContractVerfier : HashCodeContractVerifier
+        {
+            private readonly IEnumerable<TypeBasedExportDefinition> _distinctInstances
+                = new List<TypeBasedExportDefinition>
+                     {
+                        TypeBasedExportDefinition.CreateDefinition("A", typeof(string)),
+                        TypeBasedExportDefinition.CreateDefinition("B", typeof(object)),
+                        TypeBasedExportDefinition.CreateDefinition("C", typeof(int)),
+                        TypeBasedExportDefinition.CreateDefinition("D", typeof(IComparable)),
+                        TypeBasedExportDefinition.CreateDefinition("E", typeof(IComparable<>)),
+                        TypeBasedExportDefinition.CreateDefinition("F", typeof(List<int>)),
+                        TypeBasedExportDefinition.CreateDefinition("G", typeof(double)),
+                        TypeBasedExportDefinition.CreateDefinition("H", typeof(void)),
+                     };
+
+            protected override IEnumerable<int> GetHashCodes()
+            {
+                return _distinctInstances.Select(i => i.GetHashCode());
+            }
         }
     }
 }

@@ -10,86 +10,28 @@ using System.ComponentModel.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins
+namespace Nuclei.Plugins.Core
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class AssemblyDefinitionTest : EqualityContractVerifierTest
     {
-        private sealed class AssemblyDefinitionEqualityContractVerifier : EqualityContractVerifier<AssemblyDefinition>
-        {
-            private readonly AssemblyDefinition m_First = AssemblyDefinition.CreateDefinition(typeof(string).Assembly);
+        private readonly AssemblyDefinitionHashcodeContractVerfier _hashCodeVerifier = new AssemblyDefinitionHashcodeContractVerfier();
 
-            private readonly AssemblyDefinition m_Second = AssemblyDefinition.CreateDefinition(typeof(ExportAttribute).Assembly);
+        private readonly AssemblyDefinitionEqualityContractVerifier _equalityVerifier = new AssemblyDefinitionEqualityContractVerifier();
 
-            protected override AssemblyDefinition Copy(AssemblyDefinition original)
-            {
-                if (original.FullName.Equals(typeof(string).Assembly.FullName))
-                {
-                    return AssemblyDefinition.CreateDefinition(typeof(string).Assembly);
-                }
-
-                return AssemblyDefinition.CreateDefinition(typeof(ExportAttribute).Assembly);
-            }
-
-            protected override AssemblyDefinition FirstInstance
-            {
-                get
-                {
-                    return m_First;
-                }
-            }
-
-            protected override AssemblyDefinition SecondInstance
-            {
-                get
-                {
-                    return m_Second;
-                }
-            }
-
-            protected override bool HasOperatorOverloads
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class AssemblyDefinitionHashcodeContractVerfier : HashcodeContractVerifier
-        {
-            private readonly IEnumerable<AssemblyDefinition> m_DistinctInstances
-                = new List<AssemblyDefinition> 
-                     {
-                        AssemblyDefinition.CreateDefinition(typeof(string).Assembly),
-                        AssemblyDefinition.CreateDefinition(typeof(ExportAttribute).Assembly),
-                        AssemblyDefinition.CreateDefinition(typeof(TestFixtureAttribute).Assembly),
-                        AssemblyDefinition.CreateDefinition(typeof(BigInteger).Assembly),
-                        AssemblyDefinition.CreateDefinition(typeof(AssemblyDefinition).Assembly),
-                     };
-
-            protected override IEnumerable<int> GetHashcodes()
-            {
-                return m_DistinctInstances.Select(i => i.GetHashCode());
-            }
-        }
-
-        private readonly AssemblyDefinitionHashcodeContractVerfier m_HashcodeVerifier = new AssemblyDefinitionHashcodeContractVerfier();
-
-        private readonly AssemblyDefinitionEqualityContractVerifier m_EqualityVerifier = new AssemblyDefinitionEqualityContractVerifier();
-
-        protected override HashcodeContractVerifier HashContract
+        protected override HashCodeContractVerifier HashContract
         {
             get
             {
-                return m_HashcodeVerifier;
+                return _hashCodeVerifier;
             }
         }
 
@@ -97,7 +39,7 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_EqualityVerifier;
+                return _equalityVerifier;
             }
         }
 
@@ -127,6 +69,64 @@ namespace Nuclei.Plugins
             }
 
             Assert.AreEqual(token.ToString(), obj.PublicKeyToken);
+        }
+
+        private sealed class AssemblyDefinitionEqualityContractVerifier : EqualityContractVerifier<AssemblyDefinition>
+        {
+            private readonly AssemblyDefinition _first = AssemblyDefinition.CreateDefinition(typeof(string).Assembly);
+
+            private readonly AssemblyDefinition _second = AssemblyDefinition.CreateDefinition(typeof(ExportAttribute).Assembly);
+
+            protected override AssemblyDefinition Copy(AssemblyDefinition original)
+            {
+                if (original.FullName.Equals(typeof(string).Assembly.FullName))
+                {
+                    return AssemblyDefinition.CreateDefinition(typeof(string).Assembly);
+                }
+
+                return AssemblyDefinition.CreateDefinition(typeof(ExportAttribute).Assembly);
+            }
+
+            protected override AssemblyDefinition FirstInstance
+            {
+                get
+                {
+                    return _first;
+                }
+            }
+
+            protected override AssemblyDefinition SecondInstance
+            {
+                get
+                {
+                    return _second;
+                }
+            }
+
+            protected override bool HasOperatorOverloads
+            {
+                get
+                {
+                    return true;
+                }
+            }
+        }
+
+        private sealed class AssemblyDefinitionHashcodeContractVerfier : HashCodeContractVerifier
+        {
+            private readonly IEnumerable<AssemblyDefinition> _distinctInstances
+                = new List<AssemblyDefinition>
+                     {
+                        AssemblyDefinition.CreateDefinition(typeof(string).Assembly),
+                        AssemblyDefinition.CreateDefinition(typeof(ExportAttribute).Assembly),
+                        AssemblyDefinition.CreateDefinition(typeof(TestFixtureAttribute).Assembly),
+                        AssemblyDefinition.CreateDefinition(typeof(AssemblyDefinition).Assembly),
+                     };
+
+            protected override IEnumerable<int> GetHashCodes()
+            {
+                return _distinctInstances.Select(i => i.GetHashCode());
+            }
         }
     }
 }

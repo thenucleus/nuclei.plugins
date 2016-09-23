@@ -13,83 +13,29 @@ using System.Reflection;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins
+namespace Nuclei.Plugins.Core
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class MethodDefinitionTest : EqualityContractVerifierTest
     {
-        private sealed class MethodDefinitionEqualityContractVerifier : EqualityContractVerifier<MethodDefinition>
+        private static MethodInfo GetMethodForInt()
         {
-            private readonly MethodDefinition m_First 
-                = MethodDefinition.CreateDefinition(typeof(string).GetMethod("Contains"));
-
-            private readonly MethodDefinition m_Second 
-                = MethodDefinition.CreateDefinition(typeof(int).GetMethod("CompareTo", new[] { typeof(int) }));
-
-            protected override MethodDefinition Copy(MethodDefinition original)
-            {
-                if (original.DeclaringType.Equals(typeof(string)))
-                {
-                    return MethodDefinition.CreateDefinition(typeof(string).GetMethod("Contains"));
-                }
-
-                return MethodDefinition.CreateDefinition(typeof(int).GetMethod("CompareTo", new[] { typeof(int) }));
-            }
-
-            protected override MethodDefinition FirstInstance
-            {
-                get
-                {
-                    return m_First;
-                }
-            }
-
-            protected override MethodDefinition SecondInstance
-            {
-                get
-                {
-                    return m_Second;
-                }
-            }
-
-            protected override bool HasOperatorOverloads
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            return typeof(int).GetMethod("CompareTo", new[] { typeof(int) });
         }
 
-        private sealed class MethodDefinitionHashcodeContractVerfier : HashcodeContractVerifier
-        {
-            private readonly IEnumerable<MethodDefinition> m_DistinctInstances
-                = new List<MethodDefinition> 
-                     {
-                        MethodDefinition.CreateDefinition(typeof(string).GetMethod("Contains")),
-                        MethodDefinition.CreateDefinition(typeof(int).GetMethod("CompareTo", new[] { typeof(int) })),
-                        MethodDefinition.CreateDefinition(typeof(double).GetMethod("CompareTo", new[] { typeof(double) })),
-                        MethodDefinition.CreateDefinition(typeof(IComparable).GetMethod("CompareTo")),
-                        MethodDefinition.CreateDefinition(typeof(IComparable<>).GetMethod("CompareTo")),
-                     };
+        private readonly MethodDefinitionHashcodeContractVerfier _hashCodeVerifier = new MethodDefinitionHashcodeContractVerfier();
 
-            protected override IEnumerable<int> GetHashcodes()
-            {
-                return m_DistinctInstances.Select(i => i.GetHashCode());
-            }
-        }
+        private readonly MethodDefinitionEqualityContractVerifier _equalityVerifier = new MethodDefinitionEqualityContractVerifier();
 
-        private readonly MethodDefinitionHashcodeContractVerfier m_HashcodeVerifier = new MethodDefinitionHashcodeContractVerfier();
-
-        private readonly MethodDefinitionEqualityContractVerifier m_EqualityVerifier = new MethodDefinitionEqualityContractVerifier();
-
-        protected override HashcodeContractVerifier HashContract
+        protected override HashCodeContractVerifier HashContract
         {
             get
             {
-                return m_HashcodeVerifier;
+                return _hashCodeVerifier;
             }
         }
 
@@ -97,13 +43,8 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_EqualityVerifier;
+                return _equalityVerifier;
             }
-        }
-
-        private static MethodInfo GetMethodForInt()
-        {
-            return typeof(int).GetMethod("CompareTo", new[] { typeof(int) });
         }
 
         [Test]
@@ -127,6 +68,67 @@ namespace Nuclei.Plugins
                 obj.Parameters,
                 Is.EquivalentTo(method.GetParameters().Select(p => ParameterDefinition.CreateDefinition(p))));
             Assert.AreEqual(TypeIdentity.CreateDefinition(method.DeclaringType), obj.DeclaringType);
+        }
+
+        private sealed class MethodDefinitionEqualityContractVerifier : EqualityContractVerifier<MethodDefinition>
+        {
+            private readonly MethodDefinition _first
+                = MethodDefinition.CreateDefinition(typeof(string).GetMethod("Contains"));
+
+            private readonly MethodDefinition _second
+                = MethodDefinition.CreateDefinition(typeof(int).GetMethod("CompareTo", new[] { typeof(int) }));
+
+            protected override MethodDefinition Copy(MethodDefinition original)
+            {
+                if (original.DeclaringType.Equals(typeof(string)))
+                {
+                    return MethodDefinition.CreateDefinition(typeof(string).GetMethod("Contains"));
+                }
+
+                return MethodDefinition.CreateDefinition(typeof(int).GetMethod("CompareTo", new[] { typeof(int) }));
+            }
+
+            protected override MethodDefinition FirstInstance
+            {
+                get
+                {
+                    return _first;
+                }
+            }
+
+            protected override MethodDefinition SecondInstance
+            {
+                get
+                {
+                    return _second;
+                }
+            }
+
+            protected override bool HasOperatorOverloads
+            {
+                get
+                {
+                    return true;
+                }
+            }
+        }
+
+        private sealed class MethodDefinitionHashcodeContractVerfier : HashCodeContractVerifier
+        {
+            private readonly IEnumerable<MethodDefinition> _distinctInstances
+                = new List<MethodDefinition>
+                     {
+                        MethodDefinition.CreateDefinition(typeof(string).GetMethod("Contains")),
+                        MethodDefinition.CreateDefinition(typeof(int).GetMethod("CompareTo", new[] { typeof(int) })),
+                        MethodDefinition.CreateDefinition(typeof(double).GetMethod("CompareTo", new[] { typeof(double) })),
+                        MethodDefinition.CreateDefinition(typeof(IComparable).GetMethod("CompareTo")),
+                        MethodDefinition.CreateDefinition(typeof(IComparable<>).GetMethod("CompareTo")),
+                     };
+
+            protected override IEnumerable<int> GetHashCodes()
+            {
+                return _distinctInstances.Select(i => i.GetHashCode());
+            }
         }
     }
 }

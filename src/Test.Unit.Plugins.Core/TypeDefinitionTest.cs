@@ -13,84 +13,25 @@ using System.Linq;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins
+namespace Nuclei.Plugins.Core
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class TypeDefinitionTest : EqualityContractVerifierTest
     {
-        private sealed class EndpointIdEqualityContractVerifier : EqualityContractVerifier<TypeDefinition>
-        {
-            private readonly TypeDefinition m_First = TypeDefinition.CreateDefinition(typeof(string), TypeIdentity.CreateDefinition);
 
-            private readonly TypeDefinition m_Second = TypeDefinition.CreateDefinition(typeof(object), TypeIdentity.CreateDefinition);
+        private readonly EndpointIdHashcodeContractVerfier _hashCodeVerifier = new EndpointIdHashcodeContractVerfier();
 
-            protected override TypeDefinition Copy(TypeDefinition original)
-            {
-                if (original.Identity.Equals(typeof(string)))
-                {
-                    return TypeDefinition.CreateDefinition(typeof(string), TypeIdentity.CreateDefinition);
-                }
+        private readonly EndpointIdEqualityContractVerifier _equalityVerifier = new EndpointIdEqualityContractVerifier();
 
-                return TypeDefinition.CreateDefinition(typeof(object), TypeIdentity.CreateDefinition);
-            }
-
-            protected override TypeDefinition FirstInstance
-            {
-                get
-                {
-                    return m_First;
-                }
-            }
-
-            protected override TypeDefinition SecondInstance
-            {
-                get
-                {
-                    return m_Second;
-                }
-            }
-
-            protected override bool HasOperatorOverloads
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class EndpointIdHashcodeContractVerfier : HashcodeContractVerifier
-        {
-            private readonly IEnumerable<TypeDefinition> m_DistinctInstances
-                = new List<TypeDefinition> 
-                     {
-                        TypeDefinition.CreateDefinition(typeof(string), TypeIdentity.CreateDefinition),
-                        TypeDefinition.CreateDefinition(typeof(object), TypeIdentity.CreateDefinition),
-                        TypeDefinition.CreateDefinition(typeof(int), TypeIdentity.CreateDefinition),
-                        TypeDefinition.CreateDefinition(typeof(IComparable), TypeIdentity.CreateDefinition),
-                        TypeDefinition.CreateDefinition(typeof(IComparable<>), TypeIdentity.CreateDefinition),
-                        TypeDefinition.CreateDefinition(typeof(List<int>), TypeIdentity.CreateDefinition),
-                        TypeDefinition.CreateDefinition(typeof(double), TypeIdentity.CreateDefinition),
-                        TypeDefinition.CreateDefinition(typeof(void), TypeIdentity.CreateDefinition),
-                     };
-
-            protected override IEnumerable<int> GetHashcodes()
-            {
-                return m_DistinctInstances.Select(i => i.GetHashCode());
-            }
-        }
-
-        private readonly EndpointIdHashcodeContractVerfier m_HashcodeVerifier = new EndpointIdHashcodeContractVerfier();
-
-        private readonly EndpointIdEqualityContractVerifier m_EqualityVerifier = new EndpointIdEqualityContractVerifier();
-
-        protected override HashcodeContractVerifier HashContract
+        protected override HashCodeContractVerifier HashContract
         {
             get
             {
-                return m_HashcodeVerifier;
+                return _hashCodeVerifier;
             }
         }
 
@@ -98,14 +39,16 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_EqualityVerifier;
+                return _equalityVerifier;
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible",
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1034:NestedTypesShouldNotBeVisible",
             Justification = "Type has to be public for it to be used for reflection.")]
         public sealed class Nested<TKey, TValue>
-        { 
+        {
         }
 
         [Test]
@@ -165,6 +108,68 @@ namespace Nuclei.Plugins
             Assert.AreEqual(typeof(IEnumerable<>).IsInterface, obj.IsInterface);
             Assert.IsNull(obj.BaseType);
             Assert.That(obj.BaseInterfaces, Is.EquivalentTo(new[] { TypeIdentity.CreateDefinition(typeof(IEnumerable)) }));
+        }
+
+        private sealed class EndpointIdEqualityContractVerifier : EqualityContractVerifier<TypeDefinition>
+        {
+            private readonly TypeDefinition _first = TypeDefinition.CreateDefinition(typeof(string), TypeIdentity.CreateDefinition);
+
+            private readonly TypeDefinition _second = TypeDefinition.CreateDefinition(typeof(object), TypeIdentity.CreateDefinition);
+
+            protected override TypeDefinition Copy(TypeDefinition original)
+            {
+                if (original.Identity.Equals(typeof(string)))
+                {
+                    return TypeDefinition.CreateDefinition(typeof(string), TypeIdentity.CreateDefinition);
+                }
+
+                return TypeDefinition.CreateDefinition(typeof(object), TypeIdentity.CreateDefinition);
+            }
+
+            protected override TypeDefinition FirstInstance
+            {
+                get
+                {
+                    return _first;
+                }
+            }
+
+            protected override TypeDefinition SecondInstance
+            {
+                get
+                {
+                    return _second;
+                }
+            }
+
+            protected override bool HasOperatorOverloads
+            {
+                get
+                {
+                    return true;
+                }
+            }
+        }
+
+        private sealed class EndpointIdHashcodeContractVerfier : HashCodeContractVerifier
+        {
+            private readonly IEnumerable<TypeDefinition> _distinctInstances
+                = new List<TypeDefinition>
+                     {
+                        TypeDefinition.CreateDefinition(typeof(string), TypeIdentity.CreateDefinition),
+                        TypeDefinition.CreateDefinition(typeof(object), TypeIdentity.CreateDefinition),
+                        TypeDefinition.CreateDefinition(typeof(int), TypeIdentity.CreateDefinition),
+                        TypeDefinition.CreateDefinition(typeof(IComparable), TypeIdentity.CreateDefinition),
+                        TypeDefinition.CreateDefinition(typeof(IComparable<>), TypeIdentity.CreateDefinition),
+                        TypeDefinition.CreateDefinition(typeof(List<int>), TypeIdentity.CreateDefinition),
+                        TypeDefinition.CreateDefinition(typeof(double), TypeIdentity.CreateDefinition),
+                        TypeDefinition.CreateDefinition(typeof(void), TypeIdentity.CreateDefinition),
+                     };
+
+            protected override IEnumerable<int> GetHashCodes()
+            {
+                return _distinctInstances.Select(i => i.GetHashCode());
+            }
         }
     }
 }

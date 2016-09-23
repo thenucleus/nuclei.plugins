@@ -15,154 +15,31 @@ using System.Reflection;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins
+namespace Nuclei.Plugins.Core
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class ConstructorBasedImportDefinitionTest : EqualityContractVerifierTest
     {
-        private sealed class ConstructorBasedImportDefinitionEqualityContractVerifier : EqualityContractVerifier<ConstructorBasedImportDefinition>
+        private static ConstructorInfo GetConstructorForString()
         {
-            private readonly ConstructorBasedImportDefinition m_First = ConstructorBasedImportDefinition.CreateDefinition(
-                "A",
-                TypeIdentity.CreateDefinition(typeof(char[])),
-                ImportCardinality.ExactlyOne,
-                CreationPolicy.NonShared,
-                typeof(string).GetConstructor(
-                    new[] 
-                    { 
-                        typeof(char[])
-                    }).GetParameters().First());
-
-            private readonly ConstructorBasedImportDefinition m_Second = ConstructorBasedImportDefinition.CreateDefinition(
-                "B",
-                TypeIdentity.CreateDefinition(typeof(string)),
-                ImportCardinality.ExactlyOne,
-                CreationPolicy.NonShared,
-                typeof(Uri).GetConstructor(
-                    new[] 
-                    {
-                        typeof(string)
-                    }).GetParameters().First());
-
-            protected override ConstructorBasedImportDefinition Copy(ConstructorBasedImportDefinition original)
-            {
-                if (original.ContractName.Equals("A"))
-                {
-                    return ConstructorBasedImportDefinition.CreateDefinition(
-                        "A",
-                        TypeIdentity.CreateDefinition(typeof(char[])),
-                        ImportCardinality.ExactlyOne,
-                        CreationPolicy.NonShared,
-                        typeof(string).GetConstructor(
-                            new[] 
-                            { 
-                                typeof(char[])
-                            }).GetParameters().First());
-                }
-
-                return ConstructorBasedImportDefinition.CreateDefinition(
-                    "B",
-                    TypeIdentity.CreateDefinition(typeof(string)),
-                    ImportCardinality.ExactlyOne,
-                    CreationPolicy.NonShared,
-                    typeof(Uri).GetConstructor(
-                        new[] 
-                        {
-                            typeof(string)
-                        }).GetParameters().First());
-            }
-
-            protected override ConstructorBasedImportDefinition FirstInstance
-            {
-                get
-                {
-                    return m_First;
-                }
-            }
-
-            protected override ConstructorBasedImportDefinition SecondInstance
-            {
-                get
-                {
-                    return m_Second;
-                }
-            }
-
-            protected override bool HasOperatorOverloads
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            return typeof(string).GetConstructor(new[] { typeof(char[]) });
         }
 
-        private sealed class ConstructorBasedImportDefinitionHashcodeContractVerfier : HashcodeContractVerifier
-        {
-            private readonly IEnumerable<ConstructorBasedImportDefinition> m_DistinctInstances
-                = new List<ConstructorBasedImportDefinition> 
-                     {
-                        ConstructorBasedImportDefinition.CreateDefinition(
-                            "A",
-                            TypeIdentity.CreateDefinition(typeof(char[])),
-                            ImportCardinality.ExactlyOne,
-                            CreationPolicy.NonShared,
-                            typeof(string).GetConstructor(
-                                new[] 
-                                { 
-                                    typeof(char[])
-                                }).GetParameters().First()),
-                        ConstructorBasedImportDefinition.CreateDefinition(
-                            "B",
-                            TypeIdentity.CreateDefinition(typeof(string)),
-                            ImportCardinality.ExactlyOne,
-                            CreationPolicy.NonShared,
-                            typeof(Uri).GetConstructor(
-                                new[] 
-                                {
-                                    typeof(string)
-                                }).GetParameters().First()),
-                        ConstructorBasedImportDefinition.CreateDefinition(
-                            "C",
-                            TypeIdentity.CreateDefinition(typeof(string)),
-                            ImportCardinality.ExactlyOne,
-                            CreationPolicy.NonShared,
-                            typeof(Version).GetConstructor(
-                                new[] 
-                                {
-                                    typeof(string)
-                                }).GetParameters().First()),
-                        ConstructorBasedImportDefinition.CreateDefinition(
-                            "D",
-                            TypeIdentity.CreateDefinition(typeof(string)),
-                            ImportCardinality.ExactlyOne,
-                            CreationPolicy.NonShared,
-                            typeof(NotImplementedException).GetConstructor(
-                                new[] 
-                                {
-                                    typeof(string)
-                                }).GetParameters().First()),
-                     };
-
-            protected override IEnumerable<int> GetHashcodes()
-            {
-                return m_DistinctInstances.Select(i => i.GetHashCode());
-            }
-        }
-
-        private readonly ConstructorBasedImportDefinitionHashcodeContractVerfier m_HashcodeVerifier 
+        private readonly ConstructorBasedImportDefinitionHashcodeContractVerfier _hashCodeVerifier
             = new ConstructorBasedImportDefinitionHashcodeContractVerfier();
 
-        private readonly ConstructorBasedImportDefinitionEqualityContractVerifier m_EqualityVerifier 
+        private readonly ConstructorBasedImportDefinitionEqualityContractVerifier _equalityVerifier
             = new ConstructorBasedImportDefinitionEqualityContractVerifier();
 
-        protected override HashcodeContractVerifier HashContract
+        protected override HashCodeContractVerifier HashContract
         {
             get
             {
-                return m_HashcodeVerifier;
+                return _hashCodeVerifier;
             }
         }
 
@@ -170,13 +47,8 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_EqualityVerifier;
+                return _equalityVerifier;
             }
-        }
-
-        private static ConstructorInfo GetConstructorForString()
-        {
-            return typeof(string).GetConstructor(new[] { typeof(char[]) });
         }
 
         [Test]
@@ -213,6 +85,136 @@ namespace Nuclei.Plugins
             Assert.AreEqual(ConstructorDefinition.CreateDefinition(constructor), obj.Constructor);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(string)), obj.DeclaringType);
             Assert.AreEqual(ParameterDefinition.CreateDefinition(parameter), obj.Parameter);
+        }
+
+        private sealed class ConstructorBasedImportDefinitionEqualityContractVerifier : EqualityContractVerifier<ConstructorBasedImportDefinition>
+        {
+            private readonly ConstructorBasedImportDefinition _first = ConstructorBasedImportDefinition.CreateDefinition(
+                "A",
+                TypeIdentity.CreateDefinition(typeof(char[])),
+                ImportCardinality.ExactlyOne,
+                CreationPolicy.NonShared,
+                typeof(string).GetConstructor(
+                    new[]
+                    {
+                        typeof(char[])
+                    }).GetParameters().First());
+
+            private readonly ConstructorBasedImportDefinition _second = ConstructorBasedImportDefinition.CreateDefinition(
+                "B",
+                TypeIdentity.CreateDefinition(typeof(string)),
+                ImportCardinality.ExactlyOne,
+                CreationPolicy.NonShared,
+                typeof(Uri).GetConstructor(
+                    new[]
+                    {
+                        typeof(string)
+                    }).GetParameters().First());
+
+            protected override ConstructorBasedImportDefinition Copy(ConstructorBasedImportDefinition original)
+            {
+                if (original.ContractName.Equals("A"))
+                {
+                    return ConstructorBasedImportDefinition.CreateDefinition(
+                        "A",
+                        TypeIdentity.CreateDefinition(typeof(char[])),
+                        ImportCardinality.ExactlyOne,
+                        CreationPolicy.NonShared,
+                        typeof(string).GetConstructor(
+                            new[]
+                            {
+                                typeof(char[])
+                            }).GetParameters().First());
+                }
+
+                return ConstructorBasedImportDefinition.CreateDefinition(
+                    "B",
+                    TypeIdentity.CreateDefinition(typeof(string)),
+                    ImportCardinality.ExactlyOne,
+                    CreationPolicy.NonShared,
+                    typeof(Uri).GetConstructor(
+                        new[]
+                        {
+                            typeof(string)
+                        }).GetParameters().First());
+            }
+
+            protected override ConstructorBasedImportDefinition FirstInstance
+            {
+                get
+                {
+                    return _first;
+                }
+            }
+
+            protected override ConstructorBasedImportDefinition SecondInstance
+            {
+                get
+                {
+                    return _second;
+                }
+            }
+
+            protected override bool HasOperatorOverloads
+            {
+                get
+                {
+                    return true;
+                }
+            }
+        }
+
+        private sealed class ConstructorBasedImportDefinitionHashcodeContractVerfier : HashCodeContractVerifier
+        {
+            private readonly IEnumerable<ConstructorBasedImportDefinition> _distinctInstances
+                = new List<ConstructorBasedImportDefinition>
+                     {
+                        ConstructorBasedImportDefinition.CreateDefinition(
+                            "A",
+                            TypeIdentity.CreateDefinition(typeof(char[])),
+                            ImportCardinality.ExactlyOne,
+                            CreationPolicy.NonShared,
+                            typeof(string).GetConstructor(
+                                new[]
+                                {
+                                    typeof(char[])
+                                }).GetParameters().First()),
+                        ConstructorBasedImportDefinition.CreateDefinition(
+                            "B",
+                            TypeIdentity.CreateDefinition(typeof(string)),
+                            ImportCardinality.ExactlyOne,
+                            CreationPolicy.NonShared,
+                            typeof(Uri).GetConstructor(
+                                new[]
+                                {
+                                    typeof(string)
+                                }).GetParameters().First()),
+                        ConstructorBasedImportDefinition.CreateDefinition(
+                            "C",
+                            TypeIdentity.CreateDefinition(typeof(string)),
+                            ImportCardinality.ExactlyOne,
+                            CreationPolicy.NonShared,
+                            typeof(Version).GetConstructor(
+                                new[]
+                                {
+                                    typeof(string)
+                                }).GetParameters().First()),
+                        ConstructorBasedImportDefinition.CreateDefinition(
+                            "D",
+                            TypeIdentity.CreateDefinition(typeof(string)),
+                            ImportCardinality.ExactlyOne,
+                            CreationPolicy.NonShared,
+                            typeof(NotImplementedException).GetConstructor(
+                                new[]
+                                {
+                                    typeof(string)
+                                }).GetParameters().First()),
+                     };
+
+            protected override IEnumerable<int> GetHashCodes()
+            {
+                return _distinctInstances.Select(i => i.GetHashCode());
+            }
         }
     }
 }

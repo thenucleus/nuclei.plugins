@@ -13,83 +13,29 @@ using System.Reflection;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins
+namespace Nuclei.Plugins.Core
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class PropertyBasedExportDefinitionTest : EqualityContractVerifierTest
     {
-        private sealed class EndpointIdEqualityContractVerifier : EqualityContractVerifier<PropertyBasedExportDefinition>
+        private static PropertyInfo GetPropertyForString()
         {
-            private readonly PropertyBasedExportDefinition m_First 
-                = PropertyBasedExportDefinition.CreateDefinition("A", typeof(string).GetProperty("Length"));
-
-            private readonly PropertyBasedExportDefinition m_Second 
-                = PropertyBasedExportDefinition.CreateDefinition("B", typeof(Version).GetProperty("Build"));
-
-            protected override PropertyBasedExportDefinition Copy(PropertyBasedExportDefinition original)
-            {
-                if (original.ContractName.Equals("A"))
-                {
-                    return PropertyBasedExportDefinition.CreateDefinition("A", typeof(string).GetProperty("Length"));
-                }
-
-                return PropertyBasedExportDefinition.CreateDefinition("B", typeof(Version).GetProperty("Build"));
-            }
-
-            protected override PropertyBasedExportDefinition FirstInstance
-            {
-                get
-                {
-                    return m_First;
-                }
-            }
-
-            protected override PropertyBasedExportDefinition SecondInstance
-            {
-                get
-                {
-                    return m_Second;
-                }
-            }
-
-            protected override bool HasOperatorOverloads
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            return typeof(string).GetProperty("Length");
         }
 
-        private sealed class EndpointIdHashcodeContractVerfier : HashcodeContractVerifier
-        {
-            private readonly IEnumerable<PropertyBasedExportDefinition> m_DistinctInstances
-                = new List<PropertyBasedExportDefinition> 
-                     {
-                        PropertyBasedExportDefinition.CreateDefinition("A", typeof(string).GetProperty("Length")),
-                        PropertyBasedExportDefinition.CreateDefinition("B", typeof(Version).GetProperty("Build")),
-                        PropertyBasedExportDefinition.CreateDefinition("C", typeof(List<int>).GetProperty("Count")),
-                        PropertyBasedExportDefinition.CreateDefinition("D", typeof(TimeZone).GetProperty("StandardName")),
-                        PropertyBasedExportDefinition.CreateDefinition("E", typeof(TimeZoneInfo).GetProperty("StandardName")),
-                     };
+        private readonly EndpointIdHashcodeContractVerfier _hashCodeVerifier = new EndpointIdHashcodeContractVerfier();
 
-            protected override IEnumerable<int> GetHashcodes()
-            {
-                return m_DistinctInstances.Select(i => i.GetHashCode());
-            }
-        }
+        private readonly EndpointIdEqualityContractVerifier _equalityVerifier = new EndpointIdEqualityContractVerifier();
 
-        private readonly EndpointIdHashcodeContractVerfier m_HashcodeVerifier = new EndpointIdHashcodeContractVerfier();
-
-        private readonly EndpointIdEqualityContractVerifier m_EqualityVerifier = new EndpointIdEqualityContractVerifier();
-
-        protected override HashcodeContractVerifier HashContract
+        protected override HashCodeContractVerifier HashContract
         {
             get
             {
-                return m_HashcodeVerifier;
+                return _hashCodeVerifier;
             }
         }
 
@@ -97,13 +43,8 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_EqualityVerifier;
+                return _equalityVerifier;
             }
-        }
-
-        private static PropertyInfo GetPropertyForString()
-        {
-            return typeof(string).GetProperty("Length");
         }
 
         [Test]
@@ -124,6 +65,67 @@ namespace Nuclei.Plugins
             Assert.AreEqual("A", obj.ContractName);
             Assert.AreEqual(TypeIdentity.CreateDefinition(property.DeclaringType), obj.DeclaringType);
             Assert.AreEqual(PropertyDefinition.CreateDefinition(GetPropertyForString()), obj.Property);
+        }
+
+        private sealed class EndpointIdEqualityContractVerifier : EqualityContractVerifier<PropertyBasedExportDefinition>
+        {
+            private readonly PropertyBasedExportDefinition _first
+                = PropertyBasedExportDefinition.CreateDefinition("A", typeof(string).GetProperty("Length"));
+
+            private readonly PropertyBasedExportDefinition _second
+                = PropertyBasedExportDefinition.CreateDefinition("B", typeof(Version).GetProperty("Build"));
+
+            protected override PropertyBasedExportDefinition Copy(PropertyBasedExportDefinition original)
+            {
+                if (original.ContractName.Equals("A"))
+                {
+                    return PropertyBasedExportDefinition.CreateDefinition("A", typeof(string).GetProperty("Length"));
+                }
+
+                return PropertyBasedExportDefinition.CreateDefinition("B", typeof(Version).GetProperty("Build"));
+            }
+
+            protected override PropertyBasedExportDefinition FirstInstance
+            {
+                get
+                {
+                    return _first;
+                }
+            }
+
+            protected override PropertyBasedExportDefinition SecondInstance
+            {
+                get
+                {
+                    return _second;
+                }
+            }
+
+            protected override bool HasOperatorOverloads
+            {
+                get
+                {
+                    return true;
+                }
+            }
+        }
+
+        private sealed class EndpointIdHashcodeContractVerfier : HashCodeContractVerifier
+        {
+            private readonly IEnumerable<PropertyBasedExportDefinition> _distinctInstances
+                = new List<PropertyBasedExportDefinition>
+                     {
+                        PropertyBasedExportDefinition.CreateDefinition("A", typeof(string).GetProperty("Length")),
+                        PropertyBasedExportDefinition.CreateDefinition("B", typeof(Version).GetProperty("Build")),
+                        PropertyBasedExportDefinition.CreateDefinition("C", typeof(List<int>).GetProperty("Count")),
+                        PropertyBasedExportDefinition.CreateDefinition("D", typeof(TimeZone).GetProperty("StandardName")),
+                        PropertyBasedExportDefinition.CreateDefinition("E", typeof(TimeZoneInfo).GetProperty("StandardName")),
+                     };
+
+            protected override IEnumerable<int> GetHashCodes()
+            {
+                return _distinctInstances.Select(i => i.GetHashCode());
+            }
         }
     }
 }

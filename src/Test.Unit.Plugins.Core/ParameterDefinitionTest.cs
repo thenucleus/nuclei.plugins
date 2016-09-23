@@ -13,90 +13,29 @@ using System.Reflection;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins
+namespace Nuclei.Plugins.Core
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class ParameterDefinitionTest : EqualityContractVerifierTest
     {
-        private sealed class ParameterDefinitionEqualityContractVerifier : EqualityContractVerifier<ParameterDefinition>
+        private static ParameterInfo ParameterFromInt()
         {
-            private readonly ParameterDefinition m_First = ParameterDefinition.CreateDefinition(
-                typeof(string).GetMethod("Contains").GetParameters().First());
-
-            private readonly ParameterDefinition m_Second = ParameterDefinition.CreateDefinition(
-                typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First());
-
-            protected override ParameterDefinition Copy(ParameterDefinition original)
-            {
-                if (original.Identity.Equals(typeof(string)))
-                {
-                    return ParameterDefinition.CreateDefinition(
-                        typeof(string).GetMethod("Contains").GetParameters().First());
-                }
-
-                return ParameterDefinition.CreateDefinition(
-                    typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First());
-            }
-
-            protected override ParameterDefinition FirstInstance
-            {
-                get
-                {
-                    return m_First;
-                }
-            }
-
-            protected override ParameterDefinition SecondInstance
-            {
-                get
-                {
-                    return m_Second;
-                }
-            }
-
-            protected override bool HasOperatorOverloads
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            return typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First();
         }
 
-        private sealed class ParameterDefinitionHashcodeContractVerfier : HashcodeContractVerifier
-        {
-            private readonly IEnumerable<ParameterDefinition> m_DistinctInstances
-                = new List<ParameterDefinition> 
-                     {
-                        ParameterDefinition.CreateDefinition(
-                            typeof(string).GetMethod("Contains").GetParameters().First()),
-                        ParameterDefinition.CreateDefinition(
-                            typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First()),
-                        ParameterDefinition.CreateDefinition(
-                            typeof(double).GetMethod("CompareTo", new[] { typeof(double) }).GetParameters().First()),
-                        ParameterDefinition.CreateDefinition(
-                            typeof(IComparable).GetMethod("CompareTo").GetParameters().First()),
-                        ParameterDefinition.CreateDefinition(
-                            typeof(IComparable<>).GetMethod("CompareTo").GetParameters().First()),
-                     };
+        private readonly ParameterDefinitionHashcodeContractVerfier _hashCodeVerifier = new ParameterDefinitionHashcodeContractVerfier();
 
-            protected override IEnumerable<int> GetHashcodes()
-            {
-                return m_DistinctInstances.Select(i => i.GetHashCode());
-            }
-        }
+        private readonly ParameterDefinitionEqualityContractVerifier _equalityVerifier = new ParameterDefinitionEqualityContractVerifier();
 
-        private readonly ParameterDefinitionHashcodeContractVerfier m_HashcodeVerifier = new ParameterDefinitionHashcodeContractVerfier();
-
-        private readonly ParameterDefinitionEqualityContractVerifier m_EqualityVerifier = new ParameterDefinitionEqualityContractVerifier();
-
-        protected override HashcodeContractVerifier HashContract
+        protected override HashCodeContractVerifier HashContract
         {
             get
             {
-                return m_HashcodeVerifier;
+                return _hashCodeVerifier;
             }
         }
 
@@ -104,13 +43,8 @@ namespace Nuclei.Plugins
         {
             get
             {
-                return m_EqualityVerifier;
+                return _equalityVerifier;
             }
-        }
-
-        private static ParameterInfo ParameterFromInt()
-        {
-            return typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First();
         }
 
         [Test]
@@ -130,6 +64,74 @@ namespace Nuclei.Plugins
 
             Assert.AreEqual(parameter.Name, obj.Name);
             Assert.AreEqual(TypeIdentity.CreateDefinition(parameter.ParameterType), obj.Identity);
+        }
+
+        private sealed class ParameterDefinitionEqualityContractVerifier : EqualityContractVerifier<ParameterDefinition>
+        {
+            private readonly ParameterDefinition _first = ParameterDefinition.CreateDefinition(
+                typeof(string).GetMethod("Contains").GetParameters().First());
+
+            private readonly ParameterDefinition _second = ParameterDefinition.CreateDefinition(
+                typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First());
+
+            protected override ParameterDefinition Copy(ParameterDefinition original)
+            {
+                if (original.Identity.Equals(typeof(string)))
+                {
+                    return ParameterDefinition.CreateDefinition(
+                        typeof(string).GetMethod("Contains").GetParameters().First());
+                }
+
+                return ParameterDefinition.CreateDefinition(
+                    typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First());
+            }
+
+            protected override ParameterDefinition FirstInstance
+            {
+                get
+                {
+                    return _first;
+                }
+            }
+
+            protected override ParameterDefinition SecondInstance
+            {
+                get
+                {
+                    return _second;
+                }
+            }
+
+            protected override bool HasOperatorOverloads
+            {
+                get
+                {
+                    return true;
+                }
+            }
+        }
+
+        private sealed class ParameterDefinitionHashcodeContractVerfier : HashCodeContractVerifier
+        {
+            private readonly IEnumerable<ParameterDefinition> _distinctInstances
+                = new List<ParameterDefinition>
+                     {
+                        ParameterDefinition.CreateDefinition(
+                            typeof(string).GetMethod("Contains").GetParameters().First()),
+                        ParameterDefinition.CreateDefinition(
+                            typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First()),
+                        ParameterDefinition.CreateDefinition(
+                            typeof(double).GetMethod("CompareTo", new[] { typeof(double) }).GetParameters().First()),
+                        ParameterDefinition.CreateDefinition(
+                            typeof(IComparable).GetMethod("CompareTo").GetParameters().First()),
+                        ParameterDefinition.CreateDefinition(
+                            typeof(IComparable<>).GetMethod("CompareTo").GetParameters().First()),
+                     };
+
+            protected override IEnumerable<int> GetHashCodes()
+            {
+                return _distinctInstances.Select(i => i.GetHashCode());
+            }
         }
     }
 }
