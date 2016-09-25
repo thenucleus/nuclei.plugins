@@ -100,6 +100,7 @@
     <Compile Include="..\Test.SourceOnly\Mocks\MockPath.cs">
       <Link>Mocks\MockPath.cs</Link>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

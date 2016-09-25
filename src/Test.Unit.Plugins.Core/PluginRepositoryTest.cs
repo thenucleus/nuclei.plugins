@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Nuclei.Plugins.Discovery;
 using NUnit.Framework;
 using Test.Mocks;
 
@@ -104,7 +105,7 @@ namespace Nuclei.Plugins.Core
             Assert.IsTrue(repository.ContainsDefinitionForType(typeof(string).AssemblyQualifiedName));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(string))));
 
-            Assert.IsTrue(repository.IsSubTypeOf(TypeIdentity.CreateDefinition(typeof(object)), TypeIdentity.CreateDefinition(typeof(string))));
+            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(object)), TypeIdentity.CreateDefinition(typeof(string))));
         }
 
         [Test]
@@ -125,7 +126,7 @@ namespace Nuclei.Plugins.Core
             Assert.IsTrue(repository.ContainsDefinitionForType(typeof(object).AssemblyQualifiedName));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(object))));
 
-            Assert.IsTrue(repository.IsSubTypeOf(TypeIdentity.CreateDefinition(typeof(object)), TypeIdentity.CreateDefinition(typeof(string))));
+            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(object)), TypeIdentity.CreateDefinition(typeof(string))));
         }
 
         [Test]
@@ -146,7 +147,7 @@ namespace Nuclei.Plugins.Core
             Assert.IsTrue(repository.ContainsDefinitionForType(typeof(string).AssemblyQualifiedName));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(string))));
 
-            Assert.IsTrue(repository.IsSubTypeOf(TypeIdentity.CreateDefinition(typeof(IComparable)), TypeIdentity.CreateDefinition(typeof(string))));
+            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(IComparable)), TypeIdentity.CreateDefinition(typeof(string))));
         }
 
         [Test]
@@ -168,7 +169,7 @@ namespace Nuclei.Plugins.Core
             Assert.IsTrue(repository.ContainsDefinitionForType(typeof(IComparable).AssemblyQualifiedName));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(IComparable))));
 
-            Assert.IsTrue(repository.IsSubTypeOf(TypeIdentity.CreateDefinition(typeof(IComparable)), TypeIdentity.CreateDefinition(typeof(string))));
+            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(IComparable)), TypeIdentity.CreateDefinition(typeof(string))));
         }
 
         [Test]
@@ -190,7 +191,7 @@ namespace Nuclei.Plugins.Core
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(List<>))));
 
             Assert.IsTrue(
-                repository.IsSubTypeOf(
+                repository.IsSubtypeOf(
                     TypeIdentity.CreateDefinition(typeof(IEnumerable<>)),
                     TypeIdentity.CreateDefinition(typeof(List<>))));
         }
@@ -214,7 +215,7 @@ namespace Nuclei.Plugins.Core
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(IEnumerable<>))));
 
             Assert.IsTrue(
-                repository.IsSubTypeOf(
+                repository.IsSubtypeOf(
                     TypeIdentity.CreateDefinition(typeof(IEnumerable<>)),
                     TypeIdentity.CreateDefinition(typeof(List<>))));
         }
@@ -245,25 +246,6 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void AddGroup()
-        {
-            var repository = new PluginRepository();
-            var definition = new GroupDefinition("a");
-
-            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
-            repository.AddGroup(definition, fileInfo);
-
-            var groups = repository.Groups();
-            Assert.AreEqual(1, groups.Count());
-            Assert.AreSame(definition, groups.First());
-            Assert.AreSame(definition, repository.Group(new GroupRegistrationId("a")));
-
-            var files = repository.KnownPluginFiles();
-            Assert.AreEqual(1, files.Count());
-            Assert.AreSame(fileInfo, files.First());
-        }
-
-        [Test]
         public void RemovePlugins()
         {
             var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
@@ -278,23 +260,18 @@ namespace Nuclei.Plugins.Core
             var partFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
             repository.AddPart(partDefinition, partFileInfo);
 
-            var groupDefinition = new GroupDefinition("b");
-            var groupFileInfo = new PluginFileOrigin("c", DateTimeOffset.Now);
-            repository.AddGroup(groupDefinition, groupFileInfo);
-
             Assert.That(
                 repository.KnownPluginFiles(),
                 Is.EquivalentTo(
                     new List<PluginFileOrigin>
                     {
-                        partFileInfo,
-                        groupFileInfo,
+                        partFileInfo
                     }));
 
             repository.RemovePlugins(
-                new List<string>
+                new[]
                     {
-                        partFileInfo.Path
+                        partFileInfo
                     });
 
             Assert.That(
@@ -302,10 +279,8 @@ namespace Nuclei.Plugins.Core
                 Is.EquivalentTo(
                     new List<PluginFileOrigin>
                     {
-                        groupFileInfo,
                     }));
             Assert.AreEqual(0, repository.Parts().Count());
-            Assert.AreEqual(1, repository.Groups().Count());
             Assert.IsFalse(repository.ContainsDefinitionForType(typeof(ExportOnProperty).AssemblyQualifiedName));
         }
 
@@ -334,11 +309,11 @@ namespace Nuclei.Plugins.Core
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockExportingInterfaceImplementation))));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockChildExportingInterfaceImplementation))));
             Assert.IsTrue(
-                repository.IsSubTypeOf(
+                repository.IsSubtypeOf(
                     TypeIdentity.CreateDefinition(typeof(object)),
                     TypeIdentity.CreateDefinition(typeof(MockChildExportingInterfaceImplementation))));
 
-            repository.RemovePlugins(new string[] { childFileInfo.Path });
+            repository.RemovePlugins(new[] { childFileInfo });
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockExportingInterfaceImplementation))));
             Assert.IsFalse(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockChildExportingInterfaceImplementation))));
         }
@@ -368,15 +343,15 @@ namespace Nuclei.Plugins.Core
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockExportingInterfaceImplementation))));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockChildExportingInterfaceImplementation))));
             Assert.IsTrue(
-                repository.IsSubTypeOf(
+                repository.IsSubtypeOf(
                     TypeIdentity.CreateDefinition(typeof(object)),
                     TypeIdentity.CreateDefinition(typeof(MockChildExportingInterfaceImplementation))));
 
-            repository.RemovePlugins(new string[] { parentFileInfo.Path });
+            repository.RemovePlugins(new[] { parentFileInfo });
             Assert.IsFalse(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockExportingInterfaceImplementation))));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockChildExportingInterfaceImplementation))));
             Assert.IsFalse(
-                repository.IsSubTypeOf(
+                repository.IsSubtypeOf(
                     TypeIdentity.CreateDefinition(typeof(object)),
                     TypeIdentity.CreateDefinition(typeof(MockChildExportingInterfaceImplementation))));
         }

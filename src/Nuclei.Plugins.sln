@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Unit.Plugins.Compositi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuclei.Plugins.Composition.Mef", "Nuclei.Plugins.Composition.Mef\Nuclei.Plugins.Composition.Mef.csproj", "{92AE0855-7FBC-41E2-8E17-326617576650}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Unit.Plugins.Composition.Mef", "Test.Unit.Plugins.Composition.Mef\Test.Unit.Plugins.Composition.Mef.csproj", "{9A98B806-5A55-46B4-A2C0-8F6EBD4C4152}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +100,12 @@ Global
 		{92AE0855-7FBC-41E2-8E17-326617576650}.Deploy|Any CPU.Build.0 = Debug|Any CPU
 		{92AE0855-7FBC-41E2-8E17-326617576650}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92AE0855-7FBC-41E2-8E17-326617576650}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A98B806-5A55-46B4-A2C0-8F6EBD4C4152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A98B806-5A55-46B4-A2C0-8F6EBD4C4152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A98B806-5A55-46B4-A2C0-8F6EBD4C4152}.Deploy|Any CPU.ActiveCfg = Deploy|Any CPU
+		{9A98B806-5A55-46B4-A2C0-8F6EBD4C4152}.Deploy|Any CPU.Build.0 = Deploy|Any CPU
+		{9A98B806-5A55-46B4-A2C0-8F6EBD4C4152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A98B806-5A55-46B4-A2C0-8F6EBD4C4152}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

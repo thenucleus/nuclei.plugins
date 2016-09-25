@@ -23,12 +23,20 @@ namespace Nuclei.Plugins.Composition
         /// </summary>
         /// <param name="typeIdentity">The identity of the type that should be loaded.</param>
         /// <returns>The requested type.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="typeIdentity"/> is <see langword="null" />.
+        /// </exception>
         /// <exception cref="UnableToLoadPluginTypeException">
-        ///     Thrown when something goes wrong either while loading the assembly containing the type or while 
+        ///     Thrown when something goes wrong either while loading the assembly containing the type or while
         ///     loading the type itself.
         /// </exception>
         public static Type LoadType(TypeIdentity typeIdentity)
         {
+            if (typeIdentity == null)
+            {
+                throw new ArgumentNullException("typeIdentity");
+            }
+
             try
             {
                 return Type.GetType(typeIdentity.AssemblyQualifiedName, true, false);

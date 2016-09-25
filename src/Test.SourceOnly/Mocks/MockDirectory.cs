@@ -1,11 +1,13 @@
 //-----------------------------------------------------------------------
-// <copyright company="P. van der Velde">
-//     Copyright (c) P. van der Velde. All rights reserved.
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
 // </copyright>
 //-----------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
@@ -13,13 +15,17 @@ using System.Security.AccessControl;
 
 namespace Test.Mocks
 {
+    [SuppressMessage(
+        "Microsoft.Performance",
+        "CA1812:AvoidUninstantiatedInternalClasses",
+        Justification = "This class is used in other assemblies")]
     internal sealed class MockDirectory : DirectoryBase
     {
-        private readonly IEnumerable<string> m_Files;
+        private readonly IEnumerable<string> _files;
 
         public MockDirectory(IEnumerable<string> files)
         {
-            m_Files = files;
+            _files = files;
         }
 
         public override DirectoryInfoBase CreateDirectory(string path)
@@ -34,17 +40,62 @@ namespace Test.Mocks
 
         public override void Delete(string path)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void Delete(string path, bool recursive)
+        {
+            // Do nothing for now ...
+        }
+
+        public override IEnumerable<string> EnumerateDirectories(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<string> EnumerateDirectories(string path, string searchPattern)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<string> EnumerateDirectories(string path, string searchPattern, SearchOption searchOption)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<string> EnumerateFiles(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<string> EnumerateFiles(string path, string searchPattern)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<string> EnumerateFiles(string path, string searchPattern, SearchOption searchOption)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<string> EnumerateFileSystemEntries(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<string> EnumerateFileSystemEntries(string path, string searchPattern)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<string> EnumerateFileSystemEntries(string path, string searchPattern, SearchOption searchOption)
         {
             throw new NotImplementedException();
         }
 
         public override bool Exists(string path)
         {
-            return true;
+            return _files.Contains(path);
         }
 
         public override DirectorySecurity GetAccessControl(string path)
@@ -59,12 +110,12 @@ namespace Test.Mocks
 
         public override DateTime GetCreationTime(string path)
         {
-            throw new NotImplementedException();
+            return DateTime.Now.AddHours(-1);
         }
 
         public override DateTime GetCreationTimeUtc(string path)
         {
-            throw new NotImplementedException();
+            return DateTime.Now.AddHours(-1);
         }
 
         public override string GetCurrentDirectory()
@@ -104,7 +155,7 @@ namespace Test.Mocks
 
         public override string[] GetFiles(string path, string searchPattern, SearchOption searchOption)
         {
-            return m_Files.ToArray();
+            return _files.ToArray();
         }
 
         public override string[] GetFileSystemEntries(string path)
@@ -119,22 +170,22 @@ namespace Test.Mocks
 
         public override DateTime GetLastAccessTime(string path)
         {
-            throw new NotImplementedException();
+            return DateTime.Now.AddHours(-1);
         }
 
         public override DateTime GetLastAccessTimeUtc(string path)
         {
-            throw new NotImplementedException();
+            return DateTime.Now.AddHours(-1);
         }
 
         public override DateTime GetLastWriteTime(string path)
         {
-            throw new NotImplementedException();
+            return DateTime.Now.AddHours(-1);
         }
 
         public override DateTime GetLastWriteTimeUtc(string path)
         {
-            throw new NotImplementedException();
+            return DateTime.Now.AddHours(-1);
         }
 
         public override string[] GetLogicalDrives()
@@ -149,47 +200,47 @@ namespace Test.Mocks
 
         public override void Move(string sourceDirName, string destDirName)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetAccessControl(string path, DirectorySecurity directorySecurity)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetCreationTime(string path, DateTime creationTime)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetCreationTimeUtc(string path, DateTime creationTimeUtc)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetCurrentDirectory(string path)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetLastAccessTime(string path, DateTime lastAccessTime)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetLastAccessTimeUtc(string path, DateTime lastAccessTimeUtc)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetLastWriteTime(string path, DateTime lastWriteTime)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetLastWriteTimeUtc(string path, DateTime lastWriteTimeUtc)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
     }
 }

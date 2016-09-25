@@ -64,7 +64,7 @@ namespace Nuclei.Plugins.Core
             "Microsoft.StyleCop.CSharp.DocumentationRules",
             "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
-        bool IsSubTypeOf(TypeIdentity parent, TypeIdentity child);
+        bool IsSubtypeOf(TypeIdentity parent, TypeIdentity child);
 
         /// <summary>
         /// Returns the part that has the given type as declaring type.

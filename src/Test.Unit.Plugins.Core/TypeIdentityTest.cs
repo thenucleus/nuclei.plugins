@@ -50,7 +50,7 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void RoundtripSerialize()
+        public void RoundTripSerialize()
         {
             var original = TypeIdentity.CreateDefinition(typeof(string));
             var copy = AssertExtensions.RoundTripSerialize(original);

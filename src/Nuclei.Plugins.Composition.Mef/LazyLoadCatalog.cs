@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.ComponentModel.Composition.ReflectionModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -20,6 +21,10 @@ namespace Nuclei.Plugins.Composition.Mef
     /// <summary>
     /// Defines a <see cref="ComposablePartCatalog"/> that loads the available parts on demand only.
     /// </summary>
+    [SuppressMessage(
+        "Microsoft.Naming",
+        "CA1710:IdentifiersShouldHaveCorrectSuffix",
+        Justification = "It's an MEF catalog in the first place, a collection in the second place.")]
     public sealed class LazyLoadCatalog : ComposablePartCatalog, INotifyComposablePartCatalogChanged
     {
         private const BindingFlags DefaultBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -186,7 +191,7 @@ namespace Nuclei.Plugins.Composition.Mef
                             {
                                 var definition = ReflectionModelServices.CreatePartDefinition(
                                     new Lazy<Type>(() => TypeLoader.LoadType(serializedPart.Identity)),
-                                    _repository.IsSubTypeOf(TypeIdentity.CreateDefinition(typeof(IDisposable)), serializedPart.Identity),
+                                    _repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(IDisposable)), serializedPart.Identity),
                                     new Lazy<IEnumerable<ImportDefinition>>(() => serializedPart.Imports.Select(DeserializeImportDefinition)),
                                     new Lazy<IEnumerable<ExportDefinition>>(() => serializedPart.Exports.Select(DeserializeExportDefinition)),
                                     new Lazy<IDictionary<string, object>>(() => MetadataServices.EmptyMetadata),

@@ -34,7 +34,6 @@ namespace Nuclei.Plugins.Discovery
             {
                 return new RemoteAssemblyScanner(
                     repository,
-                    new PartImportEngine(repository),
                     logger);
             }
             catch (Exception e)

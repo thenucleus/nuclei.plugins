@@ -48,7 +48,7 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void RoundtripSerialize()
+        public void RoundTripSerialize()
         {
             var original = MethodDefinition.CreateDefinition(GetMethodForInt());
             var copy = AssertExtensions.RoundTripSerialize(original);
@@ -66,7 +66,7 @@ namespace Nuclei.Plugins.Core
             Assert.AreEqual(TypeIdentity.CreateDefinition(method.ReturnType), obj.ReturnType);
             Assert.That(
                 obj.Parameters,
-                Is.EquivalentTo(method.GetParameters().Select(p => ParameterDefinition.CreateDefinition(p))));
+                Is.EquivalentTo(method.GetParameters().Select(p => ParameterDefinition.CreateDefinition(p, t => TypeIdentity.CreateDefinition(t)))));
             Assert.AreEqual(TypeIdentity.CreateDefinition(method.DeclaringType), obj.DeclaringType);
         }
 

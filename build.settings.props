@@ -346,10 +346,12 @@
         Additional parameters can be provided through the 'TemplateTokens' ItemGroup below.
     -->
     <ItemGroup>
+        <!--
         <BuildFilesToGenerate Include="$(DirDoc)\Nuclei.Configuration.Documentation\docfx.json">
             <Template>$(DirDoc)\Nuclei.Configuration.Documentation\template.docfx.json</Template>
             <Encoding>UTF-8</Encoding>
         </BuildFilesToGenerate>
+        -->
     </ItemGroup>
 
 
@@ -485,21 +487,50 @@
         <!-- <InternalsVisibletoCompilerConstants>$(TestConfiguration.ToUpper())</InternalsVisibletoCompilerConstants> -->
     </PropertyGroup>
     <ItemGroup>
-        <InternalsVisibleTo Include="Test.Unit.Plugins">
+        <InternalsVisibleTo Include="Test.Unit.Plugins.Composition">
             <Projects>
-                Nuclei.Plugins;
+                Nuclei.Plugins.Composition;
+                Nuclei.Plugins.Core;
+            </Projects>
+            <KeyFile>$(SOFTWARE_SIGNING_KEY_PATH)\nuclei.snk</KeyFile>
+        </InternalsVisibleTo>
+        <InternalsVisibleTo Include="Test.Unit.Plugins.Composition.Mef">
+            <Projects>
+                Nuclei.Plugins.Composition;
+                Nuclei.Plugins.Composition.Mef;
+                Nuclei.Plugins.Core;
+            </Projects>
+            <KeyFile>$(SOFTWARE_SIGNING_KEY_PATH)\nuclei.snk</KeyFile>
+        </InternalsVisibleTo>
+        <InternalsVisibleTo Include="Test.Unit.Plugins.Core">
+            <Projects>
+                Nuclei.Plugins.Core;
+                Nuclei.Plugins.Discovery;
+            </Projects>
+            <KeyFile>$(SOFTWARE_SIGNING_KEY_PATH)\nuclei.snk</KeyFile>
+        </InternalsVisibleTo>
+        <InternalsVisibleTo Include="Test.Unit.Plugins.Discovery">
+            <Projects>
+                Nuclei.Plugins.Core;
+                Nuclei.Plugins.Discovery;
             </Projects>
             <KeyFile>$(SOFTWARE_SIGNING_KEY_PATH)\nuclei.snk</KeyFile>
         </InternalsVisibleTo>
         <InternalsVisibleTo Include="Moq">
             <Projects>
-                Nuclei.Plugins;
+                Nuclei.Plugins.Composition;
+                Nuclei.Plugins.Composition.Mef;
+                Nuclei.Plugins.Core;
+                Nuclei.Plugins.Discovery;
             </Projects>
             <AssemblyFromPackage>Moq.dll</AssemblyFromPackage>
         </InternalsVisibleTo>
         <InternalsVisibleTo Include="DynamicProxyGenAssembly2">
             <Projects>
-                Nuclei.Plugins;
+                Nuclei.Plugins.Composition;
+                Nuclei.Plugins.Composition.Mef;
+                Nuclei.Plugins.Core;
+                Nuclei.Plugins.Discovery;
             </Projects>
             <PublicKey>0024000004800000940000000602000000240000525341310004000001000100c547cac37abd99c8db225ef2f6c8a3602f3b3606cc9891605d02baa56104f4cfc0734aa39b93bf7852f7d9266654753cc297e7d2edfe0bac1cdcf9f717241550e0a7b191195b7667bb4f64bcb8e2121380fd1d9d46ad2d92d2d15605093924cceaf74c4861eff62abf69b9291ed0a340e113be11e6a7d3113e92484cf7045cc7</PublicKey>
         </InternalsVisibleTo>

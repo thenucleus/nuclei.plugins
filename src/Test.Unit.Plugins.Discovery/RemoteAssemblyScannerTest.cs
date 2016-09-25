@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Moq;
+using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
 using NUnit.Framework;
 using Test.Mocks;
@@ -33,7 +34,7 @@ namespace Nuclei.Plugins.Discovery
         public void ExportOnMethod()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ExportOnMethod));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -58,7 +59,7 @@ namespace Nuclei.Plugins.Discovery
         public void ExportOnMethodWithName()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ExportOnMethodWithName));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -81,7 +82,7 @@ namespace Nuclei.Plugins.Discovery
         public void ExportOnMethodWithType()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ExportOnMethodWithType));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -104,7 +105,7 @@ namespace Nuclei.Plugins.Discovery
         public void ExportOnProperty()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ExportOnProperty));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -127,7 +128,7 @@ namespace Nuclei.Plugins.Discovery
         public void ExportOnPropertyWithName()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ExportOnPropertyWithName));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -150,7 +151,7 @@ namespace Nuclei.Plugins.Discovery
         public void ExportOnPropertyWithType()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ExportOnPropertyWithType));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -173,7 +174,7 @@ namespace Nuclei.Plugins.Discovery
         public void ExportOnType()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ExportOnType));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -192,7 +193,7 @@ namespace Nuclei.Plugins.Discovery
         public void ExportOnTypeWithName()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ExportOnTypeWithName));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -211,7 +212,7 @@ namespace Nuclei.Plugins.Discovery
         public void ExportOnTypeWithType()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ExportOnTypeWithType));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -230,7 +231,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnConstructor()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructor));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -249,7 +250,8 @@ namespace Nuclei.Plugins.Discovery
                 import.Constructor);
             Assert.AreEqual(
                 ParameterDefinition.CreateDefinition(
-                    typeof(ImportOnConstructor).GetConstructor(new[] { typeof(IExportingInterface) }).GetParameters().First()),
+                    typeof(ImportOnConstructor).GetConstructor(new[] { typeof(IExportingInterface) }).GetParameters().First(),
+                    t => TypeIdentity.CreateDefinition(t)),
                 import.Parameter);
         }
 
@@ -257,7 +259,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnConstructorWithEnumerable()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithEnumerable));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -280,7 +282,8 @@ namespace Nuclei.Plugins.Discovery
                         new[]
                         {
                             typeof(IEnumerable<IExportingInterface>)
-                        }).GetParameters().First()),
+                        }).GetParameters().First(),
+                    t => TypeIdentity.CreateDefinition(t)),
                 import.Parameter);
         }
 
@@ -288,7 +291,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnConstructorWithFunc()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithFunc));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -307,7 +310,8 @@ namespace Nuclei.Plugins.Discovery
                 import.Constructor);
             Assert.AreEqual(
                 ParameterDefinition.CreateDefinition(
-                    typeof(ImportOnConstructorWithFunc).GetConstructor(new[] { typeof(Func<IExportingInterface>) }).GetParameters().First()),
+                    typeof(ImportOnConstructorWithFunc).GetConstructor(new[] { typeof(Func<IExportingInterface>) }).GetParameters().First(),
+                    t => TypeIdentity.CreateDefinition(t)),
                 import.Parameter);
         }
 
@@ -315,7 +319,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnConstructorWithLazy()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithLazy));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -334,7 +338,8 @@ namespace Nuclei.Plugins.Discovery
                 import.Constructor);
             Assert.AreEqual(
                 ParameterDefinition.CreateDefinition(
-                    typeof(ImportOnConstructorWithLazy).GetConstructor(new[] { typeof(Lazy<IExportingInterface>) }).GetParameters().First()),
+                    typeof(ImportOnConstructorWithLazy).GetConstructor(new[] { typeof(Lazy<IExportingInterface>) }).GetParameters().First(),
+                    t => TypeIdentity.CreateDefinition(t)),
                 import.Parameter);
         }
 
@@ -342,7 +347,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnConstructorWithName()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithName));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -361,7 +366,8 @@ namespace Nuclei.Plugins.Discovery
                 import.Constructor);
             Assert.AreEqual(
                 ParameterDefinition.CreateDefinition(
-                    typeof(ImportOnConstructorWithName).GetConstructor(new[] { typeof(IExportingInterface) }).GetParameters().First()),
+                    typeof(ImportOnConstructorWithName).GetConstructor(new[] { typeof(IExportingInterface) }).GetParameters().First(),
+                    t => TypeIdentity.CreateDefinition(t)),
                 import.Parameter);
         }
 
@@ -369,7 +375,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnConstructorWithType()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithType));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -388,7 +394,8 @@ namespace Nuclei.Plugins.Discovery
                 import.Constructor);
             Assert.AreEqual(
                 ParameterDefinition.CreateDefinition(
-                    typeof(ImportOnConstructorWithType).GetConstructor(new[] { typeof(IExportingInterface) }).GetParameters().First()),
+                    typeof(ImportOnConstructorWithType).GetConstructor(new[] { typeof(IExportingInterface) }).GetParameters().First(),
+                    t => TypeIdentity.CreateDefinition(t)),
                 import.Parameter);
         }
 
@@ -396,7 +403,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnProperty()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnProperty));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -419,7 +426,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnPropertyWithEnumerable()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithEnumerable));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -442,7 +449,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnPropertyWithFunc()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithFunc));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -465,7 +472,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnPropertyWithLazy()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithLazy));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -488,7 +495,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnPropertyWithName()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithName));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -511,7 +518,7 @@ namespace Nuclei.Plugins.Discovery
         public void ImportOnPropertyWithType()
         {
             var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithType));
-            Assert.IsTrue(_types.Exists(s => s.Identity.Equals(id)));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
 
             var plugins = _parts.Where(p => p.Identity.Equals(id));
             Assert.IsTrue(plugins.Count() == 1);
@@ -553,17 +560,9 @@ namespace Nuclei.Plugins.Discovery
                         .Callback<PartDefinition, PluginFileOrigin>((p, f) => parts.Add(p));
                 }
 
-                var importEngine = new Mock<IConnectParts>();
-                {
-                    importEngine.Setup(i => i.Accepts(It.IsAny<SerializableImportDefinition>(), It.IsAny<SerializableExportDefinition>()))
-                        .Returns(true);
-                }
-
                 var scanner = new RemoteAssemblyScanner(
                     repository.Object,
-                    importEngine.Object,
-                    new Mock<ILogMessagesFromRemoteAppDomains>().Object,
-                    () => new FixedScheduleBuilder());
+                    new Mock<ILogMessagesFromRemoteAppDomains>().Object);
 
                 var localPath = Assembly.GetExecutingAssembly().LocalFilePath();
                 scanner.Scan(new List<string> { localPath });

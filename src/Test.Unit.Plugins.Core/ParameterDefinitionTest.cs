@@ -48,9 +48,9 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void RoundtripSerialize()
+        public void RoundTripSerialize()
         {
-            var original = ParameterDefinition.CreateDefinition(ParameterFromInt());
+            var original = ParameterDefinition.CreateDefinition(ParameterFromInt(), t => TypeIdentity.CreateDefinition(t));
             var copy = AssertExtensions.RoundTripSerialize(original);
 
             Assert.AreEqual(original, copy);
@@ -59,7 +59,7 @@ namespace Nuclei.Plugins.Core
         [Test]
         public void CreateWithClass()
         {
-            var obj = ParameterDefinition.CreateDefinition(ParameterFromInt());
+            var obj = ParameterDefinition.CreateDefinition(ParameterFromInt(), t => TypeIdentity.CreateDefinition(t));
             var parameter = ParameterFromInt();
 
             Assert.AreEqual(parameter.Name, obj.Name);
@@ -69,21 +69,25 @@ namespace Nuclei.Plugins.Core
         private sealed class ParameterDefinitionEqualityContractVerifier : EqualityContractVerifier<ParameterDefinition>
         {
             private readonly ParameterDefinition _first = ParameterDefinition.CreateDefinition(
-                typeof(string).GetMethod("Contains").GetParameters().First());
+                typeof(string).GetMethod("Contains").GetParameters().First(),
+                t => TypeIdentity.CreateDefinition(t));
 
             private readonly ParameterDefinition _second = ParameterDefinition.CreateDefinition(
-                typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First());
+                typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First(),
+                t => TypeIdentity.CreateDefinition(t));
 
             protected override ParameterDefinition Copy(ParameterDefinition original)
             {
                 if (original.Identity.Equals(typeof(string)))
                 {
                     return ParameterDefinition.CreateDefinition(
-                        typeof(string).GetMethod("Contains").GetParameters().First());
+                        typeof(string).GetMethod("Contains").GetParameters().First(),
+                        t => TypeIdentity.CreateDefinition(t));
                 }
 
                 return ParameterDefinition.CreateDefinition(
-                    typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First());
+                    typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First(),
+                    t => TypeIdentity.CreateDefinition(t));
             }
 
             protected override ParameterDefinition FirstInstance
@@ -117,15 +121,20 @@ namespace Nuclei.Plugins.Core
                 = new List<ParameterDefinition>
                      {
                         ParameterDefinition.CreateDefinition(
-                            typeof(string).GetMethod("Contains").GetParameters().First()),
+                            typeof(string).GetMethod("Contains").GetParameters().First(),
+                            t => TypeIdentity.CreateDefinition(t)),
                         ParameterDefinition.CreateDefinition(
-                            typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First()),
+                            typeof(int).GetMethod("CompareTo", new[] { typeof(int) }).GetParameters().First(),
+                            t => TypeIdentity.CreateDefinition(t)),
                         ParameterDefinition.CreateDefinition(
-                            typeof(double).GetMethod("CompareTo", new[] { typeof(double) }).GetParameters().First()),
+                            typeof(double).GetMethod("CompareTo", new[] { typeof(double) }).GetParameters().First(),
+                            t => TypeIdentity.CreateDefinition(t)),
                         ParameterDefinition.CreateDefinition(
-                            typeof(IComparable).GetMethod("CompareTo").GetParameters().First()),
+                            typeof(IComparable).GetMethod("CompareTo").GetParameters().First(),
+                            t => TypeIdentity.CreateDefinition(t)),
                         ParameterDefinition.CreateDefinition(
-                            typeof(IComparable<>).GetMethod("CompareTo").GetParameters().First()),
+                            typeof(IComparable<>).GetMethod("CompareTo").GetParameters().First(),
+                            t => TypeIdentity.CreateDefinition(t)),
                      };
 
             protected override IEnumerable<int> GetHashCodes()

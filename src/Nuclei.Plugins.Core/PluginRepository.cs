@@ -243,7 +243,7 @@ namespace Nuclei.Plugins.Core
             "Microsoft.StyleCop.CSharp.DocumentationRules",
             "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
-        public bool IsSubTypeOf(TypeIdentity parent, TypeIdentity child)
+        public bool IsSubtypeOf(TypeIdentity parent, TypeIdentity child)
         {
             var algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<TypeIdentity, Edge<TypeIdentity>>(
                 _typeGraph,

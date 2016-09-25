@@ -48,7 +48,7 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void RoundtripSerialize()
+        public void RoundTripSerialize()
         {
             var original = PropertyBasedExportDefinition.CreateDefinition("A", GetPropertyForString());
             var copy = AssertExtensions.RoundTripSerialize(original);

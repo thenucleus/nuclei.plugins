@@ -52,7 +52,7 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void RoundtripSerialize()
+        public void RoundTripSerialize()
         {
             var original = ConstructorBasedImportDefinition.CreateDefinition(
                 "A",
@@ -86,7 +86,7 @@ namespace Nuclei.Plugins.Core
             Assert.IsTrue(obj.IsPrerequisite);
             Assert.AreEqual(ConstructorDefinition.CreateDefinition(constructor), obj.Constructor);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(string)), obj.DeclaringType);
-            Assert.AreEqual(ParameterDefinition.CreateDefinition(parameter), obj.Parameter);
+            Assert.AreEqual(ParameterDefinition.CreateDefinition(parameter, t => TypeIdentity.CreateDefinition(t)), obj.Parameter);
         }
 
         private sealed class ConstructorBasedImportDefinitionEqualityContractVerifier : EqualityContractVerifier<ConstructorBasedImportDefinition>

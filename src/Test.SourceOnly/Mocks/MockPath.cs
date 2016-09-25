@@ -1,10 +1,12 @@
 //-----------------------------------------------------------------------
-// <copyright company="P. van der Velde">
-//     Copyright (c) P. van der Velde. All rights reserved.
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
 // </copyright>
 //-----------------------------------------------------------------------
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Abstractions;
 using System.Reflection;
@@ -12,11 +14,15 @@ using Nuclei;
 
 namespace Test.Mocks
 {
+    [SuppressMessage(
+        "Microsoft.Performance",
+        "CA1812:AvoidUninstantiatedInternalClasses",
+        Justification = "This class is used in other assemblies")]
     internal sealed class MockPath : PathBase
     {
         public override string ChangeExtension(string path, string extension)
         {
-            throw new NotImplementedException();
+            return Path.ChangeExtension(path, extension);
         }
 
         public override string Combine(string path1, string path2)
@@ -26,42 +32,42 @@ namespace Test.Mocks
 
         public override string GetDirectoryName(string path)
         {
-            throw new NotImplementedException();
+            return Path.GetDirectoryName(path);
         }
 
         public override string GetExtension(string path)
         {
-            throw new NotImplementedException();
+            return Path.GetExtension(path);
         }
 
         public override string GetFileName(string path)
         {
-            throw new NotImplementedException();
+            return Path.GetFileName(path);
         }
 
         public override string GetFileNameWithoutExtension(string path)
         {
-            throw new NotImplementedException();
+            return Path.GetFileNameWithoutExtension(path);
         }
 
         public override string GetFullPath(string path)
         {
-            throw new NotImplementedException();
+            return Path.GetFullPath(path);
         }
 
         public override char[] GetInvalidFileNameChars()
         {
-            throw new NotImplementedException();
+            return Path.GetInvalidFileNameChars();
         }
 
         public override char[] GetInvalidPathChars()
         {
-            throw new NotImplementedException();
+            return Path.GetInvalidPathChars();
         }
 
         public override string GetPathRoot(string path)
         {
-            throw new NotImplementedException();
+            return Path.GetPathRoot(path);
         }
 
         public override string GetRandomFileName()
@@ -82,19 +88,34 @@ namespace Test.Mocks
 
         public override bool HasExtension(string path)
         {
-            throw new NotImplementedException();
+            return Path.HasExtension(path);
         }
 
         public override bool IsPathRooted(string path)
         {
-            throw new NotImplementedException();
+            return Path.IsPathRooted(path);
+        }
+
+        public override string Combine(params string[] paths)
+        {
+            return Path.Combine(paths);
+        }
+
+        public override string Combine(string path1, string path2, string path3)
+        {
+            return Path.Combine(path1, path2, path3);
+        }
+
+        public override string Combine(string path1, string path2, string path3, string path4)
+        {
+            return Path.Combine(path1, path2, path3, path4);
         }
 
         public override char AltDirectorySeparatorChar
         {
             get
             {
-                throw new NotImplementedException();
+                return Path.AltDirectorySeparatorChar;
             }
         }
 
@@ -102,7 +123,7 @@ namespace Test.Mocks
         {
             get
             {
-                throw new NotImplementedException();
+                return Path.DirectorySeparatorChar;
             }
         }
 
@@ -111,7 +132,7 @@ namespace Test.Mocks
         {
             get
             {
-                throw new NotImplementedException();
+                return Path.InvalidPathChars;
             }
         }
 
@@ -119,7 +140,7 @@ namespace Test.Mocks
         {
             get
             {
-                throw new NotImplementedException();
+                return Path.PathSeparator;
             }
         }
 
@@ -127,7 +148,7 @@ namespace Test.Mocks
         {
             get
             {
-                throw new NotImplementedException();
+                return Path.VolumeSeparatorChar;
             }
         }
     }

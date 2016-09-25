@@ -16,7 +16,6 @@ namespace Nuclei.Plugins.Core
     [Serializable]
     public sealed class PartImportToPartExportMap
     {
-
         /// <summary>
         /// The collection containing the export IDs.
         /// </summary>

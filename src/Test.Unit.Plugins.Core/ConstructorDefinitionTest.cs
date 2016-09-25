@@ -48,7 +48,7 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void RoundtripSerialize()
+        public void RoundTripSerialize()
         {
             var original = ConstructorDefinition.CreateDefinition(GetConstructorForString());
             var copy = AssertExtensions.RoundTripSerialize(original);
@@ -64,7 +64,7 @@ namespace Nuclei.Plugins.Core
 
             Assert.That(
                 obj.Parameters,
-                Is.EquivalentTo(constructor.GetParameters().Select(p => ParameterDefinition.CreateDefinition(p))));
+                Is.EquivalentTo(constructor.GetParameters().Select(p => ParameterDefinition.CreateDefinition(p, t => TypeIdentity.CreateDefinition(t)))));
             Assert.AreEqual(TypeIdentity.CreateDefinition(constructor.DeclaringType), obj.DeclaringType);
         }
 

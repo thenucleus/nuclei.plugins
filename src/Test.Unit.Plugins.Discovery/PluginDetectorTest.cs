@@ -12,6 +12,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using Moq;
 using Nuclei.Diagnostics;
+using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
 using NUnit.Framework;
 using Test.Mocks;
@@ -75,7 +76,7 @@ namespace Nuclei.Plugins.Discovery
                 repository.Object,
                 scannerBuilder,
                 fileSystem.Object,
-                new SystemDiagnostics((p, s) => { }, null));
+                new SystemDiagnostics(new Mock<ILogger>().Object, null));
 
             detector.SearchDirectory(@"c:\temp");
             Assert.IsNull(scanner.FilesToScan);
@@ -119,7 +120,7 @@ namespace Nuclei.Plugins.Discovery
                 repository.Object,
                 scannerBuilder,
                 fileSystem.Object,
-                new SystemDiagnostics((p, s) => { }, null));
+                new SystemDiagnostics(new Mock<ILogger>().Object, null));
 
             detector.SearchDirectory(@"c:\temp");
             Assert.That(scanner.FilesToScan, Is.EquivalentTo(files));
@@ -156,7 +157,7 @@ namespace Nuclei.Plugins.Discovery
                 repository.Object,
                 scannerBuilder,
                 fileSystem.Object,
-                new SystemDiagnostics((p, s) => { }, null));
+                new SystemDiagnostics(new Mock<ILogger>().Object, null));
 
             detector.SearchDirectory(@"c:\temp");
             Assert.That(scanner.FilesToScan, Is.EquivalentTo(files));
@@ -200,7 +201,7 @@ namespace Nuclei.Plugins.Discovery
                 repository.Object,
                 scannerBuilder,
                 fileSystem.Object,
-                new SystemDiagnostics((p, s) => { }, null));
+                new SystemDiagnostics(new Mock<ILogger>().Object, null));
 
             detector.SearchDirectory(@"c:\temp");
             Assert.That(scanner.FilesToScan, Is.EquivalentTo(new List<string> { files[1] }));

@@ -78,19 +78,6 @@ namespace Nuclei.Plugins.Core
         /// Creates a new instance of the <see cref="ParameterDefinition"/> class based on the given <see cref="ParameterInfo"/>.
         /// </summary>
         /// <param name="parameter">The parameter for which a serialized definition needs to be created.</param>
-        /// <returns>The serialized definition for the given parameter.</returns>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="parameter"/> is <see langword="null" />.
-        /// </exception>
-        internal static ParameterDefinition CreateDefinition(ParameterInfo parameter)
-        {
-            return CreateDefinition(parameter, t => TypeIdentity.CreateDefinition(t));
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="ParameterDefinition"/> class based on the given <see cref="ParameterInfo"/>.
-        /// </summary>
-        /// <param name="parameter">The parameter for which a serialized definition needs to be created.</param>
         /// <param name="identityGenerator">The function that creates type identities.</param>
         /// <returns>The serialized definition for the given parameter.</returns>
         /// <exception cref="ArgumentNullException">

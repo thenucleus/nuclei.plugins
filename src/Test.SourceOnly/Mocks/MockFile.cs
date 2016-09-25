@@ -1,6 +1,7 @@
 //-----------------------------------------------------------------------
-// <copyright company="P. van der Velde">
-//     Copyright (c) P. van der Velde. All rights reserved.
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -14,23 +15,54 @@ using System.Text;
 
 namespace Test.Mocks
 {
+    [SuppressMessage(
+        "Microsoft.Performance",
+        "CA1812:AvoidUninstantiatedInternalClasses",
+        Justification = "This class is used in other assemblies")]
     internal sealed class MockFile : FileBase
     {
-        private readonly Dictionary<string, string> m_Content
+        private readonly Dictionary<string, string> _content
             = new Dictionary<string, string>();
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode",
+        private readonly Dictionary<string, string> _copiedOrMovedFiles
+            = new Dictionary<string, string>();
+
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
             Justification = "This method may be used in other projects.")]
         public MockFile(string path, string content)
         {
-            m_Content.Add(path, content);
+            _content.Add(path, content);
         }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode",
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
+            Justification = "This method may be used in other projects.")]
+        public MockFile(string path, string content, Dictionary<string, string> copiedFiles)
+        {
+            _content.Add(path, content);
+            _copiedOrMovedFiles = copiedFiles;
+        }
+
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
             Justification = "This method may be used in other projects.")]
         public MockFile(Dictionary<string, string> files)
         {
-            m_Content = files;
+            _content = files;
+        }
+
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
+            Justification = "This method may be used in other projects.")]
+        public MockFile(Dictionary<string, string> files, Dictionary<string, string> copiedFiles)
+        {
+            _content = files;
+            _copiedOrMovedFiles = copiedFiles;
         }
 
         public override void AppendAllText(string path, string contents)
@@ -50,12 +82,12 @@ namespace Test.Mocks
 
         public override void Copy(string sourceFileName, string destFileName)
         {
-            // Do nothing for now
+            _copiedOrMovedFiles.Add(sourceFileName, destFileName);
         }
 
         public override void Copy(string sourceFileName, string destFileName, bool overwrite)
         {
-            // Do nothing for now
+            _copiedOrMovedFiles.Add(sourceFileName, destFileName);
         }
 
         public override Stream Create(string path)
@@ -100,7 +132,7 @@ namespace Test.Mocks
 
         public override bool Exists(string path)
         {
-            return m_Content.ContainsKey(path);
+            return _content.ContainsKey(path);
         }
 
         public override FileSecurity GetAccessControl(string path)
@@ -120,22 +152,22 @@ namespace Test.Mocks
 
         public override DateTime GetCreationTime(string path)
         {
-            throw new NotImplementedException();
+            return DateTime.Now.AddHours(-1);
         }
 
         public override DateTime GetCreationTimeUtc(string path)
         {
-            throw new NotImplementedException();
+            return DateTime.Now.AddHours(-1);
         }
 
         public override DateTime GetLastAccessTime(string path)
         {
-            throw new NotImplementedException();
+            return DateTime.Now.AddHours(-1);
         }
 
         public override DateTime GetLastAccessTimeUtc(string path)
         {
-            throw new NotImplementedException();
+            return DateTime.Now.AddHours(-1);
         }
 
         public override DateTime GetLastWriteTime(string path)
@@ -150,7 +182,7 @@ namespace Test.Mocks
 
         public override void Move(string sourceFileName, string destFileName)
         {
-            // Do nothing for now ...
+            _copiedOrMovedFiles.Add(sourceFileName, destFileName);
         }
 
         public override Stream Open(string path, FileMode mode)
@@ -163,7 +195,9 @@ namespace Test.Mocks
             return Open(path, mode, access, FileShare.ReadWrite);
         }
 
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
+        [SuppressMessage(
+            "Microsoft.Reliability",
+            "CA2000:Dispose objects before losing scope",
             Justification = "Disposing of the output stream should be done by the caller.")]
         public override Stream Open(string path, FileMode mode, FileAccess access, FileShare share)
         {
@@ -171,7 +205,7 @@ namespace Test.Mocks
             var stream = new MemoryStream();
             using (var writer = new StreamWriter(stream))
             {
-                writer.Write(m_Content[path]);
+                writer.Write(_content[path]);
                 writer.Flush();
 
                 stream.Position = 0;
@@ -184,7 +218,7 @@ namespace Test.Mocks
 
         public override Stream OpenRead(string path)
         {
-            throw new NotImplementedException();
+            return Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
         public override StreamReader OpenText(string path)
@@ -194,7 +228,7 @@ namespace Test.Mocks
 
         public override Stream OpenWrite(string path)
         {
-            throw new NotImplementedException();
+            return Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None);
         }
 
         public override byte[] ReadAllBytes(string path)
@@ -224,77 +258,107 @@ namespace Test.Mocks
 
         public override void Replace(string sourceFileName, string destinationFileName, string destinationBackupFileName)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void Replace(string sourceFileName, string destinationFileName, string destinationBackupFileName, bool ignoreMetadataErrors)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetAccessControl(string path, FileSecurity fileSecurity)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetAttributes(string path, FileAttributes fileAttributes)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetCreationTime(string path, DateTime creationTime)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetCreationTimeUtc(string path, DateTime creationTimeUtc)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetLastAccessTime(string path, DateTime lastAccessTime)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetLastAccessTimeUtc(string path, DateTime lastAccessTimeUtc)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetLastWriteTime(string path, DateTime lastWriteTime)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void SetLastWriteTimeUtc(string path, DateTime lastWriteTimeUtc)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void WriteAllBytes(string path, byte[] bytes)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void WriteAllLines(string path, string[] contents)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void WriteAllLines(string path, string[] contents, Encoding encoding)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void WriteAllText(string path, string contents)
         {
-            throw new NotImplementedException();
+            // Do nothing for now ...
         }
 
         public override void WriteAllText(string path, string contents, Encoding encoding)
         {
+            // Do nothing for now ...
+        }
+
+        public override void AppendAllLines(string path, IEnumerable<string> contents)
+        {
+            // Do nothing for now ...
+        }
+
+        public override void AppendAllLines(string path, IEnumerable<string> contents, Encoding encoding)
+        {
+            // Do nothing for now ...
+        }
+
+        public override IEnumerable<string> ReadLines(string path)
+        {
             throw new NotImplementedException();
+        }
+
+        public override IEnumerable<string> ReadLines(string path, Encoding encoding)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void WriteAllLines(string path, IEnumerable<string> contents)
+        {
+            // Do nothing for now ...
+        }
+
+        public override void WriteAllLines(string path, IEnumerable<string> contents, Encoding encoding)
+        {
+            // Do nothing for now ...
         }
     }
 }

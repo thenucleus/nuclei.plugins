@@ -101,7 +101,6 @@
       <Link>Mocks\MockPath.cs</Link>
     </Compile>
     <Compile Include="DuplicateContractNameExceptionTest.cs" />
-    <Compile Include="PartImportEngineTest.cs" />
     <Compile Include="PluginDetectorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteAssemblyScannerTest.cs" />

@@ -22,6 +22,11 @@ namespace Nuclei.Plugins.Core
         Justification = "Unit tests do not need documentation.")]
     public sealed class PropertyDefinitionTest : EqualityContractVerifierTest
     {
+        private static PropertyInfo GetPropertyForString()
+        {
+            return typeof(string).GetProperty("Length");
+        }
+
         private readonly PropertyDefinitionHashcodeContractVerfier _hashCodeVerifier = new PropertyDefinitionHashcodeContractVerfier();
 
         private readonly PropertyDefinitionEqualityContractVerifier _equalityVerifier = new PropertyDefinitionEqualityContractVerifier();
@@ -42,13 +47,8 @@ namespace Nuclei.Plugins.Core
             }
         }
 
-        private static PropertyInfo GetPropertyForString()
-        {
-            return typeof(string).GetProperty("Length");
-        }
-
         [Test]
-        public void RoundtripSerialize()
+        public void RoundTripSerialize()
         {
             var original = PropertyDefinition.CreateDefinition(GetPropertyForString());
             var copy = AssertExtensions.RoundTripSerialize(original);

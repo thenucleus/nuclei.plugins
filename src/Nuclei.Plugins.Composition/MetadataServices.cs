@@ -7,6 +7,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Nuclei.Plugins.Composition
 {
@@ -18,6 +19,10 @@ namespace Nuclei.Plugins.Composition
         /// <summary>
         /// Defines an empty metadata collection.
         /// </summary>
+        [SuppressMessage(
+            "Microsoft.Security",
+            "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
+            Justification = "The dictionary is a readonly instance.")]
         public static readonly IDictionary<string, object> EmptyMetadata =
             new ReadOnlyDictionary<string, object>(new Dictionary<string, object>(0));
 
@@ -39,17 +44,6 @@ namespace Nuclei.Plugins.Composition
             }
 
             return new ReadOnlyDictionary<string, object>(metadata);
-        }
-
-        public static T GetValue<T>(this IDictionary<string, object> metadata, string key)
-        {
-            Assumes.NotNull<IDictionary<string, object>, string>(metadata, "metadata");
-            object obj = (object)null;
-            if (!metadata.TryGetValue(key, out obj))
-                return default(T);
-            if (obj is T)
-                return (T)obj;
-            return default(T);
         }
     }
 }

@@ -22,7 +22,6 @@ namespace Nuclei.Plugins.Core
         Justification = "Unit tests do not need documentation.")]
     public sealed class TypeDefinitionTest : EqualityContractVerifierTest
     {
-
         private readonly EndpointIdHashcodeContractVerfier _hashCodeVerifier = new EndpointIdHashcodeContractVerfier();
 
         private readonly EndpointIdEqualityContractVerifier _equalityVerifier = new EndpointIdEqualityContractVerifier();
@@ -52,7 +51,7 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void RoundtripSerialize()
+        public void RoundTripSerialize()
         {
             var original = TypeDefinition.CreateDefinition(typeof(string), TypeIdentity.CreateDefinition);
             var copy = AssertExtensions.RoundTripSerialize(original);
