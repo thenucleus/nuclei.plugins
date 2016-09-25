@@ -148,11 +148,6 @@ namespace Nuclei.Plugins.Discovery
         }
 
         /// <summary>
-        /// The object that provides methods for part import matching.
-        /// </summary>
-        private readonly IConnectParts _importEngine;
-
-        /// <summary>
         /// The object that will pass through the log messages.
         /// </summary>
         private readonly ILogMessagesFromRemoteAppDomains _logger;
@@ -166,20 +161,15 @@ namespace Nuclei.Plugins.Discovery
         /// Initializes a new instance of the <see cref="RemoteAssemblyScanner"/> class.
         /// </summary>
         /// <param name="repository">The object that stores all the information about the parts and the part groups.</param>
-        /// <param name="importEngine">The object that provides methods for part import matching.</param>
         /// <param name="logger">The object that passes through the log messages.</param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="repository"/> is <see langword="null" />.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="importEngine"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="logger"/> is <see langword="null" />.
         /// </exception>
         public RemoteAssemblyScanner(
             IPluginRepository repository,
-            IConnectParts importEngine,
             ILogMessagesFromRemoteAppDomains logger)
         {
             if (repository == null)
@@ -187,17 +177,11 @@ namespace Nuclei.Plugins.Discovery
                 throw new ArgumentNullException("repository");
             }
 
-            if (importEngine == null)
-            {
-                throw new ArgumentNullException("importEngine");
-            }
-
             if (logger == null)
             {
                 throw new ArgumentNullException("logger");
             }
 
-            _importEngine = importEngine;
             _logger = logger;
             _repository = repository;
         }
