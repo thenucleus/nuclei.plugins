@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamicCatalog.cs" />
+    <Compile Include="LazyLoadCatalog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +59,10 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nuclei.Plugins.Composition\Nuclei.Plugins.Composition.csproj">
+      <Project>{1C7534B2-2E24-487C-BBF8-7AF10DC8165E}</Project>
+      <Name>Nuclei.Plugins.Composition</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
       <Project>{E39027F6-757D-4F16-9014-EA3FA25C0D0C}</Project>
       <Name>Nuclei.Plugins.Core</Name>

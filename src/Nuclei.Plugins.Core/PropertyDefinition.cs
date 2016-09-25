@@ -75,6 +75,19 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
+        /// Creates a new instance of the <see cref="MethodDefinition"/> class based on the given <see cref="PropertyInfo"/>.
+        /// </summary>
+        /// <param name="property">The property for which a serialized definition needs to be created.</param>
+        /// <returns>The serialized definition for the given property.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="property"/> is <see langword="null" />.
+        /// </exception>
+        public static PropertyDefinition CreateDefinition(PropertyInfo property)
+        {
+            return CreateDefinition(property, t => TypeIdentity.CreateDefinition(t));
+        }
+
+        /// <summary>
         /// Creates a new instance of the <see cref="PropertyDefinition"/> class based on the given <see cref="PropertyInfo"/>.
         /// </summary>
         /// <param name="property">The property for which a serialized definition needs to be created.</param>
@@ -104,19 +117,6 @@ namespace Nuclei.Plugins.Core
                 identityGenerator(property.DeclaringType),
                 property.Name,
                 identityGenerator(property.PropertyType));
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MethodDefinition"/> class based on the given <see cref="PropertyInfo"/>.
-        /// </summary>
-        /// <param name="property">The property for which a serialized definition needs to be created.</param>
-        /// <returns>The serialized definition for the given property.</returns>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="property"/> is <see langword="null" />.
-        /// </exception>
-        public static PropertyDefinition CreateDefinition(PropertyInfo property)
-        {
-            return CreateDefinition(property, t => TypeIdentity.CreateDefinition(t));
         }
 
         /// <summary>
@@ -161,28 +161,6 @@ namespace Nuclei.Plugins.Core
             get
             {
                 return _declaringType;
-            }
-        }
-
-        /// <summary>
-        /// Gets the name of the property.
-        /// </summary>
-        public string PropertyName
-        {
-            get
-            {
-                return _name;
-            }
-        }
-
-        /// <summary>
-        /// Gets the type of the property.
-        /// </summary>
-        public TypeIdentity PropertyType
-        {
-            get
-            {
-                return _propertyType;
             }
         }
 
@@ -261,6 +239,28 @@ namespace Nuclei.Plugins.Core
                 hash = (hash * 23) ^ PropertyType.GetHashCode();
 
                 return hash;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the property.
+        /// </summary>
+        public string PropertyName
+        {
+            get
+            {
+                return _name;
+            }
+        }
+
+        /// <summary>
+        /// Gets the type of the property.
+        /// </summary>
+        public TypeIdentity PropertyType
+        {
+            get
+            {
+                return _propertyType;
             }
         }
 

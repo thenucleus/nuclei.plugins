@@ -7,9 +7,9 @@
 
 using System;
 using System.Runtime.Serialization;
-using Nuclei.Plugins.Instantiation.Properties;
+using Nuclei.Plugins.Composition.Properties;
 
-namespace Nuclei.Plugins.Instantiation
+namespace Nuclei.Plugins.Composition
 {
     /// <summary>
     /// An exception thrown when the instantiation of a plugin object fails.

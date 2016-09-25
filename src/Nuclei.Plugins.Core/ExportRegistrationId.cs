@@ -103,17 +103,6 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Gets the contract name for the current export.
-        /// </summary>
-        public string ContractName
-        {
-            get
-            {
-                return _contractName;
-            }
-        }
-
-        /// <summary>
         /// Performs the actual act of creating a copy of the current ID number.
         /// </summary>
         /// <param name="value">The internally stored value.</param>
@@ -144,6 +133,17 @@ namespace Nuclei.Plugins.Core
         protected override int CompareValues(string ourValue, string theirValue)
         {
             return string.Compare(ourValue, theirValue, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Gets the contract name for the current export.
+        /// </summary>
+        public string ContractName
+        {
+            get
+            {
+                return _contractName;
+            }
         }
 
         /// <summary>

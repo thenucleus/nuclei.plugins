@@ -79,6 +79,19 @@ namespace Nuclei.Plugins.Core
         /// Creates a new instance of the <see cref="TypeIdentity"/> class based on the given <see cref="Type"/>.
         /// </summary>
         /// <param name="type">The type for which a serialized definition needs to be created.</param>
+        /// <returns>The serialized definition for the given type.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="type"/> is <see langword="null" />.
+        /// </exception>
+        public static TypeIdentity CreateDefinition(Type type)
+        {
+            return CreateDefinition(type, t => CreateDefinition(t));
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="TypeIdentity"/> class based on the given <see cref="Type"/>.
+        /// </summary>
+        /// <param name="type">The type for which a serialized definition needs to be created.</param>
         /// <param name="identityStorage">
         /// The function that stores <see cref="TypeIdentity"/> objects that are generated while creating the current
         /// <see cref="TypeIdentity"/>.
@@ -115,17 +128,37 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="TypeIdentity"/> class based on the given <see cref="Type"/>.
+        /// The assembly information for the assembly that contains the type.
         /// </summary>
-        /// <param name="type">The type for which a serialized definition needs to be created.</param>
-        /// <returns>The serialized definition for the given type.</returns>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="type"/> is <see langword="null" />.
-        /// </exception>
-        public static TypeIdentity CreateDefinition(Type type)
-        {
-            return CreateDefinition(type, t => CreateDefinition(t));
-        }
+        private readonly AssemblyDefinition _assembly;
+
+        /// <summary>
+        /// The type definition for the type that declares the current nested type or
+        /// generic parameter.
+        /// </summary>
+        private readonly TypeIdentity _declaringType;
+
+        /// <summary>
+        /// A flag indicating that the current type is actually a generic parameter (e.g. T)
+        /// for an generic type.
+        /// </summary>
+        private readonly bool _isGenericParameter;
+
+        /// <summary>
+        /// A flag indicating if the current type is a generic type.
+        /// </summary>
+        private readonly bool _isGenericType;
+
+        /// <summary>
+        /// A flag indicating if the current type is a nested type or not.
+        /// </summary>
+        private readonly bool _isNested;
+
+        /// <summary>
+        /// A flag indicating that the current type has generic parameter, some of which
+        /// have not been replaced by real types.
+        /// </summary>
+        private readonly bool _isOpenGeneric;
 
         /// <summary>
         /// The name of the type.
@@ -138,43 +171,10 @@ namespace Nuclei.Plugins.Core
         private readonly string _namespace;
 
         /// <summary>
-        /// The assembly information for the assembly that contains the type.
-        /// </summary>
-        private readonly AssemblyDefinition _assembly;
-
-        /// <summary>
-        /// The type definition for the type that declares the current nested type or
-        /// generic parameter.
-        /// </summary>
-        private readonly TypeIdentity _declaringType;
-
-        /// <summary>
         /// The collection that defines all the generic type arguments.
         /// </summary>
         private readonly TypeIdentity[] _typeArguments
             = new TypeIdentity[0];
-
-        /// <summary>
-        /// A flag indicating if the current type is a generic type.
-        /// </summary>
-        private readonly bool _isGenericType;
-
-        /// <summary>
-        /// A flag indicating that the current type has generic parameter, some of which
-        /// have not been replaced by real types.
-        /// </summary>
-        private readonly bool _isOpenGeneric;
-
-        /// <summary>
-        /// A flag indicating that the current type is actually a generic parameter (e.g. T)
-        /// for an generic type.
-        /// </summary>
-        private readonly bool _isGenericParameter;
-
-        /// <summary>
-        /// A flag indicating if the current type is a nested type or not.
-        /// </summary>
-        private readonly bool _isNested;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeIdentity"/> class.
@@ -217,24 +217,13 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Gets the name of the type.
+        /// Gets the assembly information for the type.
         /// </summary>
-        public string Name
+        public AssemblyDefinition Assembly
         {
             get
             {
-                return _name;
-            }
-        }
-
-        /// <summary>
-        /// Gets the namespace of the type.
-        /// </summary>
-        public string Namespace
-        {
-            get
-            {
-                return _namespace;
+                return _assembly;
             }
         }
 
@@ -250,34 +239,122 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Gets the fully qualified name of the type.
+        /// Gets the identity for the type that declares the current nested type or generic parameter type.
         /// </summary>
-        public string FullName
+        public TypeIdentity DeclaringType
         {
             get
             {
-                if (_isOpenGeneric || _isGenericParameter)
-                {
-                    return FormatWithoutTypeParameters();
-                }
-
-                return FormatWithTypeParameters(true);
+                return _declaringType;
             }
         }
 
-        private string FormatWithoutTypeParameters()
+        /// <summary>
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
+        /// <returns>
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
+        ///     otherwise, <see langword="false"/>.
+        /// </returns>
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+            Justification = "Documentation can start with a language keyword")]
+        public sealed override bool Equals(object obj)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0}.{1}", Namespace, FormatNestedName());
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            var id = obj as TypeIdentity;
+            return Equals(id);
         }
 
-        private string FormatWithTypeParameters(bool areTypeParametersFullyQualified)
+        /// <summary>
+        /// Determines whether the specified <see cref="Type"/> is equal to this instance.
+        /// </summary>
+        /// <param name="other">The <see cref="Type"/> to compare with this instance.</param>
+        /// <returns>
+        ///     <see langword="true"/> if the specified <see cref="Type"/> is equal to this instance;
+        ///     otherwise, <see langword="false"/>.
+        /// </returns>
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1062:Validate arguments of public methods",
+            MessageId = "0",
+            Justification = "There is no need to validate the parameter because it is implicitly verified.")]
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+            Justification = "Documentation can start with a language keyword")]
+        public bool Equals(Type other)
         {
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                "{0}.{1}{2}",
-                Namespace,
-                FormatNestedName(),
-                FormatTypeParameters(areTypeParametersFullyQualified));
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            // Check if other is a null reference by using ReferenceEquals because
+            // we overload the == operator. If other isn't actually null then
+            // we get an infinite loop where we're constantly trying to compare to null.
+            //
+            // Note that generic parameters (e.g. T in IEnumerable<T>) are weird. They have
+            // a name, namespace and assembly but not a FullName or an AssemblyQualifiedName (both are null)
+            // so we'll do the comparison manually.
+            var areEqual = !ReferenceEquals(other, null)
+                && string.Equals(Name, other.Name, StringComparison.Ordinal)
+                && string.Equals(Namespace, other.Namespace, StringComparison.Ordinal)
+                && string.Equals(Assembly.FullName, other.Assembly.FullName, StringComparison.OrdinalIgnoreCase);
+
+            if (areEqual)
+            {
+                var typeArguments = other.GetGenericArguments();
+                areEqual = areEqual && (typeArguments.Length == _typeArguments.Length);
+                if (areEqual)
+                {
+                    for (int i = 0; i < _typeArguments.Length; i++)
+                    {
+                        areEqual = areEqual && _typeArguments[i].Equals(typeArguments[i]);
+                        if (!areEqual)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return areEqual;
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="TypeIdentity"/> is equal to this instance.
+        /// </summary>
+        /// <param name="other">The <see cref="TypeIdentity"/> to compare with this instance.</param>
+        /// <returns>
+        ///     <see langword="true"/> if the specified <see cref="TypeIdentity"/> is equal to this instance;
+        ///     otherwise, <see langword="false"/>.
+        /// </returns>
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+            Justification = "Documentation can start with a language keyword")]
+        public bool Equals(TypeIdentity other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            // Check if other is a null reference by using ReferenceEquals because
+            // we overload the == operator. If other isn't actually null then
+            // we get an infinite loop where we're constantly trying to compare to null.
+            return !ReferenceEquals(other, null)
+                && string.Equals(Name, other.Name, StringComparison.Ordinal)
+                && string.Equals(Namespace, other.Namespace, StringComparison.Ordinal)
+                && Assembly.Equals(other.Assembly)
+                && _typeArguments.SequenceEqual(other._typeArguments);
         }
 
         private string FormatNestedName()
@@ -325,191 +402,35 @@ namespace Nuclei.Plugins.Core
             return builder.ToString();
         }
 
+        private string FormatWithoutTypeParameters()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0}.{1}", Namespace, FormatNestedName());
+        }
+
+        private string FormatWithTypeParameters(bool areTypeParametersFullyQualified)
+        {
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}.{1}{2}",
+                Namespace,
+                FormatNestedName(),
+                FormatTypeParameters(areTypeParametersFullyQualified));
+        }
+
         /// <summary>
-        /// Gets the assembly information for the type.
+        /// Gets the fully qualified name of the type.
         /// </summary>
-        public AssemblyDefinition Assembly
+        public string FullName
         {
             get
             {
-                return _assembly;
-            }
-        }
-
-        /// <summary>
-        /// Gets the identity for the type that declares the current nested type or generic parameter type.
-        /// </summary>
-        public TypeIdentity DeclaringType
-        {
-            get
-            {
-                return _declaringType;
-            }
-        }
-
-        /// <summary>
-        /// Gets the collection that contains all the generic type arguments for the current type.
-        /// </summary>
-        public IEnumerable<TypeIdentity> TypeArguments
-        {
-            get
-            {
-                return _typeArguments;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the current type is a generic type.
-        /// </summary>
-        public bool IsGenericType
-        {
-            get
-            {
-                return _isGenericType;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the current type has one or more generic parameters
-        /// which have not been replaced by real types.
-        /// </summary>
-        public bool IsOpenGeneric
-        {
-            get
-            {
-                return _isOpenGeneric;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the current type is a generic parameter (e.g. T) for a
-        /// generic type.
-        /// </summary>
-        public bool IsGenericParameter
-        {
-            get
-            {
-                return _isGenericParameter;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the current type is a nested type or not.
-        /// </summary>
-        public bool IsNested
-        {
-            get
-            {
-                return _isNested;
-            }
-        }
-
-        /// <summary>
-        /// Determines whether the specified <see cref="TypeIdentity"/> is equal to this instance.
-        /// </summary>
-        /// <param name="other">The <see cref="TypeIdentity"/> to compare with this instance.</param>
-        /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="TypeIdentity"/> is equal to this instance;
-        ///     otherwise, <see langword="false"/>.
-        /// </returns>
-        [SuppressMessage(
-            "Microsoft.StyleCop.CSharp.DocumentationRules",
-            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
-            Justification = "Documentation can start with a language keyword")]
-        public bool Equals(TypeIdentity other)
-        {
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            // Check if other is a null reference by using ReferenceEquals because
-            // we overload the == operator. If other isn't actually null then
-            // we get an infinite loop where we're constantly trying to compare to null.
-            return !ReferenceEquals(other, null)
-                && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(Namespace, other.Namespace, StringComparison.OrdinalIgnoreCase)
-                && Assembly.Equals(other.Assembly)
-                && _typeArguments.SequenceEqual(other._typeArguments);
-        }
-
-        /// <summary>
-        /// Determines whether the specified <see cref="Type"/> is equal to this instance.
-        /// </summary>
-        /// <param name="other">The <see cref="Type"/> to compare with this instance.</param>
-        /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="Type"/> is equal to this instance;
-        ///     otherwise, <see langword="false"/>.
-        /// </returns>
-        [SuppressMessage(
-            "Microsoft.Design",
-            "CA1062:Validate arguments of public methods",
-            MessageId = "0",
-            Justification = "There is no need to validate the parameter because it is implicitly verified.")]
-        [SuppressMessage(
-            "Microsoft.StyleCop.CSharp.DocumentationRules",
-            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
-            Justification = "Documentation can start with a language keyword")]
-        public bool Equals(Type other)
-        {
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            // Check if other is a null reference by using ReferenceEquals because
-            // we overload the == operator. If other isn't actually null then
-            // we get an infinite loop where we're constantly trying to compare to null.
-            //
-            // Note that generic parameters (e.g. T in IEnumerable<T>) are weird. They have
-            // a name, namespace and assembly but not a FullName or an AssemblyQualifiedName (both are null)
-            // so we'll do the comparison manually.
-            var areEqual = !ReferenceEquals(other, null)
-                && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(Namespace, other.Namespace, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(Assembly.FullName, other.Assembly.FullName, StringComparison.OrdinalIgnoreCase);
-
-            if (areEqual)
-            {
-                var typeArguments = other.GetGenericArguments();
-                areEqual = areEqual && (typeArguments.Length == _typeArguments.Length);
-                if (areEqual)
+                if (_isOpenGeneric || _isGenericParameter)
                 {
-                    for (int i = 0; i < _typeArguments.Length; i++)
-                    {
-                        areEqual = areEqual && _typeArguments[i].Equals(typeArguments[i]);
-                        if (!areEqual)
-                        {
-                            break;
-                        }
-                    }
+                    return FormatWithoutTypeParameters();
                 }
+
+                return FormatWithTypeParameters(true);
             }
-
-            return areEqual;
-        }
-
-        /// <summary>
-        /// Determines whether the specified <see cref="object"/> is equal to this instance.
-        /// </summary>
-        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
-        /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
-        ///     otherwise, <see langword="false"/>.
-        /// </returns>
-        [SuppressMessage(
-            "Microsoft.StyleCop.CSharp.DocumentationRules",
-            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
-            Justification = "Documentation can start with a language keyword")]
-        public sealed override bool Equals(object obj)
-        {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            var id = obj as TypeIdentity;
-            return Equals(id);
         }
 
         /// <summary>
@@ -539,6 +460,85 @@ namespace Nuclei.Plugins.Core
                 }
 
                 return hash;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the current type is a generic parameter (e.g. T) for a
+        /// generic type.
+        /// </summary>
+        public bool IsGenericParameter
+        {
+            get
+            {
+                return _isGenericParameter;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the current type is a generic type.
+        /// </summary>
+        public bool IsGenericType
+        {
+            get
+            {
+                return _isGenericType;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the current type is a nested type or not.
+        /// </summary>
+        public bool IsNested
+        {
+            get
+            {
+                return _isNested;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the current type has one or more generic parameters
+        /// which have not been replaced by real types.
+        /// </summary>
+        public bool IsOpenGeneric
+        {
+            get
+            {
+                return _isOpenGeneric;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the type.
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+        }
+
+        /// <summary>
+        /// Gets the namespace of the type.
+        /// </summary>
+        public string Namespace
+        {
+            get
+            {
+                return _namespace;
+            }
+        }
+
+        /// <summary>
+        /// Gets the collection that contains all the generic type arguments for the current type.
+        /// </summary>
+        public IEnumerable<TypeIdentity> TypeArguments
+        {
+            get
+            {
+                return _typeArguments;
             }
         }
 

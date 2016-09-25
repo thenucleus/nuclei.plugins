@@ -15,6 +15,19 @@ namespace Nuclei.Plugins.Core
     public interface IPluginRepository : ISatisfyPluginRequests
     {
         /// <summary>
+        /// Adds a new part to the repository.
+        /// </summary>
+        /// <param name="part">The part definition.</param>
+        /// <param name="pluginFileInfo">The file info of the assembly which owns the part.</param>
+        void AddPart(PartDefinition part, PluginOrigin pluginFileInfo);
+
+        /// <summary>
+        /// Adds a new type definition to the repository.
+        /// </summary>
+        /// <param name="type">The type definition.</param>
+        void AddType(TypeDefinition type);
+
+        /// <summary>
         /// Returns a collection containing the descriptions of all the known plugins.
         /// </summary>
         /// <returns>
@@ -27,18 +40,5 @@ namespace Nuclei.Plugins.Core
         /// </summary>
         /// <param name="deletedFiles">The collection of plugin file paths that were removed.</param>
         void RemovePlugins(IEnumerable<PluginOrigin> deletedFiles);
-
-        /// <summary>
-        /// Adds a new type definition to the repository.
-        /// </summary>
-        /// <param name="type">The type definition.</param>
-        void AddType(TypeDefinition type);
-
-        /// <summary>
-        /// Adds a new part to the repository.
-        /// </summary>
-        /// <param name="part">The part definition.</param>
-        /// <param name="pluginFileInfo">The file info of the assembly which owns the part.</param>
-        void AddPart(PartDefinition part, PluginOrigin pluginFileInfo);
     }
 }

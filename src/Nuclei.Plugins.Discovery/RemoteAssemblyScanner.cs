@@ -43,6 +43,7 @@ namespace Nuclei.Plugins.Discovery
             return ConstructorBasedImportDefinition.CreateDefinition(
                 import.ContractName,
                 TypeIdentity.CreateDefinition(requiredType),
+                import.RequiredTypeIdentity,
                 import.Cardinality,
                 import.RequiredCreationPolicy,
                 parameterInfo.Value,
@@ -109,6 +110,7 @@ namespace Nuclei.Plugins.Discovery
             return PropertyBasedImportDefinition.CreateDefinition(
                 import.ContractName,
                 TypeIdentity.CreateDefinition(requiredType),
+                import.RequiredTypeIdentity,
                 import.Cardinality,
                 import.IsRecomposable,
                 import.RequiredCreationPolicy,

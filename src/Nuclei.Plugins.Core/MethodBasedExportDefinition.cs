@@ -75,6 +75,21 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
+        /// Creates a new instance of the <see cref="MethodBasedExportDefinition"/> class
+        /// based on the given <see cref="MethodInfo"/>.
+        /// </summary>
+        /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="method">The method for which the current object stores the serialized data.</param>
+        /// <returns>The serialized definition for the given method.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="method"/> is <see langword="null" />.
+        /// </exception>
+        public static MethodBasedExportDefinition CreateDefinition(string contractName, MethodInfo method)
+        {
+            return CreateDefinition(contractName, method, t => TypeIdentity.CreateDefinition(t));
+        }
+
+        /// <summary>
         /// Creates a new instance of the <see cref="MethodBasedExportDefinition"/> class based
         /// on the given <see cref="MethodInfo"/>.
         /// </summary>
@@ -110,21 +125,6 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="MethodBasedExportDefinition"/> class
-        /// based on the given <see cref="MethodInfo"/>.
-        /// </summary>
-        /// <param name="contractName">The contract name that is used to identify the current export.</param>
-        /// <param name="method">The method for which the current object stores the serialized data.</param>
-        /// <returns>The serialized definition for the given method.</returns>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="method"/> is <see langword="null" />.
-        /// </exception>
-        public static MethodBasedExportDefinition CreateDefinition(string contractName, MethodInfo method)
-        {
-            return CreateDefinition(contractName, method, t => TypeIdentity.CreateDefinition(t));
-        }
-
-        /// <summary>
         /// The name of the method.
         /// </summary>
         private readonly MethodDefinition _method;
@@ -146,17 +146,6 @@ namespace Nuclei.Plugins.Core
             }
 
             _method = method;
-        }
-
-        /// <summary>
-        /// Gets the name of the method.
-        /// </summary>
-        public MethodDefinition Method
-        {
-            get
-            {
-                return _method;
-            }
         }
 
         /// <summary>
@@ -235,6 +224,17 @@ namespace Nuclei.Plugins.Core
                 hash = (hash * 23) ^ Method.GetHashCode();
 
                 return hash;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the method.
+        /// </summary>
+        public MethodDefinition Method
+        {
+            get
+            {
+                return _method;
             }
         }
 

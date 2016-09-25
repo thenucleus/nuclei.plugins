@@ -88,24 +88,24 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// The name of the assembly.
-        /// </summary>
-        private readonly string _name;
-
-        /// <summary>
-        /// The version of the assembly.
-        /// </summary>
-        private readonly Version _version;
-
-        /// <summary>
         /// The culture of the assembly.
         /// </summary>
         private readonly CultureInfo _culture;
 
         /// <summary>
+        /// The name of the assembly.
+        /// </summary>
+        private readonly string _name;
+
+        /// <summary>
         /// The public key token of the assembly.
         /// </summary>
         private readonly string _publicKeyToken;
+
+        /// <summary>
+        /// The version of the assembly.
+        /// </summary>
+        private readonly Version _version;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AssemblyDefinition"/> class.
@@ -133,28 +133,6 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Gets the name of the assembly.
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
-
-        /// <summary>
-        /// Gets the version of the assembly.
-        /// </summary>
-        public Version Version
-        {
-            get
-            {
-                return _version;
-            }
-        }
-
-        /// <summary>
         /// Gets the culture for the assembly.
         /// </summary>
         public CultureInfo Culture
@@ -162,34 +140,6 @@ namespace Nuclei.Plugins.Core
             get
             {
                 return _culture;
-            }
-        }
-
-        /// <summary>
-        /// Gets the public key token for the assembly.
-        /// </summary>
-        public string PublicKeyToken
-        {
-            get
-            {
-                return _publicKeyToken;
-            }
-        }
-
-        /// <summary>
-        /// Gets the full name of the assembly.
-        /// </summary>
-        public string FullName
-        {
-            get
-            {
-                return string.Format(
-                    CultureInfo.InvariantCulture,
-                    "{0}, Version={1}, Culture={2}, PublicKeyToken={3}",
-                    Name,
-                    Version,
-                    !Culture.Equals(CultureInfo.InvariantCulture) ? Culture.Name : "neutral",
-                    PublicKeyToken);
             }
         }
 
@@ -246,6 +196,23 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
+        /// Gets the full name of the assembly.
+        /// </summary>
+        public string FullName
+        {
+            get
+            {
+                return string.Format(
+                    CultureInfo.InvariantCulture,
+                    "{0}, Version={1}, Culture={2}, PublicKeyToken={3}",
+                    Name,
+                    Version,
+                    !Culture.Equals(CultureInfo.InvariantCulture) ? Culture.Name : "neutral",
+                    PublicKeyToken);
+            }
+        }
+
+        /// <summary>
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
@@ -277,6 +244,28 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
+        /// Gets the name of the assembly.
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+        }
+
+        /// <summary>
+        /// Gets the public key token for the assembly.
+        /// </summary>
+        public string PublicKeyToken
+        {
+            get
+            {
+                return _publicKeyToken;
+            }
+        }
+
+        /// <summary>
         /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
@@ -285,6 +274,17 @@ namespace Nuclei.Plugins.Core
         public override string ToString()
         {
             return FullName;
+        }
+
+        /// <summary>
+        /// Gets the version of the assembly.
+        /// </summary>
+        public Version Version
+        {
+            get
+            {
+                return _version;
+            }
         }
     }
 }

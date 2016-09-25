@@ -44,6 +44,84 @@ namespace Nuclei.Plugins.Core
             };
 
         /// <summary>
+        /// Returns a value indicating if the given type is based on the <see cref="Action{T}"/>, <see cref="Action{T1, T2}"/>,
+        /// <see cref="Action{T1, T2, T3}"/> or <see cref="Action{T1, T2, T3, T4}"/> open generic types.
+        /// </summary>
+        /// <param name="importType">The type that may or may not be based on the open generic type.</param>
+        /// <param name="toDefinition">The function that translates a <see cref="TypeIdentity"/> to a <see cref="TypeDefinition"/>.</param>
+        /// <returns>
+        ///     <see langword="true" /> if the type is based on the <see cref="Action{T}"/>, <see cref="Action{T1, T2}"/>,
+        /// <see cref="Action{T1, T2, T3}"/> or <see cref="Action{T1, T2, T3, T4}"/> open generic type; otherwise, <see langword="false" />.
+        /// </returns>
+        public static bool IsAction(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
+        {
+            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<,>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<,,>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<,,,>)], importType, toDefinition);
+        }
+
+        /// <summary>
+        /// Returns a value indicating if the given type is based on the <see cref="IEnumerable{T}"/> open generic type.
+        /// </summary>
+        /// <param name="importType">The type that may or may not be based on the open generic type.</param>
+        /// <param name="toDefinition">The function that translates a <see cref="TypeIdentity"/> to a <see cref="TypeDefinition"/>.</param>
+        /// <returns>
+        ///     <see langword="true" /> if the type is based on the <see cref="IEnumerable{T}"/> open generic type;
+        ///     otherwise, <see langword="false" />.
+        /// </returns>
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+            Justification = "Documentation can start with a language keyword")]
+        public static bool IsCollection(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
+        {
+            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(IEnumerable<>)], importType, toDefinition);
+        }
+
+        /// <summary>
+        /// Returns a value indicating if the given type is based on the <see cref="Func{T}"/>, <see cref="Func{T1, TResult}"/>,
+        /// <see cref="Func{T1, T2, TResult}"/> or <see cref="Func{T1, T2, T3, TResult}"/> open generic types.
+        /// </summary>
+        /// <param name="importType">The type that may or may not be based on the open generic type.</param>
+        /// <param name="toDefinition">The function that translates a <see cref="TypeIdentity"/> to a <see cref="TypeDefinition"/>.</param>
+        /// <returns>
+        ///     <see langword="true" /> if the type is based on the <see cref="Func{T}"/>, <see cref="Func{T1, TResult}"/>,
+        /// <see cref="Func{T1, T2, TResult}"/> or <see cref="Func{T1, T2, T3, TResult}"/> open generic type; otherwise, <see langword="false" />.
+        /// </returns>
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+            Justification = "Documentation can start with a language keyword")]
+        public static bool IsFunc(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
+        {
+            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<,>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<,,>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<,,,>)], importType, toDefinition);
+        }
+
+        /// <summary>
+        /// Returns a value indicating if the given type is based on the <see cref="Lazy{T}"/> or
+        /// <see cref="Lazy{T, TMetadata}"/> open generic types.
+        /// </summary>
+        /// <param name="importType">The type that may or may not be based on the open generic type.</param>
+        /// <param name="toDefinition">The function that translates a <see cref="TypeIdentity"/> to a <see cref="TypeDefinition"/>.</param>
+        /// <returns>
+        ///     <see langword="true" /> if the type is based on the <see cref="Lazy{T}"/> or <see cref="Lazy{T, TMetadata}"/> open generic type;
+        ///     otherwise, <see langword="false" />.
+        /// </returns>
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+            Justification = "Documentation can start with a language keyword")]
+        public static bool IsLazy(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
+        {
+            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Lazy<>)], importType, toDefinition)
+                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Lazy<,>)], importType, toDefinition);
+        }
+
+        /// <summary>
         /// Returns a value indicating if a type is based on a given open generic type.
         /// </summary>
         /// <param name="openGeneric">The open generic type, e.g. List{T}.</param>
@@ -78,84 +156,6 @@ namespace Nuclei.Plugins.Core
                 interfaceType => OpenGenericIsAssignableFrom(openGeneric, toDefinition(interfaceType), toDefinition));
 
             return isClosureOfGenericType || isSubClassOfClosure || inheritsClosureInterface;
-        }
-
-        /// <summary>
-        /// Returns a value indicating if the given type is based on the <see cref="Lazy{T}"/> or
-        /// <see cref="Lazy{T, TMetadata}"/> open generic types.
-        /// </summary>
-        /// <param name="importType">The type that may or may not be based on the open generic type.</param>
-        /// <param name="toDefinition">The function that translates a <see cref="TypeIdentity"/> to a <see cref="TypeDefinition"/>.</param>
-        /// <returns>
-        ///     <see langword="true" /> if the type is based on the <see cref="Lazy{T}"/> or <see cref="Lazy{T, TMetadata}"/> open generic type;
-        ///     otherwise, <see langword="false" />.
-        /// </returns>
-        [SuppressMessage(
-            "Microsoft.StyleCop.CSharp.DocumentationRules",
-            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
-            Justification = "Documentation can start with a language keyword")]
-        public static bool IsLazy(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
-        {
-            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Lazy<>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Lazy<,>)], importType, toDefinition);
-        }
-
-        /// <summary>
-        /// Returns a value indicating if the given type is based on the <see cref="Func{T}"/>, <see cref="Func{T1, TResult}"/>,
-        /// <see cref="Func{T1, T2, TResult}"/> or <see cref="Func{T1, T2, T3, TResult}"/> open generic types.
-        /// </summary>
-        /// <param name="importType">The type that may or may not be based on the open generic type.</param>
-        /// <param name="toDefinition">The function that translates a <see cref="TypeIdentity"/> to a <see cref="TypeDefinition"/>.</param>
-        /// <returns>
-        ///     <see langword="true" /> if the type is based on the <see cref="Func{T}"/>, <see cref="Func{T1, TResult}"/>,
-        /// <see cref="Func{T1, T2, TResult}"/> or <see cref="Func{T1, T2, T3, TResult}"/> open generic type; otherwise, <see langword="false" />.
-        /// </returns>
-        [SuppressMessage(
-            "Microsoft.StyleCop.CSharp.DocumentationRules",
-            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
-            Justification = "Documentation can start with a language keyword")]
-        public static bool IsFunc(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
-        {
-            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<,>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<,,>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Func<,,,>)], importType, toDefinition);
-        }
-
-        /// <summary>
-        /// Returns a value indicating if the given type is based on the <see cref="Action{T}"/>, <see cref="Action{T1, T2}"/>,
-        /// <see cref="Action{T1, T2, T3}"/> or <see cref="Action{T1, T2, T3, T4}"/> open generic types.
-        /// </summary>
-        /// <param name="importType">The type that may or may not be based on the open generic type.</param>
-        /// <param name="toDefinition">The function that translates a <see cref="TypeIdentity"/> to a <see cref="TypeDefinition"/>.</param>
-        /// <returns>
-        ///     <see langword="true" /> if the type is based on the <see cref="Action{T}"/>, <see cref="Action{T1, T2}"/>,
-        /// <see cref="Action{T1, T2, T3}"/> or <see cref="Action{T1, T2, T3, T4}"/> open generic type; otherwise, <see langword="false" />.
-        /// </returns>
-        public static bool IsAction(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
-        {
-            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<,>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<,,>)], importType, toDefinition)
-                || OpenGenericIsAssignableFrom(_specialCasesCache[typeof(Action<,,,>)], importType, toDefinition);
-        }
-
-        /// <summary>
-        /// Returns a value indicating if the given type is based on the <see cref="IEnumerable{T}"/> open generic type.
-        /// </summary>
-        /// <param name="importType">The type that may or may not be based on the open generic type.</param>
-        /// <param name="toDefinition">The function that translates a <see cref="TypeIdentity"/> to a <see cref="TypeDefinition"/>.</param>
-        /// <returns>
-        ///     <see langword="true" /> if the type is based on the <see cref="IEnumerable{T}"/> open generic type;
-        ///     otherwise, <see langword="false" />.
-        /// </returns>
-        [SuppressMessage(
-            "Microsoft.StyleCop.CSharp.DocumentationRules",
-            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
-            Justification = "Documentation can start with a language keyword")]
-        public static bool IsCollection(this TypeDefinition importType, Func<TypeIdentity, TypeDefinition> toDefinition)
-        {
-            return OpenGenericIsAssignableFrom(_specialCasesCache[typeof(IEnumerable<>)], importType, toDefinition);
         }
     }
 }

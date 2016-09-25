@@ -78,6 +78,19 @@ namespace Nuclei.Plugins.Core
         /// Creates a new instance of the <see cref="ParameterDefinition"/> class based on the given <see cref="ParameterInfo"/>.
         /// </summary>
         /// <param name="parameter">The parameter for which a serialized definition needs to be created.</param>
+        /// <returns>The serialized definition for the given parameter.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="parameter"/> is <see langword="null" />.
+        /// </exception>
+        internal static ParameterDefinition CreateDefinition(ParameterInfo parameter)
+        {
+            return CreateDefinition(parameter, t => TypeIdentity.CreateDefinition(t));
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="ParameterDefinition"/> class based on the given <see cref="ParameterInfo"/>.
+        /// </summary>
+        /// <param name="parameter">The parameter for which a serialized definition needs to be created.</param>
         /// <param name="identityGenerator">The function that creates type identities.</param>
         /// <returns>The serialized definition for the given parameter.</returns>
         /// <exception cref="ArgumentNullException">
@@ -104,19 +117,6 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="ParameterDefinition"/> class based on the given <see cref="ParameterInfo"/>.
-        /// </summary>
-        /// <param name="parameter">The parameter for which a serialized definition needs to be created.</param>
-        /// <returns>The serialized definition for the given parameter.</returns>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="parameter"/> is <see langword="null" />.
-        /// </exception>
-        internal static ParameterDefinition CreateDefinition(ParameterInfo parameter)
-        {
-            return CreateDefinition(parameter, t => TypeIdentity.CreateDefinition(t));
-        }
-
-        /// <summary>
         /// The name of the parameter.
         /// </summary>
         private readonly string _name;
@@ -140,28 +140,6 @@ namespace Nuclei.Plugins.Core
 
             _name = name;
             _type = type;
-        }
-
-        /// <summary>
-        /// Gets the name of the parameter.
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
-
-        /// <summary>
-        /// Gets the type of the parameter.
-        /// </summary>
-        public TypeIdentity Identity
-        {
-            get
-            {
-                return _type;
-            }
         }
 
         /// <summary>
@@ -237,6 +215,28 @@ namespace Nuclei.Plugins.Core
                 hash = (hash * 23) ^ Identity.GetHashCode();
 
                 return hash;
+            }
+        }
+
+        /// <summary>
+        /// Gets the type of the parameter.
+        /// </summary>
+        public TypeIdentity Identity
+        {
+            get
+            {
+                return _type;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the parameter.
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return _name;
             }
         }
 

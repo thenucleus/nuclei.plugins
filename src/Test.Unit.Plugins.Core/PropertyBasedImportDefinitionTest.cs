@@ -57,6 +57,7 @@ namespace Nuclei.Plugins.Core
             var original = PropertyBasedImportDefinition.CreateDefinition(
                 "A",
                 TypeIdentity.CreateDefinition(typeof(int)),
+                "System.Int32",
                 ImportCardinality.ExactlyOne,
                 true,
                 CreationPolicy.NonShared,
@@ -72,6 +73,7 @@ namespace Nuclei.Plugins.Core
             var obj = PropertyBasedImportDefinition.CreateDefinition(
                 "A",
                 TypeIdentity.CreateDefinition(typeof(int)),
+                "System.Int32",
                 ImportCardinality.ExactlyOne,
                 true,
                 CreationPolicy.NonShared,
@@ -93,6 +95,7 @@ namespace Nuclei.Plugins.Core
             private readonly PropertyBasedImportDefinition _first = PropertyBasedImportDefinition.CreateDefinition(
                 "A",
                 TypeIdentity.CreateDefinition(typeof(int)),
+                "System.Int32",
                 ImportCardinality.ExactlyOne,
                 true,
                 CreationPolicy.NonShared,
@@ -101,6 +104,7 @@ namespace Nuclei.Plugins.Core
             private readonly PropertyBasedImportDefinition _second = PropertyBasedImportDefinition.CreateDefinition(
                 "B",
                 TypeIdentity.CreateDefinition(typeof(int)),
+                "System.Int32",
                 ImportCardinality.ExactlyOne,
                 true,
                 CreationPolicy.NonShared,
@@ -113,6 +117,7 @@ namespace Nuclei.Plugins.Core
                     return PropertyBasedImportDefinition.CreateDefinition(
                         "A",
                         TypeIdentity.CreateDefinition(typeof(int)),
+                        "System.Int32",
                         ImportCardinality.ExactlyOne,
                         true,
                         CreationPolicy.NonShared,
@@ -122,6 +127,7 @@ namespace Nuclei.Plugins.Core
                 return PropertyBasedImportDefinition.CreateDefinition(
                     "B",
                     TypeIdentity.CreateDefinition(typeof(int)),
+                    "System.Int32",
                     ImportCardinality.ExactlyOne,
                     true,
                     CreationPolicy.NonShared,
@@ -161,6 +167,7 @@ namespace Nuclei.Plugins.Core
                         PropertyBasedImportDefinition.CreateDefinition(
                             "A",
                             TypeIdentity.CreateDefinition(typeof(int)),
+                            "System.Int32",
                             ImportCardinality.ExactlyOne,
                             true,
                             CreationPolicy.NonShared,
@@ -168,6 +175,7 @@ namespace Nuclei.Plugins.Core
                         PropertyBasedImportDefinition.CreateDefinition(
                             "B",
                             TypeIdentity.CreateDefinition(typeof(int)),
+                            "System.Int32",
                             ImportCardinality.ExactlyOne,
                             true,
                             CreationPolicy.NonShared,
@@ -175,6 +183,7 @@ namespace Nuclei.Plugins.Core
                         PropertyBasedImportDefinition.CreateDefinition(
                             "C",
                             TypeIdentity.CreateDefinition(typeof(int)),
+                            "System.Int32",
                             ImportCardinality.ExactlyOne,
                             true,
                             CreationPolicy.NonShared,
@@ -182,6 +191,7 @@ namespace Nuclei.Plugins.Core
                         PropertyBasedImportDefinition.CreateDefinition(
                             "D",
                             TypeIdentity.CreateDefinition(typeof(string)),
+                            "System.String",
                             ImportCardinality.ExactlyOne,
                             true,
                             CreationPolicy.NonShared,
@@ -189,6 +199,7 @@ namespace Nuclei.Plugins.Core
                         PropertyBasedImportDefinition.CreateDefinition(
                             "E",
                             TypeIdentity.CreateDefinition(typeof(string)),
+                            "System.String",
                             ImportCardinality.ExactlyOne,
                             true,
                             CreationPolicy.NonShared,

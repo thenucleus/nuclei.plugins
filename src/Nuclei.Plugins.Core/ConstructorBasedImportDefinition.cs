@@ -81,6 +81,7 @@ namespace Nuclei.Plugins.Core
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current import.</param>
         /// <param name="requiredTypeIdentity">The type identity of the export type expected.</param>
+        /// <param name="requiredTypeIdentityForMef">The type identity of the export type as expected by MEF.</param>
         /// <param name="cardinality">
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
@@ -99,6 +100,7 @@ namespace Nuclei.Plugins.Core
         public static ConstructorBasedImportDefinition CreateDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
+            string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
             CreationPolicy creationPolicy,
             ParameterInfo parameter,
@@ -117,6 +119,7 @@ namespace Nuclei.Plugins.Core
             return new ConstructorBasedImportDefinition(
                 contractName,
                 requiredTypeIdentity,
+                requiredTypeIdentityForMef,
                 cardinality,
                 creationPolicy,
                 identityGenerator(parameter.Member.DeclaringType),
@@ -130,6 +133,7 @@ namespace Nuclei.Plugins.Core
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current import.</param>
         /// <param name="requiredTypeIdentity">The type identity of the export type expected.</param>
+        /// <param name="requiredTypeIdentityForMef">The type identity of the export type as expected by MEF.</param>
         /// <param name="cardinality">
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
@@ -144,6 +148,7 @@ namespace Nuclei.Plugins.Core
         public static ConstructorBasedImportDefinition CreateDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
+            string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
             CreationPolicy creationPolicy,
             ParameterInfo parameter)
@@ -151,6 +156,7 @@ namespace Nuclei.Plugins.Core
             return CreateDefinition(
                 contractName,
                 requiredTypeIdentity,
+                requiredTypeIdentityForMef,
                 cardinality,
                 creationPolicy,
                 parameter,
@@ -172,6 +178,7 @@ namespace Nuclei.Plugins.Core
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current import.</param>
         /// <param name="requiredTypeIdentity">The type identity of the export type expected.</param>
+        /// <param name="requiredTypeIdentityForMef">The type identity of the export type as expected by MEF.</param>
         /// <param name="cardinality">
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
@@ -184,6 +191,7 @@ namespace Nuclei.Plugins.Core
         private ConstructorBasedImportDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
+            string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
             CreationPolicy creationPolicy,
             TypeIdentity declaringType,
@@ -192,6 +200,7 @@ namespace Nuclei.Plugins.Core
             : base(
                 contractName,
                 requiredTypeIdentity,
+                requiredTypeIdentityForMef,
                 cardinality,
                 false,
                 true,
@@ -255,6 +264,7 @@ namespace Nuclei.Plugins.Core
             return !ReferenceEquals(otherType, null)
                 && string.Equals(ContractName, otherType.ContractName, StringComparison.OrdinalIgnoreCase)
                 && RequiredTypeIdentity.Equals(otherType.RequiredTypeIdentity)
+                && string.Equals(RequiredTypeIdentityForMef, otherType.RequiredTypeIdentityForMef, StringComparison.OrdinalIgnoreCase)
                 && Constructor == otherType.Constructor
                 && Parameter == otherType.Parameter;
         }
@@ -303,6 +313,7 @@ namespace Nuclei.Plugins.Core
                 // Mash the hash together with yet another random prime number
                 hash = (hash * 23) ^ ContractName.GetHashCode();
                 hash = (hash * 23) ^ RequiredTypeIdentity.GetHashCode();
+                hash = (hash * 23) ^ RequiredTypeIdentityForMef.GetHashCode();
                 hash = (hash * 23) ^ DeclaringType.GetHashCode();
                 hash = (hash * 23) ^ Constructor.GetHashCode();
                 hash = (hash * 23) ^ Parameter.GetHashCode();

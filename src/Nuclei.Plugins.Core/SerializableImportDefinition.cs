@@ -24,30 +24,14 @@ namespace Nuclei.Plugins.Core
     public abstract class SerializableImportDefinition : IEquatable<SerializableImportDefinition>
     {
         /// <summary>
-        /// The name of the contract for the import.
-        /// </summary>
-        private readonly string _contractName;
-
-        /// <summary>
-        /// The type identity of the export type expected.
-        /// </summary>
-        private readonly TypeIdentity _requiredTypeIdentity;
-
-        /// <summary>
         /// The import cardinality for the import.
         /// </summary>
         private readonly ImportCardinality _cardinality;
 
         /// <summary>
-        /// A flag indicating if it is possible to provide values for the import multiple times during the lifetime of
-        /// the part.
+        /// The name of the contract for the import.
         /// </summary>
-        private readonly bool _isRecomposable;
-
-        /// <summary>
-        /// A flag indicating if the import has to be satisfied before the creation of the part.
-        /// </summary>
-        private readonly bool _isPreRequisite;
+        private readonly string _contractName;
 
         /// <summary>
         /// The creation policy for the import.
@@ -60,10 +44,32 @@ namespace Nuclei.Plugins.Core
         private readonly TypeIdentity _declaringType;
 
         /// <summary>
+        /// A flag indicating if the import has to be satisfied before the creation of the part.
+        /// </summary>
+        private readonly bool _isPreRequisite;
+
+        /// <summary>
+        /// A flag indicating if it is possible to provide values for the import multiple times during the lifetime of
+        /// the part.
+        /// </summary>
+        private readonly bool _isRecomposable;
+
+        /// <summary>
+        /// The type identity of the export type expected.
+        /// </summary>
+        private readonly TypeIdentity _requiredTypeIdentity;
+
+        /// <summary>
+        /// The type identity of the export type as expected by MEF.
+        /// </summary>
+        private readonly string _requiredTypeIdentityForMef;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SerializableImportDefinition"/> class.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current import.</param>
         /// <param name="requiredTypeIdentity">The type identity of the export type expected.</param>
+        /// <param name="requiredTypeIdentityForMef">The type identity of the export type as expected by MEF.</param>
         /// <param name="cardinality">
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
@@ -90,6 +96,7 @@ namespace Nuclei.Plugins.Core
         protected SerializableImportDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
+            string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
             bool isRecomposable,
             bool isPrerequisite,
@@ -103,33 +110,12 @@ namespace Nuclei.Plugins.Core
 
             _contractName = contractName;
             _requiredTypeIdentity = requiredTypeIdentity;
+            _requiredTypeIdentityForMef = requiredTypeIdentityForMef;
             _cardinality = cardinality;
             _isRecomposable = isRecomposable;
             _isPreRequisite = isPrerequisite;
             _creationPolicy = creationPolicy;
             _declaringType = declaringType;
-        }
-
-        /// <summary>
-        /// Gets the contract name for the import.
-        /// </summary>
-        public string ContractName
-        {
-            get
-            {
-                return _contractName;
-            }
-        }
-
-        /// <summary>
-        /// Gets the type identity of the export type expected.
-        /// </summary>
-        public TypeIdentity RequiredTypeIdentity
-        {
-            get
-            {
-                return _requiredTypeIdentity;
-            }
         }
 
         /// <summary>
@@ -144,41 +130,13 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Gets a value indicating whether the import can be satisfied multiple times during the lifetime of
-        /// a part.
+        /// Gets the contract name for the import.
         /// </summary>
-        [SuppressMessage(
-            "Microsoft.Naming",
-            "CA1704:IdentifiersShouldBeSpelledCorrectly",
-            MessageId = "Recomposable",
-            Justification = "MEF uses the same term.")]
-        public bool IsRecomposable
+        public string ContractName
         {
             get
             {
-                return _isRecomposable;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the import should be satisfied before parts can be produced.
-        /// </summary>
-        public bool IsPrerequisite
-        {
-            get
-            {
-                return _isPreRequisite;
-            }
-        }
-
-        /// <summary>
-        /// Gets the creation policy for the import.
-        /// </summary>
-        public CreationPolicy RequiredCreationPolicy
-        {
-            get
-            {
-                return _creationPolicy;
+                return _contractName;
             }
         }
 
@@ -228,6 +186,67 @@ namespace Nuclei.Plugins.Core
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public abstract override int GetHashCode();
+
+        /// <summary>
+        /// Gets a value indicating whether the import should be satisfied before parts can be produced.
+        /// </summary>
+        public bool IsPrerequisite
+        {
+            get
+            {
+                return _isPreRequisite;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the import can be satisfied multiple times during the lifetime of
+        /// a part.
+        /// </summary>
+        [SuppressMessage(
+            "Microsoft.Naming",
+            "CA1704:IdentifiersShouldBeSpelledCorrectly",
+            MessageId = "Recomposable",
+            Justification = "MEF uses the same term.")]
+        public bool IsRecomposable
+        {
+            get
+            {
+                return _isRecomposable;
+            }
+        }
+
+        /// <summary>
+        /// Gets the creation policy for the import.
+        /// </summary>
+        public CreationPolicy RequiredCreationPolicy
+        {
+            get
+            {
+                return _creationPolicy;
+            }
+        }
+
+        /// <summary>
+        /// Gets the type identity of the export type expected.
+        /// </summary>
+        public TypeIdentity RequiredTypeIdentity
+        {
+            get
+            {
+                return _requiredTypeIdentity;
+            }
+        }
+
+        /// <summary>
+        /// Gets the type identify of the export as determined by MEF.
+        /// </summary>
+        public string RequiredTypeIdentityForMef
+        {
+            get
+            {
+                return _requiredTypeIdentityForMef;
+            }
+        }
 
         /// <summary>
         /// Returns a <see cref="string"/> that represents this instance.

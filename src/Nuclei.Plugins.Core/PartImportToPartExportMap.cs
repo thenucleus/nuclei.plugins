@@ -16,15 +16,16 @@ namespace Nuclei.Plugins.Core
     [Serializable]
     public sealed class PartImportToPartExportMap
     {
-        /// <summary>
-        /// The ID of the import.
-        /// </summary>
-        private readonly ImportRegistrationId _import;
 
         /// <summary>
         /// The collection containing the export IDs.
         /// </summary>
         private readonly IEnumerable<ExportRegistrationId> _exports;
+
+        /// <summary>
+        /// The ID of the import.
+        /// </summary>
+        private readonly ImportRegistrationId _import;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PartImportToPartExportMap"/> class.
@@ -54,17 +55,6 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Gets the ID of the import.
-        /// </summary>
-        public ImportRegistrationId Import
-        {
-            get
-            {
-                return _import;
-            }
-        }
-
-        /// <summary>
         /// Gets the collection containing the exports.
         /// </summary>
         public IEnumerable<ExportRegistrationId> Exports
@@ -72,6 +62,17 @@ namespace Nuclei.Plugins.Core
             get
             {
                 return _exports;
+            }
+        }
+
+        /// <summary>
+        /// Gets the ID of the import.
+        /// </summary>
+        public ImportRegistrationId Import
+        {
+            get
+            {
+                return _import;
             }
         }
     }

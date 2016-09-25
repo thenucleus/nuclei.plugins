@@ -19,19 +19,19 @@ namespace Nuclei.Plugins.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="PartRegistrationId"/> class.
         /// </summary>
-        /// <param name="typeName">The type of object for which this ID is valid.</param>
-        /// <param name="number">The index of the object in the owning group.</param>
-        public PartRegistrationId(string typeName, int number)
-            : this(string.Format(CultureInfo.InvariantCulture, "{0}-{1}", typeName, number))
+        /// <param name="id">The text value that forms the ID.</param>
+        private PartRegistrationId(string id)
+            : base(id)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PartRegistrationId"/> class.
         /// </summary>
-        /// <param name="id">The text value that forms the ID.</param>
-        private PartRegistrationId(string id)
-            : base(id)
+        /// <param name="typeName">The type of object for which this ID is valid.</param>
+        /// <param name="number">The index of the object in the owning group.</param>
+        public PartRegistrationId(string typeName, int number)
+            : this(string.Format(CultureInfo.InvariantCulture, "{0}-{1}", typeName, number))
         {
         }
 

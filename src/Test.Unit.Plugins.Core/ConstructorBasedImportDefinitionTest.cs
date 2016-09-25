@@ -57,6 +57,7 @@ namespace Nuclei.Plugins.Core
             var original = ConstructorBasedImportDefinition.CreateDefinition(
                 "A",
                 TypeIdentity.CreateDefinition(typeof(char[])),
+                "System.Char[]",
                 ImportCardinality.ExactlyOne,
                 CreationPolicy.NonShared,
                 GetConstructorForString().GetParameters().First());
@@ -71,6 +72,7 @@ namespace Nuclei.Plugins.Core
             var obj = ConstructorBasedImportDefinition.CreateDefinition(
                 "A",
                 TypeIdentity.CreateDefinition(typeof(char[])),
+                "System.Char[]",
                 ImportCardinality.ExactlyOne,
                 CreationPolicy.NonShared,
                 GetConstructorForString().GetParameters().First());
@@ -92,6 +94,7 @@ namespace Nuclei.Plugins.Core
             private readonly ConstructorBasedImportDefinition _first = ConstructorBasedImportDefinition.CreateDefinition(
                 "A",
                 TypeIdentity.CreateDefinition(typeof(char[])),
+                "System.Char[]",
                 ImportCardinality.ExactlyOne,
                 CreationPolicy.NonShared,
                 typeof(string).GetConstructor(
@@ -103,6 +106,7 @@ namespace Nuclei.Plugins.Core
             private readonly ConstructorBasedImportDefinition _second = ConstructorBasedImportDefinition.CreateDefinition(
                 "B",
                 TypeIdentity.CreateDefinition(typeof(string)),
+                "System.String",
                 ImportCardinality.ExactlyOne,
                 CreationPolicy.NonShared,
                 typeof(Uri).GetConstructor(
@@ -118,6 +122,7 @@ namespace Nuclei.Plugins.Core
                     return ConstructorBasedImportDefinition.CreateDefinition(
                         "A",
                         TypeIdentity.CreateDefinition(typeof(char[])),
+                        "System.Char[]",
                         ImportCardinality.ExactlyOne,
                         CreationPolicy.NonShared,
                         typeof(string).GetConstructor(
@@ -130,6 +135,7 @@ namespace Nuclei.Plugins.Core
                 return ConstructorBasedImportDefinition.CreateDefinition(
                     "B",
                     TypeIdentity.CreateDefinition(typeof(string)),
+                    "System.String",
                     ImportCardinality.ExactlyOne,
                     CreationPolicy.NonShared,
                     typeof(Uri).GetConstructor(
@@ -172,6 +178,7 @@ namespace Nuclei.Plugins.Core
                         ConstructorBasedImportDefinition.CreateDefinition(
                             "A",
                             TypeIdentity.CreateDefinition(typeof(char[])),
+                            "System.Char[]",
                             ImportCardinality.ExactlyOne,
                             CreationPolicy.NonShared,
                             typeof(string).GetConstructor(
@@ -182,6 +189,7 @@ namespace Nuclei.Plugins.Core
                         ConstructorBasedImportDefinition.CreateDefinition(
                             "B",
                             TypeIdentity.CreateDefinition(typeof(string)),
+                            "System.String",
                             ImportCardinality.ExactlyOne,
                             CreationPolicy.NonShared,
                             typeof(Uri).GetConstructor(
@@ -192,6 +200,7 @@ namespace Nuclei.Plugins.Core
                         ConstructorBasedImportDefinition.CreateDefinition(
                             "C",
                             TypeIdentity.CreateDefinition(typeof(string)),
+                            "System.String",
                             ImportCardinality.ExactlyOne,
                             CreationPolicy.NonShared,
                             typeof(Version).GetConstructor(
@@ -202,6 +211,7 @@ namespace Nuclei.Plugins.Core
                         ConstructorBasedImportDefinition.CreateDefinition(
                             "D",
                             TypeIdentity.CreateDefinition(typeof(string)),
+                            "System.String",
                             ImportCardinality.ExactlyOne,
                             CreationPolicy.NonShared,
                             typeof(NotImplementedException).GetConstructor(

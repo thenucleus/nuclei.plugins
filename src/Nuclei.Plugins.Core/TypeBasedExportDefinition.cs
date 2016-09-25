@@ -73,6 +73,21 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
+        /// Creates a new instance of the <see cref="TypeBasedExportDefinition"/> class
+        /// based on the given <see cref="Type"/>.
+        /// </summary>
+        /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="declaringType">The method for which the current object stores the serialized data.</param>
+        /// <returns>The serialized definition for the given type.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="declaringType"/> is <see langword="null" />.
+        /// </exception>
+        public static TypeBasedExportDefinition CreateDefinition(string contractName, Type declaringType)
+        {
+            return CreateDefinition(contractName, declaringType, t => TypeIdentity.CreateDefinition(t));
+        }
+
+        /// <summary>
         /// Creates a new instance of the <see cref="TypeBasedExportDefinition"/> class based
         /// on the given <see cref="Type"/>.
         /// </summary>
@@ -107,21 +122,6 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="TypeBasedExportDefinition"/> class
-        /// based on the given <see cref="Type"/>.
-        /// </summary>
-        /// <param name="contractName">The contract name that is used to identify the current export.</param>
-        /// <param name="declaringType">The method for which the current object stores the serialized data.</param>
-        /// <returns>The serialized definition for the given type.</returns>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="declaringType"/> is <see langword="null" />.
-        /// </exception>
-        public static TypeBasedExportDefinition CreateDefinition(string contractName, Type declaringType)
-        {
-            return CreateDefinition(contractName, declaringType, t => TypeIdentity.CreateDefinition(t));
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="TypeBasedExportDefinition"/> class.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
@@ -129,6 +129,29 @@ namespace Nuclei.Plugins.Core
         private TypeBasedExportDefinition(string contractName, TypeIdentity declaringType)
             : base(contractName, declaringType)
         {
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
+        /// <returns>
+        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
+        ///     otherwise, <see langword="false"/>.
+        /// </returns>
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+            Justification = "Documentation can start with a language keyword")]
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            var id = obj as TypeBasedExportDefinition;
+            return Equals(id);
         }
 
         /// <summary>
@@ -157,29 +180,6 @@ namespace Nuclei.Plugins.Core
             return !ReferenceEquals(otherType, null)
                 && string.Equals(ContractName, otherType.ContractName, StringComparison.OrdinalIgnoreCase)
                 && DeclaringType == otherType.DeclaringType;
-        }
-
-        /// <summary>
-        /// Determines whether the specified <see cref="object"/> is equal to this instance.
-        /// </summary>
-        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
-        /// <returns>
-        ///     <see langword="true"/> if the specified <see cref="object"/> is equal to this instance;
-        ///     otherwise, <see langword="false"/>.
-        /// </returns>
-        [SuppressMessage(
-            "Microsoft.StyleCop.CSharp.DocumentationRules",
-            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
-            Justification = "Documentation can start with a language keyword")]
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            var id = obj as TypeBasedExportDefinition;
-            return Equals(id);
         }
 
         /// <summary>

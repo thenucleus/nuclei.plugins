@@ -76,11 +76,58 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
+        /// Creates a new instance of the <see cref="PropertyBasedImportDefinition"/> class based on the given <see cref="PropertyInfo"/>.
+        /// </summary>
+        /// <param name="contractName">The contract name that is used to identify the current import.</param>
+        /// <param name="requiredTypeIdentity">The type identity of the export type expected.</param>
+        /// <param name="requiredTypeIdentityForMef">The type identity of the export type as expected by MEF.</param>
+        /// <param name="cardinality">
+        ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
+        /// </param>
+        /// <param name="isRecomposable">
+        ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts;
+        ///     otherwise, <see langword="false" />.
+        /// </param>
+        /// <param name="creationPolicy">
+        ///     A value that indicates that the importer requires a specific creation policy for the exports used to satisfy this import.
+        /// </param>
+        /// <param name="property">The property for which a serialized definition needs to be created.</param>
+        /// <returns>The serialized definition for the given property.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="property"/> is <see langword="null" />.
+        /// </exception>
+        [SuppressMessage(
+            "Microsoft.Naming",
+            "CA1704:IdentifiersShouldBeSpelledCorrectly",
+            MessageId = "Recomposable",
+            Justification = "MEF uses the same term, so we're not going to make up some other one.")]
+        public static PropertyBasedImportDefinition CreateDefinition(
+            string contractName,
+            TypeIdentity requiredTypeIdentity,
+            string requiredTypeIdentityForMef,
+            ImportCardinality cardinality,
+            bool isRecomposable,
+            CreationPolicy creationPolicy,
+            PropertyInfo property)
+        {
+            return CreateDefinition(
+                contractName,
+                requiredTypeIdentity,
+                requiredTypeIdentityForMef,
+                cardinality,
+                isRecomposable,
+                creationPolicy,
+                property,
+                t => TypeIdentity.CreateDefinition(t));
+        }
+
+        /// <summary>
         /// Creates a new instance of the <see cref="PropertyBasedImportDefinition"/> class based on
         /// the given <see cref="PropertyInfo"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current import.</param>
         /// <param name="requiredTypeIdentity">The type identity of the export type expected.</param>
+        /// <param name="requiredTypeIdentityForMef">The type identity of the export type as expected by MEF.</param>
         /// <param name="cardinality">
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
@@ -108,6 +155,7 @@ namespace Nuclei.Plugins.Core
         public static PropertyBasedImportDefinition CreateDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
+            string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
             bool isRecomposable,
             CreationPolicy creationPolicy,
@@ -127,54 +175,12 @@ namespace Nuclei.Plugins.Core
             return new PropertyBasedImportDefinition(
                 contractName,
                 requiredTypeIdentity,
+                requiredTypeIdentityForMef,
                 cardinality,
                 isRecomposable,
                 creationPolicy,
                 identityGenerator(property.DeclaringType),
                 PropertyDefinition.CreateDefinition(property, identityGenerator));
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="PropertyBasedImportDefinition"/> class based on the given <see cref="PropertyInfo"/>.
-        /// </summary>
-        /// <param name="contractName">The contract name that is used to identify the current import.</param>
-        /// <param name="requiredTypeIdentity">The type identity of the export type expected.</param>
-        /// <param name="cardinality">
-        ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
-        /// </param>
-        /// <param name="isRecomposable">
-        ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts;
-        ///     otherwise, <see langword="false" />.
-        /// </param>
-        /// <param name="creationPolicy">
-        ///     A value that indicates that the importer requires a specific creation policy for the exports used to satisfy this import.
-        /// </param>
-        /// <param name="property">The property for which a serialized definition needs to be created.</param>
-        /// <returns>The serialized definition for the given property.</returns>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="property"/> is <see langword="null" />.
-        /// </exception>
-        [SuppressMessage(
-            "Microsoft.Naming",
-            "CA1704:IdentifiersShouldBeSpelledCorrectly",
-            MessageId = "Recomposable",
-            Justification = "MEF uses the same term, so we're not going to make up some other one.")]
-        public static PropertyBasedImportDefinition CreateDefinition(
-            string contractName,
-            TypeIdentity requiredTypeIdentity,
-            ImportCardinality cardinality,
-            bool isRecomposable,
-            CreationPolicy creationPolicy,
-            PropertyInfo property)
-        {
-            return CreateDefinition(
-                contractName,
-                requiredTypeIdentity,
-                cardinality,
-                isRecomposable,
-                creationPolicy,
-                property,
-                t => TypeIdentity.CreateDefinition(t));
         }
 
         /// <summary>
@@ -187,6 +193,7 @@ namespace Nuclei.Plugins.Core
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current import.</param>
         /// <param name="requiredTypeIdentity">The type identity of the export type expected.</param>
+        /// <param name="requiredTypeIdentityForMef">The type identity of the export type as expected by MEF.</param>
         /// <param name="cardinality">
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
@@ -205,6 +212,7 @@ namespace Nuclei.Plugins.Core
         private PropertyBasedImportDefinition(
             string contractName,
             TypeIdentity requiredTypeIdentity,
+            string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
             bool isRecomposable,
             CreationPolicy creationPolicy,
@@ -213,6 +221,7 @@ namespace Nuclei.Plugins.Core
             : base(
                 contractName,
                 requiredTypeIdentity,
+                requiredTypeIdentityForMef,
                 cardinality,
                 isRecomposable,
                 false,
@@ -225,17 +234,6 @@ namespace Nuclei.Plugins.Core
             }
 
             _property = property;
-        }
-
-        /// <summary>
-        /// Gets the property.
-        /// </summary>
-        public PropertyDefinition Property
-        {
-            get
-            {
-                return _property;
-            }
         }
 
         /// <summary>
@@ -264,6 +262,7 @@ namespace Nuclei.Plugins.Core
             return !ReferenceEquals(otherType, null)
                 && string.Equals(ContractName, otherType.ContractName, StringComparison.OrdinalIgnoreCase)
                 && RequiredTypeIdentity.Equals(otherType.RequiredTypeIdentity)
+                && string.Equals(RequiredTypeIdentityForMef, otherType.RequiredTypeIdentityForMef, StringComparison.OrdinalIgnoreCase)
                 && Property == otherType.Property;
         }
 
@@ -311,9 +310,21 @@ namespace Nuclei.Plugins.Core
                 // Mash the hash together with yet another random prime number
                 hash = (hash * 23) ^ ContractName.GetHashCode();
                 hash = (hash * 23) ^ RequiredTypeIdentity.GetHashCode();
+                hash = (hash * 23) ^ RequiredTypeIdentityForMef.GetHashCode();
                 hash = (hash * 23) ^ Property.GetHashCode();
 
                 return hash;
+            }
+        }
+
+        /// <summary>
+        /// Gets the property.
+        /// </summary>
+        public PropertyDefinition Property
+        {
+            get
+            {
+                return _property;
             }
         }
 

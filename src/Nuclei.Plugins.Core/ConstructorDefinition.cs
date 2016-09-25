@@ -81,6 +81,19 @@ namespace Nuclei.Plugins.Core
         /// Creates a new instance of the <see cref="ConstructorDefinition"/> class based on the given <see cref="ConstructorInfo"/>.
         /// </summary>
         /// <param name="constructor">The constructor for which a serialized definition needs to be created.</param>
+        /// <returns>The serialized definition for the given constructor.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="constructor"/> is <see langword="null" />.
+        /// </exception>
+        public static ConstructorDefinition CreateDefinition(ConstructorInfo constructor)
+        {
+            return CreateDefinition(constructor, t => TypeIdentity.CreateDefinition(t));
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="ConstructorDefinition"/> class based on the given <see cref="ConstructorInfo"/>.
+        /// </summary>
+        /// <param name="constructor">The constructor for which a serialized definition needs to be created.</param>
         /// <param name="identityGenerator">The function that creates type identities.</param>
         /// <returns>The serialized definition for the given constructor.</returns>
         /// <exception cref="ArgumentNullException">
@@ -106,19 +119,6 @@ namespace Nuclei.Plugins.Core
             return new ConstructorDefinition(
                 identityGenerator(constructor.DeclaringType),
                 constructor.GetParameters().Select(p => ParameterDefinition.CreateDefinition(p, identityGenerator)).ToList());
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="ConstructorDefinition"/> class based on the given <see cref="ConstructorInfo"/>.
-        /// </summary>
-        /// <param name="constructor">The constructor for which a serialized definition needs to be created.</param>
-        /// <returns>The serialized definition for the given constructor.</returns>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="constructor"/> is <see langword="null" />.
-        /// </exception>
-        public static ConstructorDefinition CreateDefinition(ConstructorInfo constructor)
-        {
-            return CreateDefinition(constructor, t => TypeIdentity.CreateDefinition(t));
         }
 
         /// <summary>
@@ -157,17 +157,6 @@ namespace Nuclei.Plugins.Core
             get
             {
                 return _declaringType;
-            }
-        }
-
-        /// <summary>
-        /// Gets the collection containing the parameters for the constructor.
-        /// </summary>
-        public ReadOnlyCollection<ParameterDefinition> Parameters
-        {
-            get
-            {
-                return _parameters.AsReadOnly();
             }
         }
 
@@ -247,6 +236,17 @@ namespace Nuclei.Plugins.Core
                 }
 
                 return hash;
+            }
+        }
+
+        /// <summary>
+        /// Gets the collection containing the parameters for the constructor.
+        /// </summary>
+        public ReadOnlyCollection<ParameterDefinition> Parameters
+        {
+            get
+            {
+                return _parameters.AsReadOnly();
             }
         }
 

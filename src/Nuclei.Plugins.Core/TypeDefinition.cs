@@ -117,11 +117,6 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// The identity information for the type.
-        /// </summary>
-        private readonly TypeIdentity _identity;
-
-        /// <summary>
         /// The base class for the current type. Is <c>null</c> if the current type
         /// doesn't have a base class.
         /// </summary>
@@ -136,6 +131,11 @@ namespace Nuclei.Plugins.Core
         /// The generic type definition for the current type if there is one; otherwise <see langword="null" />.
         /// </summary>
         private readonly TypeIdentity _genericTypeDefinition;
+
+        /// <summary>
+        /// The identity information for the type.
+        /// </summary>
+        private readonly TypeIdentity _identity;
 
         /// <summary>
         /// A flag indicating if the current type is a class or not.
@@ -183,17 +183,6 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Gets the name of the type.
-        /// </summary>
-        public TypeIdentity Identity
-        {
-            get
-            {
-                return _identity;
-            }
-        }
-
-        /// <summary>
         /// Gets the base or parent type for the type.
         /// </summary>
         public TypeIdentity BaseType
@@ -212,41 +201,6 @@ namespace Nuclei.Plugins.Core
             get
             {
                 return _baseInterfaces;
-            }
-        }
-
-        /// <summary>
-        /// Gets the identity of the type that is the generic type definition for the
-        /// current type, or <see langword="null" /> if the current type has no
-        /// generic type definition.
-        /// </summary>
-        public TypeIdentity GenericTypeDefinition
-        {
-            get
-            {
-                return _genericTypeDefinition;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the type is a class.
-        /// </summary>
-        public bool IsClass
-        {
-            get
-            {
-                return _isClass;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the type is an interface.
-        /// </summary>
-        public bool IsInterface
-        {
-            get
-            {
-                return _isInterface;
             }
         }
 
@@ -299,6 +253,19 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
+        /// Gets the identity of the type that is the generic type definition for the
+        /// current type, or <see langword="null" /> if the current type has no
+        /// generic type definition.
+        /// </summary>
+        public TypeIdentity GenericTypeDefinition
+        {
+            get
+            {
+                return _genericTypeDefinition;
+            }
+        }
+
+        /// <summary>
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
@@ -319,6 +286,39 @@ namespace Nuclei.Plugins.Core
                 // Mash the hash together with yet another random prime number
                 hash = (hash * 23) ^ Identity.GetHashCode();
                 return hash;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the type.
+        /// </summary>
+        public TypeIdentity Identity
+        {
+            get
+            {
+                return _identity;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the type is a class.
+        /// </summary>
+        public bool IsClass
+        {
+            get
+            {
+                return _isClass;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the type is an interface.
+        /// </summary>
+        public bool IsInterface
+        {
+            get
+            {
+                return _isInterface;
             }
         }
 

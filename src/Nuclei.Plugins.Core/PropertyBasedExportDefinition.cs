@@ -75,6 +75,20 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
+        /// Creates a new instance of the <see cref="PropertyBasedExportDefinition"/> class based on the given <see cref="PropertyInfo"/>.
+        /// </summary>
+        /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="property">The property for which a serialized definition needs to be created.</param>
+        /// <returns>The serialized definition for the given property.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="property"/> is <see langword="null" />.
+        /// </exception>
+        public static PropertyBasedExportDefinition CreateDefinition(string contractName, PropertyInfo property)
+        {
+            return CreateDefinition(contractName, property, t => TypeIdentity.CreateDefinition(t));
+        }
+
+        /// <summary>
         /// Creates a new instance of the <see cref="PropertyBasedExportDefinition"/> class based on
         /// the given <see cref="PropertyInfo"/>.
         /// </summary>
@@ -110,20 +124,6 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="PropertyBasedExportDefinition"/> class based on the given <see cref="PropertyInfo"/>.
-        /// </summary>
-        /// <param name="contractName">The contract name that is used to identify the current export.</param>
-        /// <param name="property">The property for which a serialized definition needs to be created.</param>
-        /// <returns>The serialized definition for the given property.</returns>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="property"/> is <see langword="null" />.
-        /// </exception>
-        public static PropertyBasedExportDefinition CreateDefinition(string contractName, PropertyInfo property)
-        {
-            return CreateDefinition(contractName, property, t => TypeIdentity.CreateDefinition(t));
-        }
-
-        /// <summary>
         /// The property.
         /// </summary>
         private readonly PropertyDefinition _property;
@@ -145,17 +145,6 @@ namespace Nuclei.Plugins.Core
             }
 
             _property = property;
-        }
-
-        /// <summary>
-        /// Gets the property.
-        /// </summary>
-        public PropertyDefinition Property
-        {
-            get
-            {
-                return _property;
-            }
         }
 
         /// <summary>
@@ -232,6 +221,17 @@ namespace Nuclei.Plugins.Core
                 hash = (hash * 23) ^ Property.GetHashCode();
 
                 return hash;
+            }
+        }
+
+        /// <summary>
+        /// Gets the property.
+        /// </summary>
+        public PropertyDefinition Property
+        {
+            get
+            {
+                return _property;
             }
         }
 

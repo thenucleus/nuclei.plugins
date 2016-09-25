@@ -124,6 +124,6 @@
     <value>The GUID for a part instance ID cannot be equal to the invalid GUID.</value>
   </data>
   <data name="Exceptions_Messages_UnableToLoadPluginType" xml:space="preserve">
-    <value>Unable to load the requested Type.</value>
+    <value>Unable to load the requested Type. </value>
   </data>
 </root>

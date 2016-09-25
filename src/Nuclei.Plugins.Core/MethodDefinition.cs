@@ -81,6 +81,19 @@ namespace Nuclei.Plugins.Core
         /// Creates a new instance of the <see cref="MethodDefinition"/> class based on the given <see cref="MethodInfo"/>.
         /// </summary>
         /// <param name="method">The method for which a serialized definition needs to be created.</param>
+        /// <returns>The serialized definition for the given method.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="method"/> is <see langword="null" />.
+        /// </exception>
+        public static MethodDefinition CreateDefinition(MethodInfo method)
+        {
+            return CreateDefinition(method, t => TypeIdentity.CreateDefinition(t));
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="MethodDefinition"/> class based on the given <see cref="MethodInfo"/>.
+        /// </summary>
+        /// <param name="method">The method for which a serialized definition needs to be created.</param>
         /// <param name="identityGenerator">The function that creates type identities.</param>
         /// <returns>The serialized definition for the given method.</returns>
         /// <exception cref="ArgumentNullException">
@@ -111,19 +124,6 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="MethodDefinition"/> class based on the given <see cref="MethodInfo"/>.
-        /// </summary>
-        /// <param name="method">The method for which a serialized definition needs to be created.</param>
-        /// <returns>The serialized definition for the given method.</returns>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="method"/> is <see langword="null" />.
-        /// </exception>
-        public static MethodDefinition CreateDefinition(MethodInfo method)
-        {
-            return CreateDefinition(method, t => TypeIdentity.CreateDefinition(t));
-        }
-
-        /// <summary>
         /// The type that owns the current method.
         /// </summary>
         private readonly TypeIdentity _declaringType;
@@ -134,14 +134,14 @@ namespace Nuclei.Plugins.Core
         private readonly string _methodName;
 
         /// <summary>
-        /// The return type of the method.
-        /// </summary>
-        private readonly TypeIdentity _returnType;
-
-        /// <summary>
         /// The collection of parameters for the method.
         /// </summary>
         private readonly List<ParameterDefinition> _parameters;
+
+        /// <summary>
+        /// The return type of the method.
+        /// </summary>
+        private readonly TypeIdentity _returnType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodDefinition"/> class.
@@ -176,39 +176,6 @@ namespace Nuclei.Plugins.Core
             get
             {
                 return _declaringType;
-            }
-        }
-
-        /// <summary>
-        /// Gets the name of the method.
-        /// </summary>
-        public string MethodName
-        {
-            get
-            {
-                return _methodName;
-            }
-        }
-
-        /// <summary>
-        /// Gets the return type of the method.
-        /// </summary>
-        public TypeIdentity ReturnType
-        {
-            get
-            {
-                return _returnType;
-            }
-        }
-
-        /// <summary>
-        /// Gets the collection containing the parameters for the method.
-        /// </summary>
-        public ReadOnlyCollection<ParameterDefinition> Parameters
-        {
-            get
-            {
-                return _parameters.AsReadOnly();
             }
         }
 
@@ -290,6 +257,39 @@ namespace Nuclei.Plugins.Core
                 }
 
                 return hash;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the method.
+        /// </summary>
+        public string MethodName
+        {
+            get
+            {
+                return _methodName;
+            }
+        }
+
+        /// <summary>
+        /// Gets the collection containing the parameters for the method.
+        /// </summary>
+        public ReadOnlyCollection<ParameterDefinition> Parameters
+        {
+            get
+            {
+                return _parameters.AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Gets the return type of the method.
+        /// </summary>
+        public TypeIdentity ReturnType
+        {
+            get
+            {
+                return _returnType;
             }
         }
 

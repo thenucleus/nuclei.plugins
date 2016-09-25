@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Nuclei.Plugins.Instantiation.Properties {
+namespace Nuclei.Plugins.Composition.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Nuclei.Plugins.Instantiation.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Nuclei.Plugins.Instantiation.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Nuclei.Plugins.Composition.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -79,7 +79,7 @@ namespace Nuclei.Plugins.Instantiation.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to load the requested Type..
+        ///   Looks up a localized string similar to Unable to load the requested Type. .
         /// </summary>
         internal static string Exceptions_Messages_UnableToLoadPluginType {
             get {
