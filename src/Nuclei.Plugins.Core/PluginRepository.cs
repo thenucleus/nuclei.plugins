@@ -288,7 +288,7 @@ namespace Nuclei.Plugins.Core
 
             lock (_lock)
             {
-                if (_parts.ContainsKey(type))
+                if (!_parts.ContainsKey(type))
                 {
                     throw new UnknownPartDefinitionException();
                 }
@@ -373,7 +373,7 @@ namespace Nuclei.Plugins.Core
 
             lock (_lock)
             {
-                if (_types.ContainsKey(type))
+                if (!_types.ContainsKey(type))
                 {
                     throw new UnknownTypeDefinitionException();
                 }

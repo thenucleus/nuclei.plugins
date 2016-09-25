@@ -556,8 +556,8 @@ namespace Nuclei.Plugins.Discovery
                         .Returns(parts);
                     repository.Setup(r => r.AddType(It.IsAny<TypeDefinition>()))
                         .Callback<TypeDefinition>(types.Add);
-                    repository.Setup(r => r.AddPart(It.IsAny<PartDefinition>(), It.IsAny<PluginFileOrigin>()))
-                        .Callback<PartDefinition, PluginFileOrigin>((p, f) => parts.Add(p));
+                    repository.Setup(r => r.AddPart(It.IsAny<PartDefinition>(), It.IsAny<PluginOrigin>()))
+                        .Callback<PartDefinition, PluginOrigin>((p, f) => parts.Add(p));
                 }
 
                 var scanner = new RemoteAssemblyScanner(
