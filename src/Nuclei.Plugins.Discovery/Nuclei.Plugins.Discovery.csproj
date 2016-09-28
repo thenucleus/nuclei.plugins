@@ -86,6 +86,7 @@
     <Compile Include="TypeIdentityBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="nuclei.plugins.discovery.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

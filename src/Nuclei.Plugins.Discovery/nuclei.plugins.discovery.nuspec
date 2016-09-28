@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Nuclei.Plugins.Discovery</id>
+    <version>$VersionSemantic$</version>
+    <authors>Metamorpher</authors>
+    <owners>Metamorpher</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/Metamorpher/Nuclei.Plugins</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Provides classes and functions for plugin discovery.
+    </description>
+    <releaseNotes>
+      $ReleaseNotes$
+    </releaseNotes>
+    <dependencies>
+      $Dependencies$
+      <dependency id="Nuclei.Plugins.Core" version="$VersionSemantic$" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$DirSrc$\Nuclei.Plugins.Discovery\bin\$Configuration$\Nuclei.Plugins.Discovery.dll" target="lib\net452" />
+    <file src="$DirSrc$\Nuclei.Plugins.Discovery\bin\$Configuration$\Nuclei.Plugins.Discovery.pdb" target="lib\net452" />
+    <file src="$DirSrc$\Nuclei.Plugins.Discovery\bin\$Configuration$\Nuclei.Plugins.Discovery.xml" target="lib\net452" />
+    <file src="$DirSrc$\Nuclei.Plugins.Discovery\**\*.cs" target="src\Nuclei.Plugins.Discovery" />
+  </files>
+</package>

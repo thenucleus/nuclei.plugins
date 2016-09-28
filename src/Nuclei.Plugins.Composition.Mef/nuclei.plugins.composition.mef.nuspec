@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Nuclei.Plugins.Composition.Mef</id>
+    <version>$VersionSemantic$</version>
+    <authors>Metamorpher</authors>
+    <owners>Metamorpher</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/Metamorpher/Nuclei.Plugins</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Provides classes and functions for plugin composition with MEF.
+    </description>
+    <releaseNotes>
+      $ReleaseNotes$
+    </releaseNotes>
+    <dependencies>
+      $Dependencies$
+      <dependency id="Nuclei.Plugins.Core" version="$VersionSemantic$" />
+      <dependency id="Nuclei.Plugins.Composition" version="$VersionSemantic$" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$DirSrc$\Nuclei.Plugins.Composition.Mef\bin\$Configuration$\Nuclei.Plugins.Composition.Mef.dll" target="lib\net452" />
+    <file src="$DirSrc$\Nuclei.Plugins.Composition.Mef\bin\$Configuration$\Nuclei.Plugins.Composition.Mef.pdb" target="lib\net452" />
+    <file src="$DirSrc$\Nuclei.Plugins.Composition.Mef\bin\$Configuration$\Nuclei.Plugins.Composition.Mef.xml" target="lib\net452" />
+    <file src="$DirSrc$\Nuclei.Plugins.Composition.Mef\**\*.cs" target="src\Nuclei.Plugins.Composition.Mef" />
+  </files>
+</package>

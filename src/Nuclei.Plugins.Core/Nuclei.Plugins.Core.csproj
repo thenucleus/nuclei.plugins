@@ -107,6 +107,7 @@
     <Compile Include="UnknownTypeDefinitionException.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="nuclei.plugins.core.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

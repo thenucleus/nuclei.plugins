@@ -63,6 +63,7 @@
     <Compile Include="UnableToLoadPluginTypeException.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="nuclei.plugins.composition.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
