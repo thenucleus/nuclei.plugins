@@ -82,7 +82,6 @@
     <Compile Include="MethodDefinition.cs" />
     <Compile Include="ParameterDefinition.cs" />
     <Compile Include="PartDefinition.cs" />
-    <Compile Include="PartImportToPartExportMap.cs" />
     <Compile Include="PartRegistrationId.cs" />
     <Compile Include="PluginOrigin.cs" />
     <Compile Include="PluginRepository.cs" />
