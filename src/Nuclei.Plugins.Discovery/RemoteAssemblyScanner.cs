@@ -345,6 +345,10 @@ namespace Nuclei.Plugins.Discovery
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="assemblyFilesToScan"/> is <see langword="null" />.
         /// </exception>
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1031:DoNotCatchGeneralExceptionTypes",
+            Justification = "Will catch an log here because we don't actually know what exceptions can happen due to the LoadAssembly() call.")]
         public void Scan(IEnumerable<string> assemblyFilesToScan)
         {
             if (assemblyFilesToScan == null)
@@ -352,13 +356,24 @@ namespace Nuclei.Plugins.Discovery
                 throw new ArgumentNullException("assemblyFilesToScan");
             }
 
-            Parallel.ForEach(
-                assemblyFilesToScan,
-                a =>
+            foreach (var a in assemblyFilesToScan)
+            {
+                try
                 {
                     var assembly = LoadAssembly(a);
                     ScanAssembly(assembly);
-                });
+                }
+                catch (Exception e)
+                {
+                    _logger.Log(
+                        LevelToLog.Error,
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            Resources.Plugins_LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException,
+                            a,
+                            e));
+                }
+            }
         }
 
         [SuppressMessage(
