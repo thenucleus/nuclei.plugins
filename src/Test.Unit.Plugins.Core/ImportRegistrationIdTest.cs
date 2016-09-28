@@ -42,21 +42,77 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void LargerThanOperatorWithFirstObjectNull()
+        public void Clone()
         {
-            ImportRegistrationId first = null;
-            ImportRegistrationId second = new ImportRegistrationId(typeof(string), 0, "a");
+            ImportRegistrationId first = new ImportRegistrationId(typeof(string), 0, "a");
+            ImportRegistrationId second = first.Clone();
 
-            Assert.IsFalse(first > second);
+            Assert.AreEqual(first, second);
         }
 
         [Test]
-        public void LargerThanOperatorWithSecondObjectNull()
+        public void CompareToOperatorWithEqualObjects()
+        {
+            var first = new ImportRegistrationId(typeof(string), 0, "a");
+            object second = first.Clone();
+
+            Assert.AreEqual(0, first.CompareTo(second));
+        }
+
+        [Test]
+        public void CompareToWithLargerFirstObject()
+        {
+            var first = new ImportRegistrationId(typeof(string), 0, "b");
+            var second = new ImportRegistrationId(typeof(string), 0, "a");
+
+            Assert.IsTrue(first.CompareTo(second) > 0);
+        }
+
+        [Test]
+        public void CompareToWithNullObject()
         {
             ImportRegistrationId first = new ImportRegistrationId(typeof(string), 0, "a");
-            ImportRegistrationId second = null;
+            object second = null;
 
-            Assert.IsTrue(first > second);
+            Assert.AreEqual(1, first.CompareTo(second));
+        }
+
+        [Test]
+        public void CompareToWithSmallerFirstObject()
+        {
+            var first = new ImportRegistrationId(typeof(string), 0, "a");
+            var second = new ImportRegistrationId(typeof(string), 0, "b");
+
+            Assert.IsTrue(first.CompareTo(second) < 0);
+        }
+
+        [Test]
+        public void CompareToWithUnequalObjectTypes()
+        {
+            ImportRegistrationId first = new ImportRegistrationId(typeof(string), 0, "a");
+            object second = new object();
+
+            Assert.Throws<ArgumentException>(() => first.CompareTo(second));
+        }
+
+        [Test]
+        public void Create()
+        {
+            var id = new ImportRegistrationId(typeof(string), 0, typeof(double));
+
+            Assert.IsNotNull(id);
+            Assert.AreEqual(typeof(double).FullName, id.ContractName);
+        }
+
+        [Test]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Core.ImportRegistrationId",
+            Justification = "Testing that the constructor throws an exception.")]
+        public void CreateWithEmptyContractName()
+        {
+            Assert.Throws<ArgumentException>(() => new ImportRegistrationId(typeof(string), 0, string.Empty));
         }
 
         [Test]
@@ -87,6 +143,15 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
+        public void LargerThanOperatorWithFirstObjectNull()
+        {
+            ImportRegistrationId first = null;
+            ImportRegistrationId second = new ImportRegistrationId(typeof(string), 0, "a");
+
+            Assert.IsFalse(first > second);
+        }
+
+        [Test]
         public void LargerThanOperatorWithFirstObjectSmaller()
         {
             var first = new ImportRegistrationId(typeof(string), 0, "a");
@@ -96,21 +161,12 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void SmallerThanOperatorWithFirstObjectNull()
-        {
-            ImportRegistrationId first = null;
-            ImportRegistrationId second = new ImportRegistrationId(typeof(string), 0, "a");
-
-            Assert.IsTrue(first < second);
-        }
-
-        [Test]
-        public void SmallerThanOperatorWithSecondObjectNull()
+        public void LargerThanOperatorWithSecondObjectNull()
         {
             ImportRegistrationId first = new ImportRegistrationId(typeof(string), 0, "a");
             ImportRegistrationId second = null;
 
-            Assert.IsFalse(first < second);
+            Assert.IsTrue(first > second);
         }
 
         [Test]
@@ -141,6 +197,15 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
+        public void SmallerThanOperatorWithFirstObjectNull()
+        {
+            ImportRegistrationId first = null;
+            ImportRegistrationId second = new ImportRegistrationId(typeof(string), 0, "a");
+
+            Assert.IsTrue(first < second);
+        }
+
+        [Test]
         public void SmallerThanOperatorWithFirstObjectSmaller()
         {
             var first = new ImportRegistrationId(typeof(string), 0, "a");
@@ -150,57 +215,12 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void Clone()
+        public void SmallerThanOperatorWithSecondObjectNull()
         {
             ImportRegistrationId first = new ImportRegistrationId(typeof(string), 0, "a");
-            ImportRegistrationId second = first.Clone();
+            ImportRegistrationId second = null;
 
-            Assert.AreEqual(first, second);
-        }
-
-        [Test]
-        public void CompareToWithNullObject()
-        {
-            ImportRegistrationId first = new ImportRegistrationId(typeof(string), 0, "a");
-            object second = null;
-
-            Assert.AreEqual(1, first.CompareTo(second));
-        }
-
-        [Test]
-        public void CompareToOperatorWithEqualObjects()
-        {
-            var first = new ImportRegistrationId(typeof(string), 0, "a");
-            object second = first.Clone();
-
-            Assert.AreEqual(0, first.CompareTo(second));
-        }
-
-        [Test]
-        public void CompareToWithLargerFirstObject()
-        {
-            var first = new ImportRegistrationId(typeof(string), 0, "b");
-            var second = new ImportRegistrationId(typeof(string), 0, "a");
-
-            Assert.IsTrue(first.CompareTo(second) > 0);
-        }
-
-        [Test]
-        public void CompareToWithSmallerFirstObject()
-        {
-            var first = new ImportRegistrationId(typeof(string), 0, "a");
-            var second = new ImportRegistrationId(typeof(string), 0, "b");
-
-            Assert.IsTrue(first.CompareTo(second) < 0);
-        }
-
-        [Test]
-        public void CompareToWithUnequalObjectTypes()
-        {
-            ImportRegistrationId first = new ImportRegistrationId(typeof(string), 0, "a");
-            object second = new object();
-
-            Assert.Throws<ArgumentException>(() => first.CompareTo(second));
+            Assert.IsFalse(first < second);
         }
 
         private sealed class ImportRegistrationIdEqualityContractVerifier : EqualityContractVerifier<ImportRegistrationId>
@@ -248,6 +268,8 @@ namespace Nuclei.Plugins.Core
                         new ImportRegistrationId(typeof(int), 0, "a"),
                         new ImportRegistrationId(typeof(string), 1, "a"),
                         new ImportRegistrationId(typeof(string), 0, "b"),
+                        new ImportRegistrationId(typeof(string), 0, typeof(int)),
+                        new ImportRegistrationId(typeof(string), 0, typeof(double)),
                      };
 
             protected override IEnumerable<int> GetHashCodes()

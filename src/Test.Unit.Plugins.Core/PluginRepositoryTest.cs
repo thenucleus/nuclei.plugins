@@ -24,152 +24,28 @@ namespace Nuclei.Plugins.Core
     public sealed class PluginRepositoryTest
     {
         [Test]
-        public void AddTypeWithStandaloneClassType()
+        public void AddPart()
         {
+            var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
             var repository = new PluginRepository();
 
-            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
-            var definition = TypeDefinition.CreateDefinition(typeof(object), identityGenerator);
-            repository.AddType(definition);
+            Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
+            PartDefinition definition = new PartDefinition
+            {
+                Identity = identityGenerator(typeof(ExportOnProperty)),
+            };
 
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(object).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(object))));
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            repository.AddPart(definition, fileInfo);
 
-            Assert.AreSame(definition, repository.TypeByName(typeof(object).AssemblyQualifiedName));
-            Assert.AreSame(definition, repository.TypeByIdentity(TypeIdentity.CreateDefinition(typeof(object))));
-        }
+            var parts = repository.Parts();
+            Assert.AreEqual(1, parts.Count());
+            Assert.AreSame(definition, parts.First());
+            Assert.AreSame(definition, repository.Part(TypeIdentity.CreateDefinition(typeof(ExportOnProperty))));
 
-        [Test]
-        public void AddTypeWithStandaloneGenericClassType()
-        {
-            var repository = new PluginRepository();
-
-            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
-            var definition = TypeDefinition.CreateDefinition(typeof(Lazy<>), identityGenerator);
-            repository.AddType(definition);
-
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(Lazy<>).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(Lazy<>))));
-
-            Assert.AreSame(definition, repository.TypeByName(typeof(Lazy<>).AssemblyQualifiedName));
-            Assert.AreSame(definition, repository.TypeByIdentity(TypeIdentity.CreateDefinition(typeof(Lazy<>))));
-        }
-
-        [Test]
-        public void AddTypeWithStandaloneInterfaceType()
-        {
-            var repository = new PluginRepository();
-
-            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
-            var definition = TypeDefinition.CreateDefinition(typeof(IEnumerable), identityGenerator);
-            repository.AddType(definition);
-
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(IEnumerable).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(IEnumerable))));
-
-            Assert.AreSame(definition, repository.TypeByName(typeof(IEnumerable).AssemblyQualifiedName));
-            Assert.AreSame(definition, repository.TypeByIdentity(TypeIdentity.CreateDefinition(typeof(IEnumerable))));
-        }
-
-        [Test]
-        public void AddTypeWithStandaloneGenericInterfaceType()
-        {
-            var repository = new PluginRepository();
-
-            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
-            var definition = TypeDefinition.CreateDefinition(typeof(IComparer<>), identityGenerator);
-            repository.AddType(definition);
-
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(IComparer<>).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(IComparer<>))));
-
-            Assert.AreSame(definition, repository.TypeByName(typeof(IComparer<>).AssemblyQualifiedName));
-            Assert.AreSame(definition, repository.TypeByIdentity(TypeIdentity.CreateDefinition(typeof(IComparer<>))));
-        }
-
-        [Test]
-        public void AddTypeWithParentTypeFirst()
-        {
-            var repository = new PluginRepository();
-
-            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
-            var objectDefinition = TypeDefinition.CreateDefinition(typeof(object), identityGenerator);
-            repository.AddType(objectDefinition);
-
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(object).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(object))));
-
-            var stringDefinition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
-            repository.AddType(stringDefinition);
-
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(string).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(string))));
-
-            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(object)), TypeIdentity.CreateDefinition(typeof(string))));
-        }
-
-        [Test]
-        public void AddTypeWithParentTypeLast()
-        {
-            var repository = new PluginRepository();
-
-            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
-            var stringDefinition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
-            repository.AddType(stringDefinition);
-
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(string).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(string))));
-
-            var objectDefinition = TypeDefinition.CreateDefinition(typeof(object), identityGenerator);
-            repository.AddType(objectDefinition);
-
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(object).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(object))));
-
-            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(object)), TypeIdentity.CreateDefinition(typeof(string))));
-        }
-
-        [Test]
-        public void AddTypeWithParentInterfaceFirst()
-        {
-            var repository = new PluginRepository();
-
-            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
-            var comparableDefinition = TypeDefinition.CreateDefinition(typeof(IComparable), identityGenerator);
-            repository.AddType(comparableDefinition);
-
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(IComparable).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(IComparable))));
-
-            var stringDefinition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
-            repository.AddType(stringDefinition);
-
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(string).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(string))));
-
-            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(IComparable)), TypeIdentity.CreateDefinition(typeof(string))));
-        }
-
-        [Test]
-        public void AddTypeWithParentInterfaceLast()
-        {
-            var repository = new PluginRepository();
-
-            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
-
-            var stringDefinition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
-            repository.AddType(stringDefinition);
-
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(string).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(string))));
-
-            var comparableDefinition = TypeDefinition.CreateDefinition(typeof(IComparable), identityGenerator);
-            repository.AddType(comparableDefinition);
-
-            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(IComparable).AssemblyQualifiedName));
-            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(IComparable))));
-
-            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(IComparable)), TypeIdentity.CreateDefinition(typeof(string))));
+            var files = repository.KnownPluginFiles();
+            Assert.AreEqual(1, files.Count());
+            Assert.AreSame(fileInfo, files.First());
         }
 
         [Test]
@@ -221,28 +97,168 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
-        public void AddPart()
+        public void AddTypeWithParentInterfaceFirst()
         {
-            var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
             var repository = new PluginRepository();
 
-            Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
-            PartDefinition definition = new PartDefinition
-            {
-                Identity = identityGenerator(typeof(ExportOnProperty)),
-            };
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var comparableDefinition = TypeDefinition.CreateDefinition(typeof(IComparable), identityGenerator);
+            repository.AddType(comparableDefinition);
 
-            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
-            repository.AddPart(definition, fileInfo);
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(IComparable).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(IComparable))));
 
-            var parts = repository.Parts();
-            Assert.AreEqual(1, parts.Count());
-            Assert.AreSame(definition, parts.First());
-            Assert.AreSame(definition, repository.Part(TypeIdentity.CreateDefinition(typeof(ExportOnProperty))));
+            var stringDefinition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
+            repository.AddType(stringDefinition);
 
-            var files = repository.KnownPluginFiles();
-            Assert.AreEqual(1, files.Count());
-            Assert.AreSame(fileInfo, files.First());
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(string).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(string))));
+
+            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(IComparable)), TypeIdentity.CreateDefinition(typeof(string))));
+        }
+
+        [Test]
+        public void AddTypeWithParentInterfaceLast()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+
+            var stringDefinition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
+            repository.AddType(stringDefinition);
+
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(string).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(string))));
+
+            var comparableDefinition = TypeDefinition.CreateDefinition(typeof(IComparable), identityGenerator);
+            repository.AddType(comparableDefinition);
+
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(IComparable).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(IComparable))));
+
+            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(IComparable)), TypeIdentity.CreateDefinition(typeof(string))));
+        }
+
+        [Test]
+        public void AddTypeWithParentTypeFirst()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var objectDefinition = TypeDefinition.CreateDefinition(typeof(object), identityGenerator);
+            repository.AddType(objectDefinition);
+
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(object).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(object))));
+
+            var stringDefinition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
+            repository.AddType(stringDefinition);
+
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(string).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(string))));
+
+            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(object)), TypeIdentity.CreateDefinition(typeof(string))));
+        }
+
+        [Test]
+        public void AddTypeWithParentTypeLast()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var stringDefinition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
+            repository.AddType(stringDefinition);
+
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(string).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(string))));
+
+            var objectDefinition = TypeDefinition.CreateDefinition(typeof(object), identityGenerator);
+            repository.AddType(objectDefinition);
+
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(object).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(object))));
+
+            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(object)), TypeIdentity.CreateDefinition(typeof(string))));
+        }
+
+        [Test]
+        public void AddTypeWithStandaloneClassType()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(object), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(object).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(object))));
+
+            Assert.AreSame(definition, repository.TypeByName(typeof(object).AssemblyQualifiedName));
+            Assert.AreSame(definition, repository.TypeByIdentity(TypeIdentity.CreateDefinition(typeof(object))));
+        }
+
+        [Test]
+        public void AddTypeWithStandaloneGenericClassType()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(Lazy<>), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(Lazy<>).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(Lazy<>))));
+
+            Assert.AreSame(definition, repository.TypeByName(typeof(Lazy<>).AssemblyQualifiedName));
+            Assert.AreSame(definition, repository.TypeByIdentity(TypeIdentity.CreateDefinition(typeof(Lazy<>))));
+        }
+
+        [Test]
+        public void AddTypeWithStandaloneGenericInterfaceType()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(IComparer<>), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(IComparer<>).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(IComparer<>))));
+
+            Assert.AreSame(definition, repository.TypeByName(typeof(IComparer<>).AssemblyQualifiedName));
+            Assert.AreSame(definition, repository.TypeByIdentity(TypeIdentity.CreateDefinition(typeof(IComparer<>))));
+        }
+
+        [Test]
+        public void AddTypeWithStandaloneInterfaceType()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(IEnumerable), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(IEnumerable).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(IEnumerable))));
+
+            Assert.AreSame(definition, repository.TypeByName(typeof(IEnumerable).AssemblyQualifiedName));
+            Assert.AreSame(definition, repository.TypeByIdentity(TypeIdentity.CreateDefinition(typeof(IEnumerable))));
+        }
+
+        [Test]
+        public void AddTypeWithTypeDerivingFromGenericType()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(List<int>), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsTrue(repository.ContainsDefinitionForType(typeof(List<int>).AssemblyQualifiedName));
+            Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(List<int>))));
+
+            Assert.AreSame(definition, repository.TypeByName(typeof(List<int>).AssemblyQualifiedName));
+            Assert.AreSame(definition, repository.TypeByIdentity(TypeIdentity.CreateDefinition(typeof(List<int>))));
         }
 
         [Test]
