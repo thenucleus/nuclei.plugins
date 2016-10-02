@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics.CodeAnalysis;
 
@@ -112,11 +113,6 @@ namespace Test.Mocks
             {
                 return _value;
             }
-
-            set
-            {
-                _value = value;
-            }
         }
     }
 
@@ -139,11 +135,6 @@ namespace Test.Mocks
             {
                 return _value;
             }
-
-            set
-            {
-                _value = value;
-            }
         }
     }
 
@@ -157,7 +148,7 @@ namespace Test.Mocks
         Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
     public sealed class ExportOnProperty
     {
-        private IExportingInterface _value = new MockExportingInterfaceImplementation();
+        private IExportingInterface _value = new MockChildExportingInterfaceImplementation();
 
         [Export]
         public IExportingInterface ExportingProperty
@@ -166,10 +157,30 @@ namespace Test.Mocks
             {
                 return _value;
             }
+        }
+    }
 
-            set
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
+    public sealed class ExportOnPropertyWithEnumerable
+    {
+        private List<IExportingInterface> _value = new List<IExportingInterface>
             {
-                _value = value;
+                new MockExportingInterfaceImplementation()
+            };
+
+        [Export]
+        public IEnumerable<IExportingInterface> ExportingProperty
+        {
+            get
+            {
+                return _value;
             }
         }
     }
@@ -222,7 +233,7 @@ namespace Test.Mocks
         Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
     public sealed class ExportOnMethod
     {
-        private IExportingInterface _value = new MockExportingInterfaceImplementation();
+        private IExportingInterface _value = new MockChildExportingInterfaceImplementation();
 
         [Export]
         public IExportingInterface ExportingMethod()

@@ -499,6 +499,7 @@
                 Nuclei.Plugins.Composition;
                 Nuclei.Plugins.Composition.Mef;
                 Nuclei.Plugins.Core;
+                Nuclei.Plugins.Discovery;
             </Projects>
             <KeyFile>$(SOFTWARE_SIGNING_KEY_PATH)\nuclei.snk</KeyFile>
         </InternalsVisibleTo>
