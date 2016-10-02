@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConstructionOfPluginTypeFailedExceptionTest.cs" />
+    <Compile Include="MetadataServicesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnableToLoadPluginTypeExceptionTest.cs" />
   </ItemGroup>
@@ -78,8 +79,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nuclei.Plugins.Composition\Nuclei.Plugins.Composition.csproj">
-      <Project>{1c7534b2-2e24-487c-bbf8-7af10dc8165e}</Project>
-      <Name>Nuclei.Plugins.Instantiation</Name>
+      <Project>{1C7534B2-2E24-487C-BBF8-7AF10DC8165E}</Project>
+      <Name>Nuclei.Plugins.Composition</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
       <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
