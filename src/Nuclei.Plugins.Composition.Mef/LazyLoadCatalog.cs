@@ -64,8 +64,8 @@ namespace Nuclei.Plugins.Composition.Mef
                 MemberTypes.Constructor,
                 () =>
                 {
-                    var type = TypeLoader.LoadType(definition.DeclaringType);
-                    var parameterTypes = definition.Constructor.Parameters.Select(p => TypeLoader.LoadType(p.Identity)).ToArray();
+                    var type = TypeLoader.FromFullyQualifiedName(definition.DeclaringType.AssemblyQualifiedName);
+                    var parameterTypes = definition.Constructor.Parameters.Select(p => TypeLoader.FromFullyQualifiedName(p.Identity.AssemblyQualifiedName)).ToArray();
 
                     return new[] { type.GetConstructor(DefaultBindingFlags, null, CallingConventions.Any, parameterTypes, new ParameterModifier[0]) };
                 });
@@ -77,8 +77,8 @@ namespace Nuclei.Plugins.Composition.Mef
                 MemberTypes.Method,
                 () =>
                 {
-                    var type = TypeLoader.LoadType(definition.DeclaringType);
-                    var parameterTypes = definition.Method.Parameters.Select(p => TypeLoader.LoadType(p.Identity)).ToArray();
+                    var type = TypeLoader.FromFullyQualifiedName(definition.DeclaringType.AssemblyQualifiedName);
+                    var parameterTypes = definition.Method.Parameters.Select(p => TypeLoader.FromFullyQualifiedName(p.Identity.AssemblyQualifiedName)).ToArray();
 
                     return new[] { type.GetMethod(definition.Method.MethodName, DefaultBindingFlags, null, parameterTypes, new ParameterModifier[0]) };
                 });
@@ -90,7 +90,7 @@ namespace Nuclei.Plugins.Composition.Mef
                 MemberTypes.Property,
                 () =>
                 {
-                    var type = TypeLoader.LoadType(definition.DeclaringType);
+                    var type = TypeLoader.FromFullyQualifiedName(definition.DeclaringType.AssemblyQualifiedName);
                     return new[] { type.GetProperty(definition.Property.PropertyName, DefaultBindingFlags) };
                 });
         }
@@ -101,7 +101,7 @@ namespace Nuclei.Plugins.Composition.Mef
                 MemberTypes.Property,
                 () =>
                 {
-                    var type = TypeLoader.LoadType(definition.DeclaringType);
+                    var type = TypeLoader.FromFullyQualifiedName(definition.DeclaringType.AssemblyQualifiedName);
                     return new[] { type.GetProperty(definition.Property.PropertyName, DefaultBindingFlags) };
                 });
         }
@@ -110,7 +110,7 @@ namespace Nuclei.Plugins.Composition.Mef
         {
             return new LazyMemberInfo(
                 MemberTypes.TypeInfo,
-                () => new[] { TypeLoader.LoadType(definition.DeclaringType) });
+                () => new[] { TypeLoader.FromFullyQualifiedName(definition.DeclaringType.AssemblyQualifiedName) });
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace Nuclei.Plugins.Composition.Mef
                             foreach (var serializedPart in _repository.Parts())
                             {
                                 var definition = ReflectionModelServices.CreatePartDefinition(
-                                    new Lazy<Type>(() => TypeLoader.LoadType(serializedPart.Identity)),
+                                    new Lazy<Type>(() => TypeLoader.FromFullyQualifiedName(serializedPart.Identity.AssemblyQualifiedName)),
                                     _repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(IDisposable)), serializedPart.Identity),
                                     new Lazy<IEnumerable<ImportDefinition>>(() => serializedPart.Imports.Select(DeserializeImportDefinition)),
                                     new Lazy<IEnumerable<ExportDefinition>>(() => serializedPart.Exports.Select(DeserializeExportDefinition)),
