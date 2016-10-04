@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.ComponentModel.Composition.ReflectionModel;
@@ -29,49 +30,27 @@ namespace Nuclei.Plugins.Composition.Mef
     {
         private const BindingFlags DefaultBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
+        private static IDictionary<string, object> CreateExportMetadata(SerializableExportDefinition definition)
+        {
+            return new Dictionary<string, object>
+                {
+                    { MefConstants.ExportTypeIdentity, definition.ExportTypeIdentityForMef }
+                };
+        }
+
         private static ExportDefinition DeserializeExportDefinition(SerializableExportDefinition definition)
         {
-            var memberInfo = (LazyMemberInfo)DeserializeMemberInfo((dynamic)definition);
+            var memberInfo = (LazyMemberInfo)DeserializeExportMemberInfo((dynamic)definition);
+            var metadata = CreateExportMetadata(definition);
 
             return ReflectionModelServices.CreateExportDefinition(
                 memberInfo,
                 definition.ContractName,
-                new Lazy<IDictionary<string, object>>(() => MetadataServices.EmptyMetadata),
+                new Lazy<IDictionary<string, object>>(() => metadata),
                 null);
         }
 
-        private static ImportDefinition DeserializeImportDefinition(SerializableImportDefinition definition)
-        {
-            var memberInfo = (LazyMemberInfo)DeserializeMemberInfo((dynamic)definition);
-
-            return ReflectionModelServices.CreateImportDefinition(
-                memberInfo,
-                definition.ContractName,
-                definition.RequiredTypeIdentityForMef,
-                new List<KeyValuePair<string, Type>>(), // We don't handle custom metadata at the moment.
-                definition.Cardinality,
-                definition.IsRecomposable,
-                definition.IsPrerequisite,
-                definition.RequiredCreationPolicy,
-                MetadataServices.EmptyMetadata,
-                false, // We don't handle ExportFactory<T> at the moment.
-                null);
-        }
-
-        private static LazyMemberInfo DeserializeMemberInfo(ConstructorBasedImportDefinition definition)
-        {
-            return new LazyMemberInfo(
-                MemberTypes.Constructor,
-                () =>
-                {
-                    var type = TypeLoader.FromFullyQualifiedName(definition.DeclaringType.AssemblyQualifiedName);
-                    var parameterTypes = definition.Constructor.Parameters.Select(p => TypeLoader.FromFullyQualifiedName(p.Identity.AssemblyQualifiedName)).ToArray();
-
-                    return new[] { type.GetConstructor(DefaultBindingFlags, null, CallingConventions.Any, parameterTypes, new ParameterModifier[0]) };
-                });
-        }
-
-        private static LazyMemberInfo DeserializeMemberInfo(MethodBasedExportDefinition definition)
+        private static LazyMemberInfo DeserializeExportMemberInfo(MethodBasedExportDefinition definition)
         {
             return new LazyMemberInfo(
                 MemberTypes.Method,
@@ -84,33 +63,103 @@ namespace Nuclei.Plugins.Composition.Mef
                 });
         }
 
-        private static LazyMemberInfo DeserializeMemberInfo(PropertyBasedExportDefinition definition)
+        private static LazyMemberInfo DeserializeExportMemberInfo(PropertyBasedExportDefinition definition)
         {
             return new LazyMemberInfo(
                 MemberTypes.Property,
                 () =>
                 {
                     var type = TypeLoader.FromFullyQualifiedName(definition.DeclaringType.AssemblyQualifiedName);
-                    return new[] { type.GetProperty(definition.Property.PropertyName, DefaultBindingFlags) };
+                    var property = type.GetProperty(definition.Property.PropertyName, DefaultBindingFlags);
+
+                    // Note: MEF doesn't actually want the property, it wants the get and set methods (which sort of means there should
+                    //       both be a get and set method. No way MEF is going to let you get away with having only a get method on an export ...
+                    return new[] { property.GetGetMethod(true), property.GetSetMethod(true) };
                 });
         }
 
-        private static LazyMemberInfo DeserializeMemberInfo(PropertyBasedImportDefinition definition)
-        {
-            return new LazyMemberInfo(
-                MemberTypes.Property,
-                () =>
-                {
-                    var type = TypeLoader.FromFullyQualifiedName(definition.DeclaringType.AssemblyQualifiedName);
-                    return new[] { type.GetProperty(definition.Property.PropertyName, DefaultBindingFlags) };
-                });
-        }
-
-        private static LazyMemberInfo DeserializeMemberInfo(TypeBasedExportDefinition definition)
+        private static LazyMemberInfo DeserializeExportMemberInfo(TypeBasedExportDefinition definition)
         {
             return new LazyMemberInfo(
                 MemberTypes.TypeInfo,
                 () => new[] { TypeLoader.FromFullyQualifiedName(definition.DeclaringType.AssemblyQualifiedName) });
+        }
+
+        private static ImportDefinition DeserializeImportDefinition(SerializableImportDefinition definition)
+        {
+            var constructorDefinition = definition as ConstructorBasedImportDefinition;
+            if (constructorDefinition != null)
+            {
+                var lazyParameter = DeserializeImportingConstructorInfo(constructorDefinition);
+                return ReflectionModelServices.CreateImportDefinition(
+                    lazyParameter,
+                    definition.ContractName,
+                    definition.RequiredTypeIdentityForMef,
+                    new List<KeyValuePair<string, Type>>(), // We don't handle custom metadata at the moment.
+                    definition.Cardinality,
+                    definition.RequiredCreationPolicy,
+                    MetadataServices.EmptyMetadata,
+                    false, // We don't handle ExportFactory<T> at the moment.
+                    null);
+            }
+            else
+            {
+                var propertyDefinition = definition as PropertyBasedImportDefinition;
+                if (propertyDefinition == null)
+                {
+                    throw new InvalidImportDefinitionException();
+                }
+
+                var memberInfo = new LazyMemberInfo(
+                MemberTypes.Property,
+                () =>
+                    {
+                        var type = TypeLoader.FromFullyQualifiedName(definition.DeclaringType.AssemblyQualifiedName);
+                        var property = type.GetProperty(propertyDefinition.Property.PropertyName, DefaultBindingFlags);
+
+                        // Note: MEF doesn't actually want the property, it wants the get and set methods (which sort of means there should
+                        //       both be a get and set method. No way MEF is going to let you get away with having only a set method on an import ...
+                        return new[] { property.GetGetMethod(true), property.GetSetMethod(true) };
+                    });
+
+                return ReflectionModelServices.CreateImportDefinition(
+                    memberInfo,
+                    definition.ContractName,
+                    definition.RequiredTypeIdentityForMef,
+                    new List<KeyValuePair<string, Type>>(), // We don't handle custom metadata at the moment.
+                    definition.Cardinality,
+                    definition.IsRecomposable,
+                    definition.IsPrerequisite,
+                    definition.RequiredCreationPolicy,
+                    MetadataServices.EmptyMetadata,
+                    false, // We don't handle ExportFactory<T> at the moment.
+                    null);
+            }
+        }
+
+        private static Lazy<ParameterInfo> DeserializeImportingConstructorInfo(ConstructorBasedImportDefinition definition)
+        {
+            var lazyParameter = new Lazy<ParameterInfo>(() =>
+            {
+                var type = TypeLoader.FromFullyQualifiedName(definition.DeclaringType.AssemblyQualifiedName);
+                return GetImportingConstructor(type, definition.Constructor.Parameters).GetParameters().Single(x => x.Name == definition.Parameter.Name);
+            });
+
+            return lazyParameter;
+        }
+
+        private static ConstructorInfo GetImportingConstructor(Type type, IEnumerable<ParameterDefinition> parameters)
+        {
+            var constructor = type.GetConstructors(DefaultBindingFlags)
+                .Where(x => x.IsDefined(typeof(ImportingConstructorAttribute)))
+                .Where(x => !x.GetParameters().Select(p => p.Name).Except(parameters.Select(p => p.Name)).Any())
+                .FirstOrDefault();
+            if (constructor != null)
+            {
+                return constructor;
+            }
+
+            throw new InvalidImportDefinitionException();
         }
 
         /// <summary>

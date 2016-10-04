@@ -33,7 +33,9 @@ namespace Nuclei.Plugins.Composition.Mef
         [Test]
         public void ComposeWithImportingConstructorWithEnumerable()
         {
-            var repository = CreateRepository(typeof(ExportOnPropertyWithEnumerable));
+            var repository = CreateRepository(
+                typeof(ExportOnPropertyWithEnumerable),
+                typeof(ImportOnConstructorWithEnumerable));
             var catalog = new LazyLoadCatalog(repository);
             var container = new CompositionContainer(catalog);
 
@@ -51,7 +53,10 @@ namespace Nuclei.Plugins.Composition.Mef
         [Test]
         public void ComposeWithImportingConstructorWithEnumerableFromMany()
         {
-            var repository = CreateRepository(typeof(MockExportingInterfaceImplementation), typeof(ExportOnType));
+            var repository = CreateRepository(
+                typeof(MockExportingInterfaceImplementation),
+                typeof(ExportOnTypeWithType),
+                typeof(ImportOnConstructorWithMany));
             var catalog = new LazyLoadCatalog(repository);
             var container = new CompositionContainer(catalog);
 
@@ -65,14 +70,18 @@ namespace Nuclei.Plugins.Composition.Mef
             Assert.AreEqual(2, importer.Import.Count());
 
             var list = importer.Import.ToList();
-            Assert.Contains(typeof(MockExportingInterfaceImplementation), list);
-            Assert.Contains(typeof(ExportOnType), list);
+            var unrolledList = list.Select(m => m.GetType()).ToList();
+            Assert.Contains(typeof(MockExportingInterfaceImplementation), unrolledList);
+            Assert.Contains(typeof(ExportOnTypeWithType), unrolledList);
         }
 
         [Test]
         public void ComposeWithImportingConstructorWithEnumerableFuncFromMany()
         {
-            var repository = CreateRepository(typeof(ExportOnMethodWithType), typeof(ExportOnMethod));
+            var repository = CreateRepository(
+                typeof(ExportOnAnotherMethod),
+                typeof(ExportOnMethod),
+                typeof(ImportOnConstructorWithCollectionOfFunc));
             var catalog = new LazyLoadCatalog(repository);
             var container = new CompositionContainer(catalog);
 
@@ -97,7 +106,10 @@ namespace Nuclei.Plugins.Composition.Mef
         [Test]
         public void ComposeWithImportingConstructorWithEnumerableLazyFromMany()
         {
-            var repository = CreateRepository(typeof(ExportOnPropertyWithType), typeof(ExportOnProperty));
+            var repository = CreateRepository(
+                typeof(ExportOnPropertyWithType),
+                typeof(ExportOnProperty),
+                typeof(ImportOnConstructorWithCollectionOfLazy));
             var catalog = new LazyLoadCatalog(repository);
             var container = new CompositionContainer(catalog);
 
@@ -125,7 +137,9 @@ namespace Nuclei.Plugins.Composition.Mef
         [Test]
         public void ComposeWithImportingConstructorWithFunc()
         {
-            var repository = CreateRepository(typeof(ExportOnMethod));
+            var repository = CreateRepository(
+                typeof(ExportOnMethod),
+                typeof(ImportOnConstructorWithFunc));
             var catalog = new LazyLoadCatalog(repository);
             var container = new CompositionContainer(catalog);
 
@@ -142,7 +156,9 @@ namespace Nuclei.Plugins.Composition.Mef
         [Test]
         public void ComposeWithImportingConstructorWithLazy()
         {
-            var repository = CreateRepository(typeof(ExportOnProperty));
+            var repository = CreateRepository(
+                typeof(ExportOnProperty),
+                typeof(ImportOnConstructorWithLazy));
             var catalog = new LazyLoadCatalog(repository);
             var container = new CompositionContainer(catalog);
 
@@ -158,9 +174,34 @@ namespace Nuclei.Plugins.Composition.Mef
         }
 
         [Test]
-        public void ComposeWithConstructorWithType()
+        public void ComposeWithImportingConstructorWithMultipleImports()
         {
-            var repository = CreateRepository(typeof(ExportOnTypeWithType));
+            var repository = CreateRepository(
+                typeof(ExportOnTypeWithType),
+                typeof(ImportOnPropertyWithType),
+                typeof(ImportOnConstructorWithMultipleImports));
+            var catalog = new LazyLoadCatalog(repository);
+            var container = new CompositionContainer(catalog);
+
+            var obj = new ImportGetterForImportOnConstructorWithMultipleImports();
+            container.ComposeParts(obj);
+
+            Assert.IsNotNull(obj.Import);
+            var importer = obj.Import;
+
+            Assert.IsNotNull(importer.Import1);
+            Assert.AreEqual(typeof(ExportOnTypeWithType), importer.Import1.GetType());
+
+            Assert.IsNotNull(importer.Import2);
+            Assert.AreEqual(typeof(ImportOnPropertyWithType), importer.Import2.GetType());
+        }
+
+        [Test]
+        public void ComposeWithImportingConstructorWithType()
+        {
+            var repository = CreateRepository(
+                typeof(ExportOnTypeWithType),
+                typeof(ImportOnConstructorWithType));
             var catalog = new LazyLoadCatalog(repository);
             var container = new CompositionContainer(catalog);
 
@@ -192,7 +233,7 @@ namespace Nuclei.Plugins.Composition.Mef
         [Test]
         public void ComposeWithImportingPropertyWithEnumerableFromMany()
         {
-            var repository = CreateRepository(typeof(MockExportingInterfaceImplementation), typeof(ExportOnType));
+            var repository = CreateRepository(typeof(MockExportingInterfaceImplementation), typeof(ExportOnTypeWithType));
             var catalog = new LazyLoadCatalog(repository);
             var container = new CompositionContainer(catalog);
 
@@ -203,14 +244,15 @@ namespace Nuclei.Plugins.Composition.Mef
             Assert.AreEqual(2, obj.ImportingProperty.Count());
 
             var list = obj.ImportingProperty.ToList();
-            Assert.Contains(typeof(MockExportingInterfaceImplementation), list);
-            Assert.Contains(typeof(ExportOnType), list);
+            var unrolledList = list.Select(m => m.GetType()).ToList();
+            Assert.Contains(typeof(MockExportingInterfaceImplementation), unrolledList);
+            Assert.Contains(typeof(ExportOnTypeWithType), unrolledList);
         }
 
         [Test]
         public void ComposeWithImportingPropertyWithEnumerableFuncFromMany()
         {
-            var repository = CreateRepository(typeof(ExportOnMethodWithType), typeof(ExportOnMethod));
+            var repository = CreateRepository(typeof(ExportOnAnotherMethod), typeof(ExportOnMethod));
             var catalog = new LazyLoadCatalog(repository);
             var container = new CompositionContainer(catalog);
 
@@ -295,6 +337,24 @@ namespace Nuclei.Plugins.Composition.Mef
 
             Assert.IsNotNull(obj.ImportingProperty);
             Assert.AreEqual(typeof(ExportOnTypeWithType), obj.ImportingProperty.GetType());
+        }
+
+        [Test]
+        public void ComposeWithNestedImport()
+        {
+            var repository = CreateRepository(typeof(ExportOnTypeWithType), typeof(ImportOnPropertyWithType));
+            var catalog = new LazyLoadCatalog(repository);
+            var container = new CompositionContainer(catalog);
+
+            var obj = new ImportOnPropertyWithImport();
+            container.ComposeParts(obj);
+
+            Assert.IsNotNull(obj.ImportingProperty);
+            Assert.AreEqual(typeof(ImportOnPropertyWithType), obj.ImportingProperty.GetType());
+
+            var importer = obj.ImportingProperty;
+            Assert.IsNotNull(importer.ImportingProperty);
+            Assert.AreEqual(typeof(ExportOnTypeWithType), importer.ImportingProperty.GetType());
         }
 
         private IPluginRepository CreateRepository(params Type[] exportingTypesToAdd)
@@ -442,6 +502,20 @@ namespace Nuclei.Plugins.Composition.Mef
         {
             [Import]
             public ImportOnConstructorWithMany Import
+            {
+                get;
+                set;
+            }
+        }
+
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1034:NestedTypesShouldNotBeVisible",
+            Justification = "Used to get the import type that use a constructor import.")]
+        public sealed class ImportGetterForImportOnConstructorWithMultipleImports
+        {
+            [Import]
+            public ImportOnConstructorWithMultipleImports Import
             {
                 get;
                 set;

@@ -24,7 +24,6 @@ namespace Nuclei.Plugins.Composition
 
             var newCollection = collection.AsReadOnly();
 
-            Assert.IsAssignableFrom<IReadOnlyDictionary<string, object>>(newCollection);
             Assert.AreEqual(collection.First().Value, newCollection.First().Value);
         }
     }

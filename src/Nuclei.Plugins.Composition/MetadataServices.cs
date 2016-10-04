@@ -23,7 +23,7 @@ namespace Nuclei.Plugins.Composition
             "Microsoft.Security",
             "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
             Justification = "The dictionary is a readonly instance.")]
-        public static readonly IDictionary<string, object> EmptyMetadata =
+        public static readonly ReadOnlyDictionary<string, object> EmptyMetadata =
             new ReadOnlyDictionary<string, object>(new Dictionary<string, object>(0));
 
         /// <summary>
@@ -31,16 +31,17 @@ namespace Nuclei.Plugins.Composition
         /// </summary>
         /// <param name="metadata">The original metadata collection.</param>
         /// <returns>A readonly view of the collection.</returns>
-        public static IDictionary<string, object> AsReadOnly(this IDictionary<string, object> metadata)
+        public static ReadOnlyDictionary<string, object> AsReadOnly(this IDictionary<string, object> metadata)
         {
             if (metadata == null)
             {
                 return EmptyMetadata;
             }
 
-            if (metadata is ReadOnlyDictionary<string, object>)
+            var readonlyMetadata = metadata as ReadOnlyDictionary<string, object>;
+            if (readonlyMetadata != null)
             {
-                return metadata;
+                return readonlyMetadata;
             }
 
             return new ReadOnlyDictionary<string, object>(metadata);
