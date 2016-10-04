@@ -131,7 +131,7 @@ namespace Test.Mocks
             MessageId = "input",
             Justification = "Parameter is used by reflection")]
         [ImportingConstructor]
-        public ImportOnConstructorWithEnumerable([Import("ContractName")]IEnumerable<IExportingInterface> input)
+        public ImportOnConstructorWithEnumerable([Import]IEnumerable<IExportingInterface> input)
         {
             _import = input;
         }
@@ -164,7 +164,7 @@ namespace Test.Mocks
             MessageId = "input",
             Justification = "Parameter is used by reflection")]
         [ImportingConstructor]
-        public ImportOnConstructorWithMany([ImportMany("ContractName")]IEnumerable<IExportingInterface> input)
+        public ImportOnConstructorWithMany([ImportMany]IEnumerable<IExportingInterface> input)
         {
             _import = input;
         }
@@ -197,7 +197,7 @@ namespace Test.Mocks
             MessageId = "input",
             Justification = "Parameter is used by reflection")]
         [ImportingConstructor]
-        public ImportOnConstructorWithLazy([Import("ContractName")]Lazy<IExportingInterface> input)
+        public ImportOnConstructorWithLazy([Import]Lazy<IExportingInterface> input)
         {
             _import = input;
         }
@@ -230,7 +230,7 @@ namespace Test.Mocks
             MessageId = "input",
             Justification = "Parameter is used by reflection")]
         [ImportingConstructor]
-        public ImportOnConstructorWithFunc([Import("ContractName")]Func<IExportingInterface> input)
+        public ImportOnConstructorWithFunc([Import]Func<IExportingInterface> input)
         {
             _import = input;
         }
@@ -261,7 +261,7 @@ namespace Test.Mocks
             MessageId = "input",
             Justification = "Parameter is used by reflection")]
         [ImportingConstructor]
-        public ImportOnConstructorWithFuncWithMultipleParameters([Import("ContractName")]Func<IExportingInterface, bool, bool> input)
+        public ImportOnConstructorWithFuncWithMultipleParameters([Import]Func<IExportingInterface, bool, bool> input)
         {
         }
     }
@@ -341,10 +341,43 @@ namespace Test.Mocks
         "Microsoft.StyleCop.CSharp.MaintainabilityRules",
         "SA1402:FileMayOnlyContainASingleClass",
         Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
-    public sealed class ImportOnPropertyWithName
+    public sealed class ImportOnConstructorWithMultipleImports
     {
-        [Import("ImportOnProperty")]
-        public IExportingInterface ImportingProperty
+        private readonly IExportingInterface _import1;
+        private readonly IImportingInterface _import2;
+
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1801:ReviewUnusedParameters",
+            MessageId = "input",
+            Justification = "Parameter is used by reflection")]
+        [ImportingConstructor]
+        public ImportOnConstructorWithMultipleImports([Import]IExportingInterface input1, [Import]IImportingInterface input2)
+        {
+            _import1 = input1;
+            _import2 = input2;
+        }
+
+        public IExportingInterface Import1
+        {
+            get
+            {
+                return _import1;
+            }
+        }
+
+        public IImportingInterface Import2
+        {
+            get
+            {
+                return _import2;
+            }
+        }
+    }
+
+    public interface IImportingInterface
+    {
+        IExportingInterface ImportingProperty
         {
             get;
             set;
@@ -360,7 +393,46 @@ namespace Test.Mocks
         "Microsoft.StyleCop.CSharp.MaintainabilityRules",
         "SA1402:FileMayOnlyContainASingleClass",
         Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
-    public sealed class ImportOnPropertyWithType
+    public sealed class ImportOnPropertyWithImport
+    {
+        [Import(typeof(IImportingInterface))]
+        public IImportingInterface ImportingProperty
+        {
+            get;
+            set;
+        }
+    }
+
+    [Export]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
+    public sealed class ImportOnPropertyWithName : IImportingInterface
+    {
+        [Import("ImportOnProperty")]
+        public IExportingInterface ImportingProperty
+        {
+            get;
+            set;
+        }
+    }
+
+    [Export]
+    [Export(typeof(IImportingInterface))]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
+    public sealed class ImportOnPropertyWithType : IImportingInterface
     {
         [Import(typeof(IExportingInterface))]
         public IExportingInterface ImportingProperty
@@ -379,7 +451,7 @@ namespace Test.Mocks
         "Microsoft.StyleCop.CSharp.MaintainabilityRules",
         "SA1402:FileMayOnlyContainASingleClass",
         Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
-    public sealed class ImportOnProperty
+    public sealed class ImportOnProperty : IImportingInterface
     {
         [Import]
         public IExportingInterface ImportingProperty

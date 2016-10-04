@@ -113,6 +113,11 @@ namespace Test.Mocks
             {
                 return _value;
             }
+
+            set
+            {
+                _value = value;
+            }
         }
     }
 
@@ -134,6 +139,11 @@ namespace Test.Mocks
             get
             {
                 return _value;
+            }
+
+            set
+            {
+                _value = value;
             }
         }
     }
@@ -157,6 +167,11 @@ namespace Test.Mocks
             {
                 return _value;
             }
+
+            set
+            {
+                _value = value;
+            }
         }
     }
 
@@ -170,7 +185,7 @@ namespace Test.Mocks
         Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
     public sealed class ExportOnPropertyWithEnumerable
     {
-        private List<IExportingInterface> _value = new List<IExportingInterface>
+        private IEnumerable<IExportingInterface> _value = new List<IExportingInterface>
             {
                 new MockExportingInterfaceImplementation()
             };
@@ -181,6 +196,11 @@ namespace Test.Mocks
             get
             {
                 return _value;
+            }
+
+            set
+            {
+                _value = value;
             }
         }
     }
@@ -234,6 +254,25 @@ namespace Test.Mocks
     public sealed class ExportOnMethod
     {
         private IExportingInterface _value = new MockChildExportingInterfaceImplementation();
+
+        [Export]
+        public IExportingInterface ExportingMethod()
+        {
+            return _value;
+        }
+    }
+
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
+    public sealed class ExportOnAnotherMethod
+    {
+        private IExportingInterface _value = new MockExportingInterfaceImplementation();
 
         [Export]
         public IExportingInterface ExportingMethod()
