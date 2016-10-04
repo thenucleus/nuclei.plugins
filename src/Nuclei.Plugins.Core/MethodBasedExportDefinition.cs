@@ -79,14 +79,15 @@ namespace Nuclei.Plugins.Core
         /// based on the given <see cref="MethodInfo"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="exportedTypeIdentityForMef">The type identity that is exported as provided by MEF.</param>
         /// <param name="method">The method for which the current object stores the serialized data.</param>
         /// <returns>The serialized definition for the given method.</returns>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="method"/> is <see langword="null" />.
         /// </exception>
-        public static MethodBasedExportDefinition CreateDefinition(string contractName, MethodInfo method)
+        public static MethodBasedExportDefinition CreateDefinition(string contractName, string exportedTypeIdentityForMef, MethodInfo method)
         {
-            return CreateDefinition(contractName, method, t => TypeIdentity.CreateDefinition(t));
+            return CreateDefinition(contractName, exportedTypeIdentityForMef, method, t => TypeIdentity.CreateDefinition(t));
         }
 
         /// <summary>
@@ -94,6 +95,7 @@ namespace Nuclei.Plugins.Core
         /// on the given <see cref="MethodInfo"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="exportedTypeIdentityForMef">The type identity that is exported as provided by MEF.</param>
         /// <param name="method">The method for which the current object stores the serialized data.</param>
         /// <param name="identityGenerator">The function that creates type identities.</param>
         /// <returns>The serialized definition for the given method.</returns>
@@ -105,6 +107,7 @@ namespace Nuclei.Plugins.Core
         /// </exception>
         public static MethodBasedExportDefinition CreateDefinition(
             string contractName,
+            string exportedTypeIdentityForMef,
             MethodInfo method,
             Func<Type, TypeIdentity> identityGenerator)
         {
@@ -120,6 +123,7 @@ namespace Nuclei.Plugins.Core
 
             return new MethodBasedExportDefinition(
                 contractName,
+                exportedTypeIdentityForMef,
                 identityGenerator(method.DeclaringType),
                 MethodDefinition.CreateDefinition(method, identityGenerator));
         }
@@ -133,13 +137,15 @@ namespace Nuclei.Plugins.Core
         /// Initializes a new instance of the <see cref="MethodBasedExportDefinition"/> class.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="exportedTypeIdentityForMef">The type identity that is exported as provided by MEF.</param>
         /// <param name="declaringType">The type which declares the method on which the import is placed.</param>
         /// <param name="method">The method for which the current object stores the serialized data.</param>
         private MethodBasedExportDefinition(
             string contractName,
+            string exportedTypeIdentityForMef,
             TypeIdentity declaringType,
             MethodDefinition method)
-            : base(contractName, declaringType)
+            : base(contractName, exportedTypeIdentityForMef, declaringType)
         {
             {
                 Debug.Assert(method != null, "The method object should not be null.");
@@ -173,6 +179,7 @@ namespace Nuclei.Plugins.Core
             // we get an infinite loop where we're constantly trying to compare to null.
             return !ReferenceEquals(otherType, null)
                 && string.Equals(ContractName, otherType.ContractName, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(ExportTypeIdentityForMef, otherType.ExportTypeIdentityForMef, StringComparison.OrdinalIgnoreCase)
                 && DeclaringType == otherType.DeclaringType
                 && Method == otherType.Method;
         }
@@ -220,6 +227,7 @@ namespace Nuclei.Plugins.Core
 
                 // Mash the hash together with yet another random prime number
                 hash = (hash * 23) ^ ContractName.GetHashCode();
+                hash = (hash * 23) ^ ExportTypeIdentityForMef.GetHashCode();
                 hash = (hash * 23) ^ DeclaringType.GetHashCode();
                 hash = (hash * 23) ^ Method.GetHashCode();
 

@@ -78,6 +78,7 @@
     <Compile Include="IPartRegistration.cs" />
     <Compile Include="IPluginRepository.cs" />
     <Compile Include="ISatisfyPluginRequests.cs" />
+    <Compile Include="MefConstants.cs" />
     <Compile Include="MethodBasedExportDefinition.cs" />
     <Compile Include="MethodDefinition.cs" />
     <Compile Include="ParameterDefinition.cs" />

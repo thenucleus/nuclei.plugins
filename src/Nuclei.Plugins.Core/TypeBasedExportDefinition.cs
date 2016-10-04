@@ -77,14 +77,15 @@ namespace Nuclei.Plugins.Core
         /// based on the given <see cref="Type"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="exportedTypeIdentityForMef">The type identity that is exported as provided by MEF.</param>
         /// <param name="declaringType">The method for which the current object stores the serialized data.</param>
         /// <returns>The serialized definition for the given type.</returns>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="declaringType"/> is <see langword="null" />.
         /// </exception>
-        public static TypeBasedExportDefinition CreateDefinition(string contractName, Type declaringType)
+        public static TypeBasedExportDefinition CreateDefinition(string contractName, string exportedTypeIdentityForMef, Type declaringType)
         {
-            return CreateDefinition(contractName, declaringType, t => TypeIdentity.CreateDefinition(t));
+            return CreateDefinition(contractName, exportedTypeIdentityForMef, declaringType, t => TypeIdentity.CreateDefinition(t));
         }
 
         /// <summary>
@@ -92,6 +93,7 @@ namespace Nuclei.Plugins.Core
         /// on the given <see cref="Type"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="exportedTypeIdentityForMef">The type identity that is exported as provided by MEF.</param>
         /// <param name="declaringType">The type for which the current object stores the serialized data.</param>
         /// <param name="identityGenerator">The function that creates type identities.</param>
         /// <returns>The serialized definition for the given type.</returns>
@@ -103,6 +105,7 @@ namespace Nuclei.Plugins.Core
         /// </exception>
         public static TypeBasedExportDefinition CreateDefinition(
             string contractName,
+            string exportedTypeIdentityForMef,
             Type declaringType,
             Func<Type, TypeIdentity> identityGenerator)
         {
@@ -118,6 +121,7 @@ namespace Nuclei.Plugins.Core
 
             return new TypeBasedExportDefinition(
                 contractName,
+                exportedTypeIdentityForMef,
                 identityGenerator(declaringType));
         }
 
@@ -125,9 +129,10 @@ namespace Nuclei.Plugins.Core
         /// Initializes a new instance of the <see cref="TypeBasedExportDefinition"/> class.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="exportedTypeIdentityForMef">The type identity that is exported as provided by MEF.</param>
         /// <param name="declaringType">The type that owns the current export.</param>
-        private TypeBasedExportDefinition(string contractName, TypeIdentity declaringType)
-            : base(contractName, declaringType)
+        private TypeBasedExportDefinition(string contractName, string exportedTypeIdentityForMef, TypeIdentity declaringType)
+            : base(contractName, exportedTypeIdentityForMef, declaringType)
         {
         }
 
@@ -179,6 +184,7 @@ namespace Nuclei.Plugins.Core
             // we get an infinite loop where we're constantly trying to compare to null.
             return !ReferenceEquals(otherType, null)
                 && string.Equals(ContractName, otherType.ContractName, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(ExportTypeIdentityForMef, otherType.ExportTypeIdentityForMef, StringComparison.OrdinalIgnoreCase)
                 && DeclaringType == otherType.DeclaringType;
         }
 
@@ -202,6 +208,7 @@ namespace Nuclei.Plugins.Core
 
                 // Mash the hash together with yet another random prime number
                 hash = (hash * 23) ^ ContractName.GetHashCode();
+                hash = (hash * 23) ^ ExportTypeIdentityForMef.GetHashCode();
                 hash = (hash * 23) ^ DeclaringType.GetHashCode();
 
                 return hash;

@@ -262,6 +262,96 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
+        public void IsSubtypeOfWithNonExistingChild()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(object), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsFalse(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(object)), TypeIdentity.CreateDefinition(typeof(string))));
+        }
+
+        [Test]
+        public void IsSubtypeOfWithNonExistingParent()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsFalse(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(double)), TypeIdentity.CreateDefinition(typeof(string))));
+        }
+
+        [Test]
+        public void IsSubtypeOfWithNullChild()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsFalse(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(double)), null));
+        }
+
+        [Test]
+        public void IsSubtypeOfWithNullParent()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsFalse(repository.IsSubtypeOf(null, TypeIdentity.CreateDefinition(typeof(string))));
+        }
+
+        [Test]
+        public void IsSubtypeOfWithRelatedTypes()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(object), identityGenerator);
+            repository.AddType(definition);
+
+            definition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsTrue(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(object)), TypeIdentity.CreateDefinition(typeof(string))));
+        }
+
+        [Test]
+        public void IsSubtypeOfWithSingleType()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsFalse(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(string)), TypeIdentity.CreateDefinition(typeof(string))));
+        }
+
+        [Test]
+        public void IsSubtypeOfWithUnrelatedTypes()
+        {
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = t => TypeIdentity.CreateDefinition(t);
+            var definition = TypeDefinition.CreateDefinition(typeof(string), identityGenerator);
+            repository.AddType(definition);
+
+            definition = TypeDefinition.CreateDefinition(typeof(double), identityGenerator);
+            repository.AddType(definition);
+
+            Assert.IsFalse(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(double)), TypeIdentity.CreateDefinition(typeof(string))));
+        }
+
+        [Test]
         public void RemovePlugins()
         {
             var currentlyBuilding = new Dictionary<Type, TypeIdentity>();

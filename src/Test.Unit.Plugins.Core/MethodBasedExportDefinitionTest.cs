@@ -52,7 +52,7 @@ namespace Nuclei.Plugins.Core
         [Test]
         public void RoundTripSerialize()
         {
-            var original = MethodBasedExportDefinition.CreateDefinition("B", GetMethodForInt());
+            var original = MethodBasedExportDefinition.CreateDefinition("B", "C", GetMethodForInt());
             var copy = AssertExtensions.RoundTripSerialize(original);
 
             Assert.AreEqual(original, copy);
@@ -61,7 +61,7 @@ namespace Nuclei.Plugins.Core
         [Test]
         public void Create()
         {
-            var obj = MethodBasedExportDefinition.CreateDefinition("B", GetMethodForInt());
+            var obj = MethodBasedExportDefinition.CreateDefinition("B", "C", GetMethodForInt());
 
             Assert.AreEqual("B", obj.ContractName);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(int)), obj.DeclaringType);
@@ -72,10 +72,12 @@ namespace Nuclei.Plugins.Core
         {
             private readonly MethodBasedExportDefinition _first = MethodBasedExportDefinition.CreateDefinition(
                 "A",
+                "B",
                 typeof(string).GetMethod("Contains"));
 
             private readonly MethodBasedExportDefinition _second = MethodBasedExportDefinition.CreateDefinition(
-                "B",
+                "C",
+                "D",
                 typeof(int).GetMethod("CompareTo", new[] { typeof(int) }));
 
             protected override MethodBasedExportDefinition Copy(MethodBasedExportDefinition original)
@@ -84,11 +86,13 @@ namespace Nuclei.Plugins.Core
                 {
                     return MethodBasedExportDefinition.CreateDefinition(
                         "A",
+                        "B",
                         typeof(string).GetMethod("Contains"));
                 }
 
                 return MethodBasedExportDefinition.CreateDefinition(
-                    "B",
+                    "C",
+                    "D",
                     typeof(int).GetMethod("CompareTo", new[] { typeof(int) }));
             }
 
@@ -124,18 +128,23 @@ namespace Nuclei.Plugins.Core
                      {
                         MethodBasedExportDefinition.CreateDefinition(
                             "A",
+                            "B",
                             typeof(string).GetMethod("Contains")),
                         MethodBasedExportDefinition.CreateDefinition(
-                            "B",
+                            "C",
+                            "D",
                             typeof(int).GetMethod("CompareTo", new[] { typeof(int) })),
                         MethodBasedExportDefinition.CreateDefinition(
-                            "C",
+                            "E",
+                            "F",
                             typeof(double).GetMethod("CompareTo", new[] { typeof(double) })),
                         MethodBasedExportDefinition.CreateDefinition(
-                            "D",
+                            "G",
+                            "H",
                             typeof(IComparable).GetMethod("CompareTo")),
                         MethodBasedExportDefinition.CreateDefinition(
-                            "E",
+                            "I",
+                            "J",
                             typeof(IComparable<>).GetMethod("CompareTo")),
                      };
 

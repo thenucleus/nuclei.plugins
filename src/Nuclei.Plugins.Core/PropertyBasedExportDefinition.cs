@@ -78,14 +78,15 @@ namespace Nuclei.Plugins.Core
         /// Creates a new instance of the <see cref="PropertyBasedExportDefinition"/> class based on the given <see cref="PropertyInfo"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="exportedTypeIdentityForMef">The type identity that is exported as provided by MEF.</param>
         /// <param name="property">The property for which a serialized definition needs to be created.</param>
         /// <returns>The serialized definition for the given property.</returns>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="property"/> is <see langword="null" />.
         /// </exception>
-        public static PropertyBasedExportDefinition CreateDefinition(string contractName, PropertyInfo property)
+        public static PropertyBasedExportDefinition CreateDefinition(string contractName, string exportedTypeIdentityForMef, PropertyInfo property)
         {
-            return CreateDefinition(contractName, property, t => TypeIdentity.CreateDefinition(t));
+            return CreateDefinition(contractName, exportedTypeIdentityForMef, property, t => TypeIdentity.CreateDefinition(t));
         }
 
         /// <summary>
@@ -93,6 +94,7 @@ namespace Nuclei.Plugins.Core
         /// the given <see cref="PropertyInfo"/>.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="exportedTypeIdentityForMef">The type identity that is exported as provided by MEF.</param>
         /// <param name="property">The property for which a serialized definition needs to be created.</param>
         /// <param name="identityGenerator">The function that creates type identities.</param>
         /// <returns>The serialized definition for the given property.</returns>
@@ -104,6 +106,7 @@ namespace Nuclei.Plugins.Core
         /// </exception>
         public static PropertyBasedExportDefinition CreateDefinition(
             string contractName,
+            string exportedTypeIdentityForMef,
             PropertyInfo property,
             Func<Type, TypeIdentity> identityGenerator)
         {
@@ -119,6 +122,7 @@ namespace Nuclei.Plugins.Core
 
             return new PropertyBasedExportDefinition(
                 contractName,
+                exportedTypeIdentityForMef,
                 identityGenerator(property.DeclaringType),
                 PropertyDefinition.CreateDefinition(property, identityGenerator));
         }
@@ -132,13 +136,15 @@ namespace Nuclei.Plugins.Core
         /// Initializes a new instance of the <see cref="PropertyBasedExportDefinition"/> class.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="exportedTypeIdentityForMef">The type identity that is exported as provided by MEF.</param>
         /// <param name="declaringType">The type that declares the property on which the import is placed.</param>
         /// <param name="property">The property for which the current object stores the serialized data.</param>
         private PropertyBasedExportDefinition(
             string contractName,
+            string exportedTypeIdentityForMef,
             TypeIdentity declaringType,
             PropertyDefinition property)
-            : base(contractName, declaringType)
+            : base(contractName, exportedTypeIdentityForMef, declaringType)
         {
             {
                 Debug.Assert(property != null, "The property object shouldn't be null.");
@@ -172,6 +178,7 @@ namespace Nuclei.Plugins.Core
             // we get an infinite loop where we're constantly trying to compare to null.
             return !ReferenceEquals(otherType, null)
                 && string.Equals(ContractName, otherType.ContractName, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(ExportTypeIdentityForMef, otherType.ExportTypeIdentityForMef, StringComparison.OrdinalIgnoreCase)
                 && Property.Equals(otherType.Property);
         }
 
@@ -218,6 +225,7 @@ namespace Nuclei.Plugins.Core
 
                 // Mash the hash together with yet another random prime number
                 hash = (hash * 23) ^ ContractName.GetHashCode();
+                hash = (hash * 23) ^ ExportTypeIdentityForMef.GetHashCode();
                 hash = (hash * 23) ^ Property.GetHashCode();
 
                 return hash;

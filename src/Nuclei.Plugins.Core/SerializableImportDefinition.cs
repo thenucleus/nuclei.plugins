@@ -108,14 +108,14 @@ namespace Nuclei.Plugins.Core
                 throw new ArgumentNullException("declaringType");
             }
 
-            _contractName = contractName;
-            _requiredTypeIdentity = requiredTypeIdentity;
-            _requiredTypeIdentityForMef = requiredTypeIdentityForMef;
             _cardinality = cardinality;
-            _isRecomposable = isRecomposable;
-            _isPreRequisite = isPrerequisite;
+            _contractName = contractName;
             _creationPolicy = creationPolicy;
             _declaringType = declaringType;
+            _isPreRequisite = isPrerequisite;
+            _isRecomposable = isRecomposable;
+            _requiredTypeIdentity = requiredTypeIdentity;
+            _requiredTypeIdentityForMef = requiredTypeIdentityForMef;
         }
 
         /// <summary>

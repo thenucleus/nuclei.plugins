@@ -245,6 +245,16 @@ namespace Nuclei.Plugins.Core
             Justification = "Documentation can start with a language keyword")]
         public bool IsSubtypeOf(TypeIdentity parent, TypeIdentity child)
         {
+            if (!ContainsDefinitionForType(parent))
+            {
+                return false;
+            }
+
+            if (!ContainsDefinitionForType(child))
+            {
+                return false;
+            }
+
             var algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<TypeIdentity, Edge<TypeIdentity>>(
                 _typeGraph,
                 e => 1.0);

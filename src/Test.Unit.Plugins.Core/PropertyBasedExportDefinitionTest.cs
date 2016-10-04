@@ -50,7 +50,7 @@ namespace Nuclei.Plugins.Core
         [Test]
         public void RoundTripSerialize()
         {
-            var original = PropertyBasedExportDefinition.CreateDefinition("A", GetPropertyForString());
+            var original = PropertyBasedExportDefinition.CreateDefinition("A", "B", GetPropertyForString());
             var copy = AssertExtensions.RoundTripSerialize(original);
 
             Assert.AreEqual(original, copy);
@@ -59,7 +59,7 @@ namespace Nuclei.Plugins.Core
         [Test]
         public void CreateWithClass()
         {
-            var obj = PropertyBasedExportDefinition.CreateDefinition("A", GetPropertyForString());
+            var obj = PropertyBasedExportDefinition.CreateDefinition("A", "B", GetPropertyForString());
             var property = GetPropertyForString();
 
             Assert.AreEqual("A", obj.ContractName);
@@ -70,19 +70,19 @@ namespace Nuclei.Plugins.Core
         private sealed class EndpointIdEqualityContractVerifier : EqualityContractVerifier<PropertyBasedExportDefinition>
         {
             private readonly PropertyBasedExportDefinition _first
-                = PropertyBasedExportDefinition.CreateDefinition("A", typeof(string).GetProperty("Length"));
+                = PropertyBasedExportDefinition.CreateDefinition("A", "B", typeof(string).GetProperty("Length"));
 
             private readonly PropertyBasedExportDefinition _second
-                = PropertyBasedExportDefinition.CreateDefinition("B", typeof(Version).GetProperty("Build"));
+                = PropertyBasedExportDefinition.CreateDefinition("C", "D", typeof(Version).GetProperty("Build"));
 
             protected override PropertyBasedExportDefinition Copy(PropertyBasedExportDefinition original)
             {
                 if (original.ContractName.Equals("A"))
                 {
-                    return PropertyBasedExportDefinition.CreateDefinition("A", typeof(string).GetProperty("Length"));
+                    return PropertyBasedExportDefinition.CreateDefinition("A", "B", typeof(string).GetProperty("Length"));
                 }
 
-                return PropertyBasedExportDefinition.CreateDefinition("B", typeof(Version).GetProperty("Build"));
+                return PropertyBasedExportDefinition.CreateDefinition("C", "D", typeof(Version).GetProperty("Build"));
             }
 
             protected override PropertyBasedExportDefinition FirstInstance
@@ -115,11 +115,11 @@ namespace Nuclei.Plugins.Core
             private readonly IEnumerable<PropertyBasedExportDefinition> _distinctInstances
                 = new List<PropertyBasedExportDefinition>
                      {
-                        PropertyBasedExportDefinition.CreateDefinition("A", typeof(string).GetProperty("Length")),
-                        PropertyBasedExportDefinition.CreateDefinition("B", typeof(Version).GetProperty("Build")),
-                        PropertyBasedExportDefinition.CreateDefinition("C", typeof(List<int>).GetProperty("Count")),
-                        PropertyBasedExportDefinition.CreateDefinition("D", typeof(TimeZone).GetProperty("StandardName")),
-                        PropertyBasedExportDefinition.CreateDefinition("E", typeof(TimeZoneInfo).GetProperty("StandardName")),
+                        PropertyBasedExportDefinition.CreateDefinition("A", "B", typeof(string).GetProperty("Length")),
+                        PropertyBasedExportDefinition.CreateDefinition("C", "D", typeof(Version).GetProperty("Build")),
+                        PropertyBasedExportDefinition.CreateDefinition("E", "F", typeof(List<int>).GetProperty("Count")),
+                        PropertyBasedExportDefinition.CreateDefinition("G", "H", typeof(TimeZone).GetProperty("StandardName")),
+                        PropertyBasedExportDefinition.CreateDefinition("I", "J", typeof(TimeZoneInfo).GetProperty("StandardName")),
                      };
 
             protected override IEnumerable<int> GetHashCodes()

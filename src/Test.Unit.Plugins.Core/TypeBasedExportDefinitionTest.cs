@@ -54,7 +54,7 @@ namespace Nuclei.Plugins.Core
         [Test]
         public void RoundTripSerialize()
         {
-            var original = TypeBasedExportDefinition.CreateDefinition("A", typeof(string));
+            var original = TypeBasedExportDefinition.CreateDefinition("A", "B", typeof(string));
             var copy = AssertExtensions.RoundTripSerialize(original);
 
             Assert.AreEqual(original, copy);
@@ -63,7 +63,7 @@ namespace Nuclei.Plugins.Core
         [Test]
         public void CreateWithClass()
         {
-            var obj = TypeBasedExportDefinition.CreateDefinition("A", typeof(List<int>));
+            var obj = TypeBasedExportDefinition.CreateDefinition("A", "B", typeof(List<int>));
 
             Assert.AreEqual("A", obj.ContractName);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(List<int>)), obj.DeclaringType);
@@ -73,7 +73,7 @@ namespace Nuclei.Plugins.Core
         public void CreateWithNestedClass()
         {
             var type = typeof(Nested<,>);
-            var obj = TypeBasedExportDefinition.CreateDefinition("A", type);
+            var obj = TypeBasedExportDefinition.CreateDefinition("A", "B", type);
 
             Assert.AreEqual("A", obj.ContractName);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Nested<,>)), obj.DeclaringType);
@@ -82,7 +82,7 @@ namespace Nuclei.Plugins.Core
         [Test]
         public void CreateWithInterface()
         {
-            var obj = TypeBasedExportDefinition.CreateDefinition("A", typeof(IEnumerable<>));
+            var obj = TypeBasedExportDefinition.CreateDefinition("A", "B", typeof(IEnumerable<>));
 
             Assert.AreEqual("A", obj.ContractName);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<>)), obj.DeclaringType);
@@ -90,18 +90,18 @@ namespace Nuclei.Plugins.Core
 
         private sealed class TypeBasedExportDefinitionEqualityContractVerifier : EqualityContractVerifier<TypeBasedExportDefinition>
         {
-            private readonly TypeBasedExportDefinition _first = TypeBasedExportDefinition.CreateDefinition("A", typeof(string));
+            private readonly TypeBasedExportDefinition _first = TypeBasedExportDefinition.CreateDefinition("A", "B", typeof(string));
 
-            private readonly TypeBasedExportDefinition _second = TypeBasedExportDefinition.CreateDefinition("B", typeof(object));
+            private readonly TypeBasedExportDefinition _second = TypeBasedExportDefinition.CreateDefinition("C", "D", typeof(object));
 
             protected override TypeBasedExportDefinition Copy(TypeBasedExportDefinition original)
             {
                 if (original.ContractName.Equals("A"))
                 {
-                    return TypeBasedExportDefinition.CreateDefinition("A", typeof(string));
+                    return TypeBasedExportDefinition.CreateDefinition("A", "B", typeof(string));
                 }
 
-                return TypeBasedExportDefinition.CreateDefinition("B", typeof(object));
+                return TypeBasedExportDefinition.CreateDefinition("C", "D", typeof(object));
             }
 
             protected override TypeBasedExportDefinition FirstInstance
@@ -134,14 +134,14 @@ namespace Nuclei.Plugins.Core
             private readonly IEnumerable<TypeBasedExportDefinition> _distinctInstances
                 = new List<TypeBasedExportDefinition>
                      {
-                        TypeBasedExportDefinition.CreateDefinition("A", typeof(string)),
-                        TypeBasedExportDefinition.CreateDefinition("B", typeof(object)),
-                        TypeBasedExportDefinition.CreateDefinition("C", typeof(int)),
-                        TypeBasedExportDefinition.CreateDefinition("D", typeof(IComparable)),
-                        TypeBasedExportDefinition.CreateDefinition("E", typeof(IComparable<>)),
-                        TypeBasedExportDefinition.CreateDefinition("F", typeof(List<int>)),
-                        TypeBasedExportDefinition.CreateDefinition("G", typeof(double)),
-                        TypeBasedExportDefinition.CreateDefinition("H", typeof(void)),
+                        TypeBasedExportDefinition.CreateDefinition("A", "B", typeof(string)),
+                        TypeBasedExportDefinition.CreateDefinition("C", "D", typeof(object)),
+                        TypeBasedExportDefinition.CreateDefinition("E", "F", typeof(int)),
+                        TypeBasedExportDefinition.CreateDefinition("G", "H", typeof(IComparable)),
+                        TypeBasedExportDefinition.CreateDefinition("I", "J", typeof(IComparable<>)),
+                        TypeBasedExportDefinition.CreateDefinition("K", "L", typeof(List<int>)),
+                        TypeBasedExportDefinition.CreateDefinition("M", "N", typeof(double)),
+                        TypeBasedExportDefinition.CreateDefinition("O", "P", typeof(void)),
                      };
 
             protected override IEnumerable<int> GetHashCodes()

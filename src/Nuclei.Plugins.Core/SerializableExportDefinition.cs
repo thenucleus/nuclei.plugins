@@ -32,14 +32,23 @@ namespace Nuclei.Plugins.Core
         private readonly TypeIdentity _declaringType;
 
         /// <summary>
+        /// The type identity of the export type as provided by MEF.
+        /// </summary>
+        private readonly string _exportedTypeIdentityForMef;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SerializableExportDefinition"/> class.
         /// </summary>
         /// <param name="contractName">The contract name that is used to identify the current export.</param>
+        /// <param name="exportedTypeIdentityForMef">The type identity that is exported as provided by MEF.</param>
         /// <param name="declaringType">The type that declares the current export.</param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="declaringType"/> is <see langword="null" />.
         /// </exception>
-        protected SerializableExportDefinition(string contractName, TypeIdentity declaringType)
+        protected SerializableExportDefinition(
+            string contractName,
+            string exportedTypeIdentityForMef,
+            TypeIdentity declaringType)
         {
             if (declaringType == null)
             {
@@ -48,6 +57,7 @@ namespace Nuclei.Plugins.Core
 
             _contractName = contractName;
             _declaringType = declaringType;
+            _exportedTypeIdentityForMef = exportedTypeIdentityForMef;
         }
 
         /// <summary>
@@ -99,6 +109,17 @@ namespace Nuclei.Plugins.Core
             "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         public abstract override bool Equals(object obj);
+
+        /// <summary>
+        /// Gets the exported type identity as provided by MEF
+        /// </summary>
+        public string ExportTypeIdentityForMef
+        {
+            get
+            {
+                return _exportedTypeIdentityForMef;
+            }
+        }
 
         /// <summary>
         /// Returns a hash code for this instance.
