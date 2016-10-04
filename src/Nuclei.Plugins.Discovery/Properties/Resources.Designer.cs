@@ -70,6 +70,24 @@ namespace Nuclei.Plugins.Discovery.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The method marked with the ExportAttribute is not a valid export method..
+        /// </summary>
+        internal static string Exceptions_Messages_InvalidExportMethod {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_InvalidExportMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected an ImportAttribute or ImportManyAttribute to be attached to the given import part..
+        /// </summary>
+        internal static string Exceptions_Messages_MissingImportAttribute {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_MissingImportAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The parameter should not be an empty string..
         /// </summary>
         internal static string Exceptions_Messages_ParameterShouldNotBeAnEmptyString {
@@ -111,6 +129,24 @@ namespace Nuclei.Plugins.Discovery.Properties {
         internal static string Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException {
             get {
                 return ResourceManager.GetString("Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The given export with contract name {0} on {1} is not valid. Error was: {2}.
+        /// </summary>
+        internal static string Plugins_LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException {
+            get {
+                return ResourceManager.GetString("Plugins_LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The given import with contract name {0} on {1} is not valid. Error was: {2}.
+        /// </summary>
+        internal static string Plugins_LogMessage_Scanner_InvalidImport_WithContractNameAndTypeAndException {
+            get {
+                return ResourceManager.GetString("Plugins_LogMessage_Scanner_InvalidImport_WithContractNameAndTypeAndException", resourceCulture);
             }
         }
         

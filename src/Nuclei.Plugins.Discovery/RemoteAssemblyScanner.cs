@@ -17,7 +17,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Discovery.Properties;
@@ -55,14 +54,28 @@ namespace Nuclei.Plugins.Discovery
             LazyMemberInfo memberInfo,
             Func<Type, TypeIdentity> identityGenerator)
         {
+            if (memberInfo.GetAccessors().Count() != 1)
             {
-                Debug.Assert(memberInfo.GetAccessors().Count() == 1, "Only expecting one accessor for a method export.");
-                Debug.Assert(memberInfo.GetAccessors().First() is MethodInfo, "Expecting the method export to be an MethodInfo object.");
+                throw new InvalidExportMethodException();
+            }
+
+            if (!(memberInfo.GetAccessors().First() is MethodInfo))
+            {
+                throw new InvalidExportMethodException();
+            }
+
+            var methodInfo = memberInfo.GetAccessors().First() as MethodInfo;
+
+            var exportedMefType = ExtractExportedMefType(export);
+            if (string.IsNullOrEmpty(exportedMefType))
+            {
+                exportedMefType = methodInfo.ReturnType.FullName;
             }
 
             return MethodBasedExportDefinition.CreateDefinition(
                 export.ContractName,
-                memberInfo.GetAccessors().First() as MethodInfo,
+                exportedMefType,
+                methodInfo,
                 identityGenerator);
         }
 
@@ -78,8 +91,15 @@ namespace Nuclei.Plugins.Discovery
             var name = getMember.Name.Substring("get_".Length);
             var property = getMember.DeclaringType.GetProperty(name);
 
+            var exportedMefType = ExtractExportedMefType(export);
+            if (string.IsNullOrEmpty(exportedMefType))
+            {
+                exportedMefType = property.PropertyType.FullName;
+            }
+
             return PropertyBasedExportDefinition.CreateDefinition(
                 export.ContractName,
+                exportedMefType,
                 property,
                 identityGenerator);
         }
@@ -128,10 +148,29 @@ namespace Nuclei.Plugins.Discovery
                 Debug.Assert(memberInfo.GetAccessors().First() is Type, "Expecting the export to be a Type.");
             }
 
+            var type = memberInfo.GetAccessors().First() as Type;
+
+            var exportedMefType = ExtractExportedMefType(export);
+            if (string.IsNullOrEmpty(exportedMefType))
+            {
+                exportedMefType = type.FullName;
+            }
+
             return TypeBasedExportDefinition.CreateDefinition(
                 export.ContractName,
-                memberInfo.GetAccessors().First() as Type,
+                exportedMefType,
+                type,
                 identityGenerator);
+        }
+
+        private static string ExtractExportedMefType(ExportDefinition export)
+        {
+            if (export.Metadata.ContainsKey(MefConstants.ExportTypeIdentity))
+            {
+                return (string)export.Metadata[MefConstants.ExportTypeIdentity];
+            }
+
+            return null;
         }
 
         private static Type ExtractRequiredType(IEnumerable<Attribute> memberAttributes, Type memberType)
@@ -142,11 +181,21 @@ namespace Nuclei.Plugins.Discovery
             // delegates the type name is <RETURNTYPE>(<PARAMETERTYPES>), which means we don't know
             // exactly what the type is. Also MEF strips the Lazy<T> type and replaces it with T. Hence
             // we go straight to the actual import attribute and get it from there.
-            var attribute = memberAttributes.OfType<ImportAttribute>().FirstOrDefault();
-            Debug.Assert(attribute != null, "There should be an import attribute.");
+            var importAttribute = memberAttributes.OfType<ImportAttribute>().FirstOrDefault();
+            if (importAttribute != null)
+            {
+                var requiredType = importAttribute.ContractType ?? memberType;
+                return requiredType;
+            }
 
-            var requiredType = attribute.ContractType ?? memberType;
-            return requiredType;
+            var importManyAttribute = memberAttributes.OfType<ImportManyAttribute>().FirstOrDefault();
+            if (importManyAttribute != null)
+            {
+                var requiredType = importManyAttribute.ContractType ?? memberType;
+                return requiredType;
+            }
+
+            throw new MissingImportAttributeException();
         }
 
         /// <summary>
@@ -193,81 +242,132 @@ namespace Nuclei.Plugins.Discovery
             var catalog = new AssemblyCatalog(assembly);
             foreach (var part in catalog.Parts)
             {
+                var type = ReflectionModelServices.GetPartType(part).Value;
+
                 var exports = new List<SerializableExportDefinition>();
                 foreach (var export in part.ExportDefinitions)
                 {
-                    var memberInfo = ReflectionModelServices.GetExportingMember(export);
-                    SerializableExportDefinition exportDefinition = null;
-                    switch (memberInfo.MemberType)
+                    try
                     {
-                        case MemberTypes.Method:
-                            exportDefinition = CreateMethodExport(export, memberInfo, createTypeIdentity);
-                            break;
-                        case MemberTypes.Property:
-                            exportDefinition = CreatePropertyExport(export, memberInfo, createTypeIdentity);
-                            break;
-                        case MemberTypes.NestedType:
-                        case MemberTypes.TypeInfo:
-                            exportDefinition = CreateTypeExport(export, memberInfo, createTypeIdentity);
-                            break;
-                        default:
-                            throw new NotImplementedException();
-                    }
+                        var memberInfo = ReflectionModelServices.GetExportingMember(export);
+                        SerializableExportDefinition exportDefinition = null;
+                        switch (memberInfo.MemberType)
+                        {
+                            case MemberTypes.Method:
+                                exportDefinition = CreateMethodExport(export, memberInfo, createTypeIdentity);
+                                break;
+                            case MemberTypes.Property:
+                                exportDefinition = CreatePropertyExport(export, memberInfo, createTypeIdentity);
+                                break;
+                            case MemberTypes.NestedType:
+                            case MemberTypes.TypeInfo:
+                                exportDefinition = CreateTypeExport(export, memberInfo, createTypeIdentity);
+                                break;
+                            default:
+                                throw new NotImplementedException();
+                        }
 
-                    if (exportDefinition != null)
-                    {
-                        exports.Add(exportDefinition);
-                        _logger.Log(
-                            LevelToLog.Info,
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                "Discovered export: {0}",
-                                exportDefinition));
+                        if (exportDefinition != null)
+                        {
+                            exports.Add(exportDefinition);
+                            _logger.Log(
+                                LevelToLog.Info,
+                                string.Format(
+                                    CultureInfo.InvariantCulture,
+                                    "Discovered export: {0}",
+                                    exportDefinition));
+                        }
+                        else
+                        {
+                            _logger.Log(
+                                LevelToLog.Warn,
+                                string.Format(
+                                    CultureInfo.InvariantCulture,
+                                    "Unable to process export: {0} on a {1}",
+                                    export.ContractName,
+                                    memberInfo.MemberType));
+                        }
                     }
-                    else
+                    catch (ArgumentException e)
                     {
                         _logger.Log(
-                            LevelToLog.Warn,
+                            LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                "Unable to process export: {0} on a {1}",
+                                Resources.Plugins_LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException,
                                 export.ContractName,
-                                memberInfo.MemberType));
+                                type,
+                                e));
+                    }
+                    catch (InvalidExportMethodException e)
+                    {
+                        _logger.Log(
+                            LevelToLog.Error,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Resources.Plugins_LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException,
+                                export.ContractName,
+                                type,
+                                e));
                     }
                 }
 
                 var imports = new List<SerializableImportDefinition>();
                 foreach (var import in part.ImportDefinitions)
                 {
-                    Debug.Assert(import is ContractBasedImportDefinition, "All import objects should be ContractBasedImportDefinition objects.");
-                    var contractImport = import as ContractBasedImportDefinition;
-
-                    SerializableImportDefinition importDefinition = !ReflectionModelServices.IsImportingParameter(contractImport)
-                        ? CreatePropertyImport(contractImport, createTypeIdentity)
-                        : CreateConstructorParameterImport(contractImport, createTypeIdentity);
-
-                    if (importDefinition != null)
+                    try
                     {
-                        imports.Add(importDefinition);
-                        _logger.Log(
-                            LevelToLog.Info,
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                "Discovered import: {0}",
-                                importDefinition));
+                        Debug.Assert(import is ContractBasedImportDefinition, "All import objects should be ContractBasedImportDefinition objects.");
+                        var contractImport = import as ContractBasedImportDefinition;
+
+                        SerializableImportDefinition importDefinition = !ReflectionModelServices.IsImportingParameter(contractImport)
+                            ? CreatePropertyImport(contractImport, createTypeIdentity)
+                            : CreateConstructorParameterImport(contractImport, createTypeIdentity);
+
+                        if (importDefinition != null)
+                        {
+                            imports.Add(importDefinition);
+                            _logger.Log(
+                                LevelToLog.Info,
+                                string.Format(
+                                    CultureInfo.InvariantCulture,
+                                    "Discovered import: {0}",
+                                    importDefinition));
+                        }
+                        else
+                        {
+                            _logger.Log(
+                                LevelToLog.Warn,
+                                string.Format(
+                                    CultureInfo.InvariantCulture,
+                                    "Unable to process import: {0}",
+                                    import.ContractName));
+                        }
                     }
-                    else
+                    catch (ArgumentException e)
                     {
                         _logger.Log(
-                            LevelToLog.Warn,
+                            LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                "Unable to process import: {0}",
-                                import.ContractName));
+                                Resources.Plugins_LogMessage_Scanner_InvalidImport_WithContractNameAndTypeAndException,
+                                import.ContractName,
+                                type,
+                                e));
+                    }
+                    catch (MissingImportAttributeException e)
+                    {
+                        _logger.Log(
+                            LevelToLog.Error,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Resources.Plugins_LogMessage_Scanner_InvalidImport_WithContractNameAndTypeAndException,
+                                import.ContractName,
+                                type,
+                                e));
                     }
                 }
 
-                var type = ReflectionModelServices.GetPartType(part).Value;
                 yield return new PartDefinition
                     {
                         Identity = createTypeIdentity(type),

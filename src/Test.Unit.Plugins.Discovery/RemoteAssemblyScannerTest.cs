@@ -269,7 +269,7 @@ namespace Nuclei.Plugins.Discovery
 
             var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
             Assert.IsNotNull(import);
-            Assert.AreEqual("ContractName", import.ContractName);
+            Assert.AreEqual("System.Collections.Generic.IEnumerable(Test.Mocks.IExportingInterface)", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<IExportingInterface>)), import.RequiredTypeIdentity);
             Assert.AreEqual(
@@ -282,6 +282,70 @@ namespace Nuclei.Plugins.Discovery
                         new[]
                         {
                             typeof(IEnumerable<IExportingInterface>)
+                        }).GetParameters().First(),
+                    t => TypeIdentity.CreateDefinition(t)),
+                import.Parameter);
+        }
+
+        [Test]
+        public void ImportOnConstructorWithEnumerableOfFunc()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithCollectionOfFunc));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.AreEqual(1, plugin.Imports.Count());
+
+            var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual("Test.Mocks.IExportingInterface()", import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<Func<IExportingInterface>>)), import.RequiredTypeIdentity);
+            Assert.AreEqual(
+                ConstructorDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithCollectionOfFunc).GetConstructor(new[] { typeof(IEnumerable<Func<IExportingInterface>>) })),
+                import.Constructor);
+            Assert.AreEqual(
+                ParameterDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithCollectionOfFunc).GetConstructor(
+                        new[]
+                        {
+                            typeof(IEnumerable<Func<IExportingInterface>>)
+                        }).GetParameters().First(),
+                    t => TypeIdentity.CreateDefinition(t)),
+                import.Parameter);
+        }
+
+        [Test]
+        public void ImportOnConstructorWithEnumerableOfLazy()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithCollectionOfLazy));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.AreEqual(1, plugin.Imports.Count());
+
+            var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<Lazy<IExportingInterface>>)), import.RequiredTypeIdentity);
+            Assert.AreEqual(
+                ConstructorDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithCollectionOfLazy).GetConstructor(new[] { typeof(IEnumerable<Lazy<IExportingInterface>>) })),
+                import.Constructor);
+            Assert.AreEqual(
+                ParameterDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithCollectionOfLazy).GetConstructor(
+                        new[]
+                        {
+                            typeof(IEnumerable<Lazy<IExportingInterface>>)
                         }).GetParameters().First(),
                     t => TypeIdentity.CreateDefinition(t)),
                 import.Parameter);
@@ -301,7 +365,7 @@ namespace Nuclei.Plugins.Discovery
 
             var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
             Assert.IsNotNull(import);
-            Assert.AreEqual("ContractName", import.ContractName);
+            Assert.AreEqual("Test.Mocks.IExportingInterface()", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Func<IExportingInterface>)), import.RequiredTypeIdentity);
             Assert.AreEqual(
@@ -311,6 +375,34 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual(
                 ParameterDefinition.CreateDefinition(
                     typeof(ImportOnConstructorWithFunc).GetConstructor(new[] { typeof(Func<IExportingInterface>) }).GetParameters().First(),
+                    t => TypeIdentity.CreateDefinition(t)),
+                import.Parameter);
+        }
+
+        [Test]
+        public void ImportOnConstructorWithImportMany()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithMany));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.AreEqual(1, plugin.Imports.Count());
+
+            var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.AreEqual(
+                ConstructorDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithMany).GetConstructor(new[] { typeof(IEnumerable<IExportingInterface>) })),
+                import.Constructor);
+            Assert.AreEqual(
+                ParameterDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithMany).GetConstructor(new[] { typeof(IEnumerable<IExportingInterface>) }).GetParameters().First(),
                     t => TypeIdentity.CreateDefinition(t)),
                 import.Parameter);
         }
@@ -329,7 +421,7 @@ namespace Nuclei.Plugins.Discovery
 
             var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
             Assert.IsNotNull(import);
-            Assert.AreEqual("ContractName", import.ContractName);
+            Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Lazy<IExportingInterface>)), import.RequiredTypeIdentity);
             Assert.AreEqual(
@@ -436,12 +528,58 @@ namespace Nuclei.Plugins.Discovery
 
             var import = plugin.Imports.First() as PropertyBasedImportDefinition;
             Assert.IsNotNull(import);
-            Assert.AreEqual("ContractName", import.ContractName);
+            Assert.AreEqual("System.Collections.Generic.IEnumerable(Test.Mocks.IExportingInterface)", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<IExportingInterface>)), import.RequiredTypeIdentity);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
                     typeof(ImportOnPropertyWithEnumerable).GetProperty("ImportingProperty")),
+                import.Property);
+        }
+
+        [Test]
+        public void ImportOnPropertyWithEnumerableOfFunc()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithCollectionOfFunc));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.AreEqual(1, plugin.Imports.Count());
+
+            var import = plugin.Imports.First() as PropertyBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual("Test.Mocks.IExportingInterface()", import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<Func<IExportingInterface>>)), import.RequiredTypeIdentity);
+            Assert.AreEqual(
+                PropertyDefinition.CreateDefinition(
+                    typeof(ImportOnPropertyWithCollectionOfFunc).GetProperty("ImportingProperty")),
+                import.Property);
+        }
+
+        [Test]
+        public void ImportOnPropertyWithEnumerableOfLazy()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithCollectionOfLazy));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.AreEqual(1, plugin.Imports.Count());
+
+            var import = plugin.Imports.First() as PropertyBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<Lazy<IExportingInterface>>)), import.RequiredTypeIdentity);
+            Assert.AreEqual(
+                PropertyDefinition.CreateDefinition(
+                    typeof(ImportOnPropertyWithCollectionOfLazy).GetProperty("ImportingProperty")),
                 import.Property);
         }
 
@@ -459,12 +597,35 @@ namespace Nuclei.Plugins.Discovery
 
             var import = plugin.Imports.First() as PropertyBasedImportDefinition;
             Assert.IsNotNull(import);
-            Assert.AreEqual("ContractName", import.ContractName);
+            Assert.AreEqual("Test.Mocks.IExportingInterface()", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Func<IExportingInterface>)), import.RequiredTypeIdentity);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
                     typeof(ImportOnPropertyWithFunc).GetProperty("ImportingProperty")),
+                import.Property);
+        }
+
+        [Test]
+        public void ImportOnPropertyWithImportMany()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithEnumerableFromMany));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.AreEqual(1, plugin.Imports.Count());
+
+            var import = plugin.Imports.First() as PropertyBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.AreEqual(
+                PropertyDefinition.CreateDefinition(
+                    typeof(ImportOnPropertyWithEnumerableFromMany).GetProperty("ImportingProperty")),
                 import.Property);
         }
 
@@ -482,7 +643,7 @@ namespace Nuclei.Plugins.Discovery
 
             var import = plugin.Imports.First() as PropertyBasedImportDefinition;
             Assert.IsNotNull(import);
-            Assert.AreEqual("ContractName", import.ContractName);
+            Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Lazy<IExportingInterface>)), import.RequiredTypeIdentity);
             Assert.AreEqual(
