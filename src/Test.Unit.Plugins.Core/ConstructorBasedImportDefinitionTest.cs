@@ -59,6 +59,7 @@ namespace Nuclei.Plugins.Core
                 TypeIdentity.CreateDefinition(typeof(char[])),
                 "System.Char[]",
                 ImportCardinality.ExactlyOne,
+                false,
                 CreationPolicy.NonShared,
                 GetConstructorForString().GetParameters().First());
             var copy = AssertExtensions.RoundTripSerialize(original);
@@ -74,6 +75,7 @@ namespace Nuclei.Plugins.Core
                 TypeIdentity.CreateDefinition(typeof(char[])),
                 "System.Char[]",
                 ImportCardinality.ExactlyOne,
+                false,
                 CreationPolicy.NonShared,
                 GetConstructorForString().GetParameters().First());
             var constructor = GetConstructorForString();
@@ -96,6 +98,7 @@ namespace Nuclei.Plugins.Core
                 TypeIdentity.CreateDefinition(typeof(char[])),
                 "System.Char[]",
                 ImportCardinality.ExactlyOne,
+                false,
                 CreationPolicy.NonShared,
                 typeof(string).GetConstructor(
                     new[]
@@ -108,6 +111,7 @@ namespace Nuclei.Plugins.Core
                 TypeIdentity.CreateDefinition(typeof(string)),
                 "System.String",
                 ImportCardinality.ExactlyOne,
+                false,
                 CreationPolicy.NonShared,
                 typeof(Uri).GetConstructor(
                     new[]
@@ -124,6 +128,7 @@ namespace Nuclei.Plugins.Core
                         TypeIdentity.CreateDefinition(typeof(char[])),
                         "System.Char[]",
                         ImportCardinality.ExactlyOne,
+                        false,
                         CreationPolicy.NonShared,
                         typeof(string).GetConstructor(
                             new[]
@@ -137,6 +142,7 @@ namespace Nuclei.Plugins.Core
                     TypeIdentity.CreateDefinition(typeof(string)),
                     "System.String",
                     ImportCardinality.ExactlyOne,
+                    false,
                     CreationPolicy.NonShared,
                     typeof(Uri).GetConstructor(
                         new[]
@@ -180,6 +186,7 @@ namespace Nuclei.Plugins.Core
                             TypeIdentity.CreateDefinition(typeof(char[])),
                             "System.Char[]",
                             ImportCardinality.ExactlyOne,
+                            false,
                             CreationPolicy.NonShared,
                             typeof(string).GetConstructor(
                                 new[]
@@ -191,6 +198,7 @@ namespace Nuclei.Plugins.Core
                             TypeIdentity.CreateDefinition(typeof(string)),
                             "System.String",
                             ImportCardinality.ExactlyOne,
+                            false,
                             CreationPolicy.NonShared,
                             typeof(Uri).GetConstructor(
                                 new[]
@@ -202,6 +210,7 @@ namespace Nuclei.Plugins.Core
                             TypeIdentity.CreateDefinition(typeof(string)),
                             "System.String",
                             ImportCardinality.ExactlyOne,
+                            false,
                             CreationPolicy.NonShared,
                             typeof(Version).GetConstructor(
                                 new[]
@@ -213,6 +222,7 @@ namespace Nuclei.Plugins.Core
                             TypeIdentity.CreateDefinition(typeof(string)),
                             "System.String",
                             ImportCardinality.ExactlyOne,
+                            true,
                             CreationPolicy.NonShared,
                             typeof(NotImplementedException).GetConstructor(
                                 new[]

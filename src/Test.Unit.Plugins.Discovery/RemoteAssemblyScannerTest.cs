@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -244,6 +245,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual(typeof(IExportingInterface).FullName, import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsTrue(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 ConstructorDefinition.CreateDefinition(
                     typeof(ImportOnConstructor).GetConstructor(new[] { typeof(IExportingInterface) })),
@@ -272,6 +276,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("System.Collections.Generic.IEnumerable(Test.Mocks.IExportingInterface)", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsTrue(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 ConstructorDefinition.CreateDefinition(
                     typeof(ImportOnConstructorWithEnumerable).GetConstructor(new[] { typeof(IEnumerable<IExportingInterface>) })),
@@ -304,6 +311,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("Test.Mocks.IExportingInterface()", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<Func<IExportingInterface>>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsTrue(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 ConstructorDefinition.CreateDefinition(
                     typeof(ImportOnConstructorWithCollectionOfFunc).GetConstructor(new[] { typeof(IEnumerable<Func<IExportingInterface>>) })),
@@ -336,6 +346,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<Lazy<IExportingInterface>>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsTrue(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 ConstructorDefinition.CreateDefinition(
                     typeof(ImportOnConstructorWithCollectionOfLazy).GetConstructor(new[] { typeof(IEnumerable<Lazy<IExportingInterface>>) })),
@@ -346,6 +359,41 @@ namespace Nuclei.Plugins.Discovery
                         new[]
                         {
                             typeof(IEnumerable<Lazy<IExportingInterface>>)
+                        }).GetParameters().First(),
+                    t => TypeIdentity.CreateDefinition(t)),
+                import.Parameter);
+        }
+
+        [Test]
+        public void ImportOnConstructorWithExportFactory()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnConstructorWithExportFactory));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.AreEqual(1, plugin.Imports.Count());
+
+            var import = plugin.Imports.First() as ConstructorBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(ExportFactory<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.IsTrue(import.IsExportFactory);
+            Assert.IsTrue(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
+            Assert.AreEqual(
+                ConstructorDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithExportFactory).GetConstructor(new[] { typeof(ExportFactory<IExportingInterface>) })),
+                import.Constructor);
+            Assert.AreEqual(
+                ParameterDefinition.CreateDefinition(
+                    typeof(ImportOnConstructorWithExportFactory).GetConstructor(
+                        new[]
+                        {
+                            typeof(ExportFactory<IExportingInterface>)
                         }).GetParameters().First(),
                     t => TypeIdentity.CreateDefinition(t)),
                 import.Parameter);
@@ -368,6 +416,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("Test.Mocks.IExportingInterface()", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Func<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsTrue(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 ConstructorDefinition.CreateDefinition(
                     typeof(ImportOnConstructorWithFunc).GetConstructor(new[] { typeof(Func<IExportingInterface>) })),
@@ -396,6 +447,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsTrue(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 ConstructorDefinition.CreateDefinition(
                     typeof(ImportOnConstructorWithMany).GetConstructor(new[] { typeof(IEnumerable<IExportingInterface>) })),
@@ -424,6 +478,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Lazy<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsTrue(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 ConstructorDefinition.CreateDefinition(
                     typeof(ImportOnConstructorWithLazy).GetConstructor(new[] { typeof(Lazy<IExportingInterface>) })),
@@ -452,6 +509,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("ImportOnConstructor", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsTrue(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 ConstructorDefinition.CreateDefinition(
                     typeof(ImportOnConstructorWithName).GetConstructor(new[] { typeof(IExportingInterface) })),
@@ -480,6 +540,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual(typeof(IExportingInterface).FullName, import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsTrue(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 ConstructorDefinition.CreateDefinition(
                     typeof(ImportOnConstructorWithType).GetConstructor(new[] { typeof(IExportingInterface) })),
@@ -508,6 +571,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual(typeof(IExportingInterface).FullName, import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsFalse(import.IsPrerequisite);
+            Assert.IsTrue(import.IsRecomposable);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
                     typeof(ImportOnProperty).GetProperty("ImportingProperty")),
@@ -531,6 +597,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("System.Collections.Generic.IEnumerable(Test.Mocks.IExportingInterface)", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsFalse(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
                     typeof(ImportOnPropertyWithEnumerable).GetProperty("ImportingProperty")),
@@ -554,6 +623,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("Test.Mocks.IExportingInterface()", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<Func<IExportingInterface>>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsFalse(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
                     typeof(ImportOnPropertyWithCollectionOfFunc).GetProperty("ImportingProperty")),
@@ -577,9 +649,38 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<Lazy<IExportingInterface>>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsFalse(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
                     typeof(ImportOnPropertyWithCollectionOfLazy).GetProperty("ImportingProperty")),
+                import.Property);
+        }
+
+        [Test]
+        public void ImportOnPropertyWithExportFactory()
+        {
+            var id = TypeIdentity.CreateDefinition(typeof(ImportOnPropertyWithExportFactory));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
+
+            var plugins = _parts.Where(p => p.Identity.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First();
+            Assert.AreEqual(1, plugin.Imports.Count());
+
+            var import = plugin.Imports.First() as PropertyBasedImportDefinition;
+            Assert.IsNotNull(import);
+            Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
+            Assert.AreEqual(id, import.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(ExportFactory<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.IsTrue(import.IsExportFactory);
+            Assert.IsFalse(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
+            Assert.AreEqual(
+                PropertyDefinition.CreateDefinition(
+                    typeof(ImportOnPropertyWithExportFactory).GetProperty("ImportingProperty")),
                 import.Property);
         }
 
@@ -600,6 +701,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("Test.Mocks.IExportingInterface()", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Func<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsFalse(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
                     typeof(ImportOnPropertyWithFunc).GetProperty("ImportingProperty")),
@@ -623,6 +727,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsFalse(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
                     typeof(ImportOnPropertyWithEnumerableFromMany).GetProperty("ImportingProperty")),
@@ -646,6 +753,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Lazy<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsFalse(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
                     typeof(ImportOnPropertyWithLazy).GetProperty("ImportingProperty")),
@@ -669,6 +779,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual("ImportOnProperty", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsFalse(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
                     typeof(ImportOnPropertyWithName).GetProperty("ImportingProperty")),
@@ -692,6 +805,9 @@ namespace Nuclei.Plugins.Discovery
             Assert.AreEqual(typeof(IExportingInterface).FullName, import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            Assert.IsFalse(import.IsExportFactory);
+            Assert.IsFalse(import.IsPrerequisite);
+            Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
                 PropertyDefinition.CreateDefinition(
                     typeof(ImportOnPropertyWithType).GetProperty("ImportingProperty")),

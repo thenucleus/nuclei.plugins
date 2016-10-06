@@ -60,6 +60,7 @@ namespace Nuclei.Plugins.Core
                 "System.Int32",
                 ImportCardinality.ExactlyOne,
                 true,
+                false,
                 CreationPolicy.NonShared,
                 typeof(string).GetProperty("Length"));
             var copy = AssertExtensions.RoundTripSerialize(original);
@@ -76,6 +77,7 @@ namespace Nuclei.Plugins.Core
                 "System.Int32",
                 ImportCardinality.ExactlyOne,
                 true,
+                false,
                 CreationPolicy.NonShared,
                 typeof(string).GetProperty("Length"));
             var property = GetPropertyForString();
@@ -98,6 +100,7 @@ namespace Nuclei.Plugins.Core
                 "System.Int32",
                 ImportCardinality.ExactlyOne,
                 true,
+                false,
                 CreationPolicy.NonShared,
                 typeof(string).GetProperty("Length"));
 
@@ -107,6 +110,7 @@ namespace Nuclei.Plugins.Core
                 "System.Int32",
                 ImportCardinality.ExactlyOne,
                 true,
+                false,
                 CreationPolicy.NonShared,
                 typeof(Version).GetProperty("Build"));
 
@@ -120,6 +124,7 @@ namespace Nuclei.Plugins.Core
                         "System.Int32",
                         ImportCardinality.ExactlyOne,
                         true,
+                        false,
                         CreationPolicy.NonShared,
                         typeof(string).GetProperty("Length"));
                 }
@@ -130,6 +135,7 @@ namespace Nuclei.Plugins.Core
                     "System.Int32",
                     ImportCardinality.ExactlyOne,
                     true,
+                    false,
                     CreationPolicy.NonShared,
                     typeof(Version).GetProperty("Build"));
             }
@@ -170,6 +176,7 @@ namespace Nuclei.Plugins.Core
                             "System.Int32",
                             ImportCardinality.ExactlyOne,
                             true,
+                            false,
                             CreationPolicy.NonShared,
                             typeof(string).GetProperty("Length")),
                         PropertyBasedImportDefinition.CreateDefinition(
@@ -178,6 +185,7 @@ namespace Nuclei.Plugins.Core
                             "System.Int32",
                             ImportCardinality.ExactlyOne,
                             true,
+                            false,
                             CreationPolicy.NonShared,
                             typeof(Version).GetProperty("Build")),
                         PropertyBasedImportDefinition.CreateDefinition(
@@ -186,6 +194,7 @@ namespace Nuclei.Plugins.Core
                             "System.Int32",
                             ImportCardinality.ExactlyOne,
                             true,
+                            false,
                             CreationPolicy.NonShared,
                             typeof(List<int>).GetProperty("Count")),
                         PropertyBasedImportDefinition.CreateDefinition(
@@ -194,6 +203,7 @@ namespace Nuclei.Plugins.Core
                             "System.String",
                             ImportCardinality.ExactlyOne,
                             true,
+                            false,
                             CreationPolicy.NonShared,
                             typeof(TimeZone).GetProperty("StandardName")),
                         PropertyBasedImportDefinition.CreateDefinition(
@@ -202,6 +212,7 @@ namespace Nuclei.Plugins.Core
                             "System.String",
                             ImportCardinality.ExactlyOne,
                             true,
+                            false,
                             CreationPolicy.NonShared,
                             typeof(TimeZoneInfo).GetProperty("StandardName")),
                      };

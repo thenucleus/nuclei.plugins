@@ -135,6 +135,31 @@ namespace Nuclei.Plugins.Composition.Mef
         }
 
         [Test]
+        public void ComposeWithImportingConstructorWithExportFactory()
+        {
+            var repository = CreateRepository(
+                typeof(ExportOnPropertyWithType),
+                typeof(ImportOnConstructorWithExportFactory));
+            var catalog = new LazyLoadCatalog(repository);
+            var container = new CompositionContainer(catalog);
+
+            var obj = new ImportGetterForImportOnConstructorWithExportFactory();
+            container.ComposeParts(obj);
+
+            Assert.IsNotNull(obj.Import);
+            var importer = obj.Import;
+
+            Assert.IsNotNull(importer.Import);
+
+            using (var instance = importer.Import.CreateExport())
+            {
+                Assert.IsNotNull(instance);
+                Assert.IsNotNull(instance.Value);
+                Assert.AreEqual(typeof(MockExportingInterfaceImplementation), instance.Value.GetType());
+            }
+        }
+
+        [Test]
         public void ComposeWithImportingConstructorWithFunc()
         {
             var repository = CreateRepository(
@@ -294,6 +319,25 @@ namespace Nuclei.Plugins.Composition.Mef
             var unrolledList = list.Select(l => l.Value.GetType()).ToList();
             Assert.Contains(typeof(MockExportingInterfaceImplementation), unrolledList);
             Assert.Contains(typeof(MockChildExportingInterfaceImplementation), unrolledList);
+        }
+
+        [Test]
+        public void ComposeWithImportingPropertyWithExportFactory()
+        {
+            var repository = CreateRepository(typeof(ExportOnPropertyWithType));
+            var catalog = new LazyLoadCatalog(repository);
+            var container = new CompositionContainer(catalog);
+
+            var obj = new ImportOnPropertyWithExportFactory();
+            container.ComposeParts(obj);
+
+            Assert.IsNotNull(obj.ImportingProperty);
+            using (var instance = obj.ImportingProperty.CreateExport())
+            {
+                Assert.IsNotNull(instance);
+                Assert.IsNotNull(instance.Value);
+                Assert.AreEqual(typeof(MockExportingInterfaceImplementation), instance.Value.GetType());
+            }
         }
 
         [Test]
@@ -460,6 +504,20 @@ namespace Nuclei.Plugins.Composition.Mef
         {
             [Import]
             public ImportOnConstructorWithCollectionOfLazy Import
+            {
+                get;
+                set;
+            }
+        }
+
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1034:NestedTypesShouldNotBeVisible",
+            Justification = "Used to get the import type that use a constructor import.")]
+        public sealed class ImportGetterForImportOnConstructorWithExportFactory
+        {
+            [Import]
+            public ImportOnConstructorWithExportFactory Import
             {
                 get;
                 set;
