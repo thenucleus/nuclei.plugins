@@ -85,6 +85,10 @@ namespace Nuclei.Plugins.Core
         /// <param name="cardinality">
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
+        /// <param name="isExportFactory">
+        ///     <see langword="true" /> to specify that the import definition requires an <see cref="ExportFactory{T}"/> or
+        ///     <see cref="ExportFactory{T, TMetadata}"/> instance; otherwise, <see langword="false" />.
+        /// </param>
         /// <param name="creationPolicy">
         ///     A value that indicates that the importer requires a specific creation policy for the exports used to satisfy this import.
         /// </param>
@@ -102,6 +106,7 @@ namespace Nuclei.Plugins.Core
             TypeIdentity requiredTypeIdentity,
             string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
+            bool isExportFactory,
             CreationPolicy creationPolicy,
             ParameterInfo parameter,
             Func<Type, TypeIdentity> identityGenerator)
@@ -121,6 +126,7 @@ namespace Nuclei.Plugins.Core
                 requiredTypeIdentity,
                 requiredTypeIdentityForMef,
                 cardinality,
+                isExportFactory,
                 creationPolicy,
                 identityGenerator(parameter.Member.DeclaringType),
                 ConstructorDefinition.CreateDefinition(parameter.Member as ConstructorInfo, identityGenerator),
@@ -137,6 +143,10 @@ namespace Nuclei.Plugins.Core
         /// <param name="cardinality">
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
+        /// <param name="isExportFactory">
+        ///     <see langword="true" /> to specify that the import definition requires an <see cref="ExportFactory{T}"/> or
+        ///     <see cref="ExportFactory{T, TMetadata}"/> instance; otherwise, <see langword="false" />.
+        /// </param>
         /// <param name="creationPolicy">
         ///     A value that indicates that the importer requires a specific creation policy for the exports used to satisfy this import.
         /// </param>
@@ -150,6 +160,7 @@ namespace Nuclei.Plugins.Core
             TypeIdentity requiredTypeIdentity,
             string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
+            bool isExportFactory,
             CreationPolicy creationPolicy,
             ParameterInfo parameter)
         {
@@ -158,6 +169,7 @@ namespace Nuclei.Plugins.Core
                 requiredTypeIdentity,
                 requiredTypeIdentityForMef,
                 cardinality,
+                isExportFactory,
                 creationPolicy,
                 parameter,
                 t => TypeIdentity.CreateDefinition(t));
@@ -182,6 +194,10 @@ namespace Nuclei.Plugins.Core
         /// <param name="cardinality">
         ///     One of the enumeration values that indicates the cardinality of the export object required by the import definition.
         /// </param>
+        /// <param name="isExportFactory">
+        ///     <see langword="true" /> to specify that the import definition requires an <see cref="ExportFactory{T}"/> or
+        ///     <see cref="ExportFactory{T, TMetadata}"/> instance; otherwise, <see langword="false" />.
+        /// </param>
         /// <param name="creationPolicy">
         ///     A value that indicates that the importer requires a specific creation policy for the exports used to satisfy this import.
         /// </param>
@@ -193,6 +209,7 @@ namespace Nuclei.Plugins.Core
             TypeIdentity requiredTypeIdentity,
             string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
+            bool isExportFactory,
             CreationPolicy creationPolicy,
             TypeIdentity declaringType,
             ConstructorDefinition constructor,
@@ -204,6 +221,7 @@ namespace Nuclei.Plugins.Core
                 cardinality,
                 false,
                 true,
+                isExportFactory,
                 creationPolicy,
                 declaringType)
         {

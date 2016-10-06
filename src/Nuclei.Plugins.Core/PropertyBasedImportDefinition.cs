@@ -88,6 +88,10 @@ namespace Nuclei.Plugins.Core
         ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts;
         ///     otherwise, <see langword="false" />.
         /// </param>
+        /// <param name="isExportFactory">
+        ///     <see langword="true" /> to specify that the import definition requires an <see cref="ExportFactory{T}"/> or
+        ///     <see cref="ExportFactory{T, TMetadata}"/> instance; otherwise, <see langword="false" />.
+        /// </param>
         /// <param name="creationPolicy">
         ///     A value that indicates that the importer requires a specific creation policy for the exports used to satisfy this import.
         /// </param>
@@ -107,6 +111,7 @@ namespace Nuclei.Plugins.Core
             string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
             bool isRecomposable,
+            bool isExportFactory,
             CreationPolicy creationPolicy,
             PropertyInfo property)
         {
@@ -116,6 +121,7 @@ namespace Nuclei.Plugins.Core
                 requiredTypeIdentityForMef,
                 cardinality,
                 isRecomposable,
+                isExportFactory,
                 creationPolicy,
                 property,
                 t => TypeIdentity.CreateDefinition(t));
@@ -134,6 +140,10 @@ namespace Nuclei.Plugins.Core
         /// <param name="isRecomposable">
         ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts;
         ///     otherwise, <see langword="false" />.
+        /// </param>
+        /// <param name="isExportFactory">
+        ///     <see langword="true" /> to specify that the import definition requires an <see cref="ExportFactory{T}"/> or
+        ///     <see cref="ExportFactory{T, TMetadata}"/> instance; otherwise, <see langword="false" />.
         /// </param>
         /// <param name="creationPolicy">
         ///     A value that indicates that the importer requires a specific creation policy for the exports used to satisfy this import.
@@ -158,6 +168,7 @@ namespace Nuclei.Plugins.Core
             string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
             bool isRecomposable,
+            bool isExportFactory,
             CreationPolicy creationPolicy,
             PropertyInfo property,
             Func<Type, TypeIdentity> identityGenerator)
@@ -178,6 +189,7 @@ namespace Nuclei.Plugins.Core
                 requiredTypeIdentityForMef,
                 cardinality,
                 isRecomposable,
+                isExportFactory,
                 creationPolicy,
                 identityGenerator(property.DeclaringType),
                 PropertyDefinition.CreateDefinition(property, identityGenerator));
@@ -201,6 +213,10 @@ namespace Nuclei.Plugins.Core
         ///     <see langword="true" /> to specify that the import definition can be satisfied multiple times throughout the lifetime of a parts;
         ///     otherwise, <see langword="false" />.
         /// </param>
+        /// <param name="isExportFactory">
+        ///     <see langword="true" /> to specify that the import definition requires an <see cref="ExportFactory{T}"/> or
+        ///     <see cref="ExportFactory{T, TMetadata}"/> instance; otherwise, <see langword="false" />.
+        /// </param>
         /// <param name="creationPolicy">
         ///     A value that indicates that the importer requires a specific creation policy for the exports used to satisfy this import.
         /// </param>
@@ -215,6 +231,7 @@ namespace Nuclei.Plugins.Core
             string requiredTypeIdentityForMef,
             ImportCardinality cardinality,
             bool isRecomposable,
+            bool isExportFactory,
             CreationPolicy creationPolicy,
             TypeIdentity declaringType,
             PropertyDefinition property)
@@ -225,6 +242,7 @@ namespace Nuclei.Plugins.Core
                 cardinality,
                 isRecomposable,
                 false,
+                isExportFactory,
                 creationPolicy,
                 declaringType)
         {
