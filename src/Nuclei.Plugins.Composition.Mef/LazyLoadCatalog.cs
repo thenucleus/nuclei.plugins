@@ -99,7 +99,7 @@ namespace Nuclei.Plugins.Composition.Mef
                     definition.Cardinality,
                     definition.RequiredCreationPolicy,
                     MetadataServices.EmptyMetadata,
-                    false, // We don't handle ExportFactory<T> at the moment.
+                    definition.IsExportFactory,
                     null);
             }
             else
@@ -132,7 +132,7 @@ namespace Nuclei.Plugins.Composition.Mef
                     definition.IsPrerequisite,
                     definition.RequiredCreationPolicy,
                     MetadataServices.EmptyMetadata,
-                    false, // We don't handle ExportFactory<T> at the moment.
+                    definition.IsExportFactory,
                     null);
             }
         }
