@@ -44,6 +44,11 @@ namespace Nuclei.Plugins.Core
         private readonly TypeIdentity _declaringType;
 
         /// <summary>
+        /// A flag that indicates if the import is an export factory.
+        /// </summary>
+        private readonly bool _isExportFactory;
+
+        /// <summary>
         /// A flag indicating if the import has to be satisfied before the creation of the part.
         /// </summary>
         private readonly bool _isPreRequisite;
@@ -81,6 +86,10 @@ namespace Nuclei.Plugins.Core
         ///     <see langword="true" /> to specify that the import definition is required to be satisfied before a part can start producing exported
         ///     objects; otherwise, <see langword="false" />.
         /// </param>
+        /// <param name="isExportFactory">
+        ///     <see langword="true" /> to specify that the import definition requires an <see cref="ExportFactory{T}"/> or
+        ///     <see cref="ExportFactory{T, TMetadata}"/> instance; otherwise, <see langword="false" />.
+        /// </param>
         /// <param name="creationPolicy">
         ///     A value that indicates that the importer requires a specific creation policy for the exports used to satisfy this import.
         /// </param>
@@ -100,6 +109,7 @@ namespace Nuclei.Plugins.Core
             ImportCardinality cardinality,
             bool isRecomposable,
             bool isPrerequisite,
+            bool isExportFactory,
             CreationPolicy creationPolicy,
             TypeIdentity declaringType)
         {
@@ -112,6 +122,7 @@ namespace Nuclei.Plugins.Core
             _contractName = contractName;
             _creationPolicy = creationPolicy;
             _declaringType = declaringType;
+            _isExportFactory = isExportFactory;
             _isPreRequisite = isPrerequisite;
             _isRecomposable = isRecomposable;
             _requiredTypeIdentity = requiredTypeIdentity;
@@ -186,6 +197,18 @@ namespace Nuclei.Plugins.Core
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public abstract override int GetHashCode();
+
+        /// <summary>
+        /// Gets a value indicating whether the import requires an <see cref="ExportFactory{T}"/> or <see cref="ExportFactory{T, TMetadata}"/>
+        /// instance.
+        /// </summary>
+        public bool IsExportFactory
+        {
+            get
+            {
+                return _isExportFactory;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether the import should be satisfied before parts can be produced.
