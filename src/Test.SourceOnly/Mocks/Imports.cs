@@ -22,6 +22,39 @@ namespace Test.Mocks
         "Microsoft.StyleCop.CSharp.MaintainabilityRules",
         "SA1402:FileMayOnlyContainASingleClass",
         Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
+    public sealed class ImportOnConstructorWithExportFactory
+    {
+        private readonly ExportFactory<IExportingInterface> _import;
+
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1801:ReviewUnusedParameters",
+            MessageId = "input",
+            Justification = "Parameter is used by reflection")]
+        [ImportingConstructor]
+        public ImportOnConstructorWithExportFactory([Import]ExportFactory<IExportingInterface> input)
+        {
+            _import = input;
+        }
+
+        public ExportFactory<IExportingInterface> Import
+        {
+            get
+            {
+                return _import;
+            }
+        }
+    }
+
+    [Export]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
     public sealed class ImportOnConstructorWithName
     {
         private readonly IExportingInterface _import;
@@ -393,6 +426,25 @@ namespace Test.Mocks
         "Microsoft.StyleCop.CSharp.MaintainabilityRules",
         "SA1402:FileMayOnlyContainASingleClass",
         Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
+    public sealed class ImportOnPropertyWithExportFactory
+    {
+        [Import]
+        public ExportFactory<IExportingInterface> ImportingProperty
+        {
+            get;
+            set;
+        }
+    }
+
+    [Export]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
     public sealed class ImportOnPropertyWithImport
     {
         [Import(typeof(IImportingInterface))]
@@ -453,7 +505,7 @@ namespace Test.Mocks
         Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
     public sealed class ImportOnProperty : IImportingInterface
     {
-        [Import]
+        [Import(AllowRecomposition = true)]
         public IExportingInterface ImportingProperty
         {
             get;
