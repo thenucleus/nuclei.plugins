@@ -44,6 +44,7 @@ namespace Nuclei.Plugins.Discovery
                 TypeIdentity.CreateDefinition(requiredType),
                 import.RequiredTypeIdentity,
                 import.Cardinality,
+                ReflectionModelServices.IsExportFactoryImportDefinition(import),
                 import.RequiredCreationPolicy,
                 parameterInfo.Value,
                 identityGenerator);
@@ -133,6 +134,7 @@ namespace Nuclei.Plugins.Discovery
                 import.RequiredTypeIdentity,
                 import.Cardinality,
                 import.IsRecomposable,
+                ReflectionModelServices.IsExportFactoryImportDefinition(import),
                 import.RequiredCreationPolicy,
                 property,
                 identityGenerator);
