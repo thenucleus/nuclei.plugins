@@ -39,12 +39,18 @@ namespace Nuclei.Plugins.Discovery
                 return null;
             }
 
+            var isExportFactory = ReflectionModelServices.IsExportFactoryImportDefinition(import);
+            if (isExportFactory)
+            {
+                import = ReflectionModelServices.GetExportFactoryProductImportDefinition(import);
+            }
+
             return ConstructorBasedImportDefinition.CreateDefinition(
                 import.ContractName,
                 TypeIdentity.CreateDefinition(requiredType),
                 import.RequiredTypeIdentity,
                 import.Cardinality,
-                ReflectionModelServices.IsExportFactoryImportDefinition(import),
+                isExportFactory,
                 import.RequiredCreationPolicy,
                 parameterInfo.Value,
                 identityGenerator);
@@ -128,13 +134,19 @@ namespace Nuclei.Plugins.Discovery
                 return null;
             }
 
+            var isExportFactory = ReflectionModelServices.IsExportFactoryImportDefinition(import);
+            if (isExportFactory)
+            {
+                import = ReflectionModelServices.GetExportFactoryProductImportDefinition(import);
+            }
+
             return PropertyBasedImportDefinition.CreateDefinition(
                 import.ContractName,
                 TypeIdentity.CreateDefinition(requiredType),
                 import.RequiredTypeIdentity,
                 import.Cardinality,
                 import.IsRecomposable,
-                ReflectionModelServices.IsExportFactoryImportDefinition(import),
+                isExportFactory,
                 import.RequiredCreationPolicy,
                 property,
                 identityGenerator);

@@ -380,7 +380,7 @@ namespace Nuclei.Plugins.Discovery
             Assert.IsNotNull(import);
             Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
-            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(ExportFactory<IExportingInterface>)), import.RequiredTypeIdentity);
             Assert.IsTrue(import.IsExportFactory);
             Assert.IsTrue(import.IsPrerequisite);
             Assert.IsFalse(import.IsRecomposable);
@@ -674,8 +674,8 @@ namespace Nuclei.Plugins.Discovery
             Assert.IsNotNull(import);
             Assert.AreEqual("Test.Mocks.IExportingInterface", import.ContractName);
             Assert.AreEqual(id, import.DeclaringType);
-            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IExportingInterface)), import.RequiredTypeIdentity);
-            Assert.IsFalse(import.IsExportFactory);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(ExportFactory<IExportingInterface>)), import.RequiredTypeIdentity);
+            Assert.IsTrue(import.IsExportFactory);
             Assert.IsFalse(import.IsPrerequisite);
             Assert.IsFalse(import.IsRecomposable);
             Assert.AreEqual(
