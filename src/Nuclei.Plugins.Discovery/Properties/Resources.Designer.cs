@@ -79,15 +79,6 @@ namespace Nuclei.Plugins.Discovery.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected an ImportAttribute or ImportManyAttribute to be attached to the given import part..
-        /// </summary>
-        internal static string Exceptions_Messages_MissingImportAttribute {
-            get {
-                return ResourceManager.GetString("Exceptions_Messages_MissingImportAttribute", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The parameter should not be an empty string..
         /// </summary>
         internal static string Exceptions_Messages_ParameterShouldNotBeAnEmptyString {

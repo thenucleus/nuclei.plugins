@@ -32,7 +32,7 @@ namespace Test.Mocks
             MessageId = "input",
             Justification = "Parameter is used by reflection")]
         [ImportingConstructor]
-        public ImportOnConstructorWithExportFactory([Import]ExportFactory<IExportingInterface> input)
+        public ImportOnConstructorWithExportFactory(ExportFactory<IExportingInterface> input)
         {
             _import = input;
         }

@@ -197,7 +197,9 @@ namespace Nuclei.Plugins.Discovery
                 return requiredType;
             }
 
-            throw new MissingImportAttributeException();
+            // Constructors may specify an ImportingConstructorAttribute but no actual ImportAttributes
+            // In that case we just assume we're importing the parameter type.
+            return memberType;
         }
 
         /// <summary>
@@ -347,17 +349,6 @@ namespace Nuclei.Plugins.Discovery
                         }
                     }
                     catch (ArgumentException e)
-                    {
-                        _logger.Log(
-                            LevelToLog.Error,
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidImport_WithContractNameAndTypeAndException,
-                                import.ContractName,
-                                type,
-                                e));
-                    }
-                    catch (MissingImportAttributeException e)
                     {
                         _logger.Log(
                             LevelToLog.Error,

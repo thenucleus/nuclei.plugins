@@ -73,7 +73,6 @@
     <Compile Include="DuplicateContractNameException.cs" />
     <Compile Include="IAssemblyScanner.cs" />
     <Compile Include="InvalidExportMethodException.cs" />
-    <Compile Include="MissingImportAttributeException.cs" />
     <Compile Include="PluginDetector.cs" />
     <Compile Include="PluginDiscoveryConfigurationKeys.cs" />
     <Compile Include="PluginFileOrigin.cs" />
