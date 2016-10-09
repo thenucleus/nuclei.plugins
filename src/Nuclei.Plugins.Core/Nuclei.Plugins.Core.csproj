@@ -71,6 +71,7 @@
     <Compile Include="CannotMapExportToImportException.cs" />
     <Compile Include="ConstructorBasedImportDefinition.cs" />
     <Compile Include="ConstructorDefinition.cs" />
+    <Compile Include="DiscoverableMemberAttribute.cs" />
     <Compile Include="DuplicatePartDefinitionException.cs" />
     <Compile Include="DuplicateTypeDefinitionException.cs" />
     <Compile Include="ExportRegistrationId.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="IPluginRepository.cs" />
     <Compile Include="ISatisfyPluginRequests.cs" />
     <Compile Include="MefConstants.cs" />
+    <Compile Include="MethodBasedDiscoverableMember.cs" />
     <Compile Include="MethodBasedExportDefinition.cs" />
     <Compile Include="MethodDefinition.cs" />
     <Compile Include="ParameterDefinition.cs" />
@@ -92,11 +94,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="PropertyBasedDiscoverableMember.cs" />
     <Compile Include="PropertyBasedExportDefinition.cs" />
     <Compile Include="PropertyBasedImportDefinition.cs" />
     <Compile Include="PropertyDefinition.cs" />
+    <Compile Include="SerializableDiscoverableMemberDefinition.cs" />
     <Compile Include="SerializableExportDefinition.cs" />
     <Compile Include="SerializableImportDefinition.cs" />
+    <Compile Include="TypeBasedDiscoverableMember.cs" />
     <Compile Include="TypeBasedExportDefinition.cs" />
     <Compile Include="TypeDefinition.cs" />
     <Compile Include="TypeExtensions.cs" />
