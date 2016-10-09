@@ -124,6 +124,61 @@ namespace Nuclei.Plugins.Discovery.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discovered export: {0}.
+        /// </summary>
+        internal static string Plugins_LogMessage_Scanner_DiscoveredExport_WithDefinition {
+            get {
+                return ResourceManager.GetString("Plugins_LogMessage_Scanner_DiscoveredExport_WithDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discovered import: {0}.
+        /// </summary>
+        internal static string Plugins_LogMessage_Scanner_DiscoveredImport_WithDefinition {
+            get {
+                return ResourceManager.GetString("Plugins_LogMessage_Scanner_DiscoveredImport_WithDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discovered custom member: {0}.
+        /// </summary>
+        internal static string Plugins_LogMessage_Scanner_DiscoveredMember_WithDefinition {
+            get {
+                return ResourceManager.GetString("Plugins_LogMessage_Scanner_DiscoveredMember_WithDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load all types from the custom member assembly {0}. Error was: {1}.
+        /// </summary>
+        internal static string Plugins_LogMessage_Scanner_FailedToLoadCustomMemberTypes_WithAssemblyAndException {
+            get {
+                return ResourceManager.GetString("Plugins_LogMessage_Scanner_FailedToLoadCustomMemberTypes_WithAssemblyAndException" +
+                        "", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The given discoverable custom member {0} on {1} is not valid. Error was: {2}.
+        /// </summary>
+        internal static string Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException {
+            get {
+                return ResourceManager.GetString("Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The given discoverable custom type {0} is not valid. Error was: {1}.
+        /// </summary>
+        internal static string Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException {
+            get {
+                return ResourceManager.GetString("Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The given export with contract name {0} on {1} is not valid. Error was: {2}.
         /// </summary>
         internal static string Plugins_LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException {
@@ -147,6 +202,33 @@ namespace Nuclei.Plugins.Discovery.Properties {
         internal static string Plugins_LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException {
             get {
                 return ResourceManager.GetString("Plugins_LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to process export: {0}.
+        /// </summary>
+        internal static string Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractName {
+            get {
+                return ResourceManager.GetString("Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to process export: {0} on a {1}.
+        /// </summary>
+        internal static string Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractNameAndType {
+            get {
+                return ResourceManager.GetString("Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractNameAndType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to process import: {0}.
+        /// </summary>
+        internal static string Plugins_LogMessage_Scanner_UnableToProcessImport_WithContractName {
+            get {
+                return ResourceManager.GetString("Plugins_LogMessage_Scanner_UnableToProcessImport_WithContractName", resourceCulture);
             }
         }
         

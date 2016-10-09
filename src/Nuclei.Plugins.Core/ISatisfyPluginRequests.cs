@@ -48,23 +48,23 @@ namespace Nuclei.Plugins.Core
         /// <summary>
         /// Returns the discoverable member that has the given method as declaring member.
         /// </summary>
-        /// <param name="method">The declaring method.</param>
+        /// <param name="definition">The declaring method.</param>
         /// <returns>The requested discoverable member.</returns>
-        MethodBasedDiscoverableMember DiscoverableMember(MethodDefinition method);
+        MethodBasedDiscoverableMember DiscoverableMember(MethodDefinition definition);
 
         /// <summary>
         /// Returns the discoverable member that has the given property as declaring member.
         /// </summary>
-        /// <param name="property">The declaring property.</param>
+        /// <param name="definition">The declaring property.</param>
         /// <returns>The requested discoverable member.</returns>
-        PropertyBasedDiscoverableMember DiscoverableMember(PropertyDefinition property);
+        PropertyBasedDiscoverableMember DiscoverableMember(PropertyDefinition definition);
 
         /// <summary>
         /// Returns the discoverable member that has the given type as declaring member.
         /// </summary>
-        /// <param name="type">The declaring type.</param>
+        /// <param name="identity">The declaring type.</param>
         /// <returns>The requested discoverable member.</returns>
-        TypeBasedDiscoverableMember DiscoverableMember(TypeIdentity type);
+        TypeBasedDiscoverableMember DiscoverableMember(TypeIdentity identity);
 
         /// <summary>
         /// Returns a collection containing all known discoverable members.

@@ -64,7 +64,6 @@ namespace Test.Mocks
         Justification = "These classes are only here for testing purposes so there's little point in having them in a separate file each.")]
     public sealed class DiscoverableMemberOnType
     {
-        
     }
 
     [SuppressMessage(

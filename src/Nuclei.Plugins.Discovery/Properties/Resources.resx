@@ -138,6 +138,24 @@
   <data name="Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException" xml:space="preserve">
     <value>The loading of the plugin assembly {0} failed. Exception information is: {1}</value>
   </data>
+  <data name="Plugins_LogMessage_Scanner_DiscoveredExport_WithDefinition" xml:space="preserve">
+    <value>Discovered export: {0}</value>
+  </data>
+  <data name="Plugins_LogMessage_Scanner_DiscoveredImport_WithDefinition" xml:space="preserve">
+    <value>Discovered import: {0}</value>
+  </data>
+  <data name="Plugins_LogMessage_Scanner_DiscoveredMember_WithDefinition" xml:space="preserve">
+    <value>Discovered custom member: {0}</value>
+  </data>
+  <data name="Plugins_LogMessage_Scanner_FailedToLoadCustomMemberTypes_WithAssemblyAndException" xml:space="preserve">
+    <value>Failed to load all types from the custom member assembly {0}. Error was: {1}</value>
+  </data>
+  <data name="Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException" xml:space="preserve">
+    <value>The given discoverable custom member {0} on {1} is not valid. Error was: {2}</value>
+  </data>
+  <data name="Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException" xml:space="preserve">
+    <value>The given discoverable custom type {0} is not valid. Error was: {1}</value>
+  </data>
   <data name="Plugins_LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException" xml:space="preserve">
     <value>The given export with contract name {0} on {1} is not valid. Error was: {2}</value>
   </data>
@@ -146,6 +164,15 @@
   </data>
   <data name="Plugins_LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException" xml:space="preserve">
     <value>Extracting information from Assembly {0} failed. Exception information is: {1}</value>
+  </data>
+  <data name="Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractName" xml:space="preserve">
+    <value>Unable to process export: {0}</value>
+  </data>
+  <data name="Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractNameAndType" xml:space="preserve">
+    <value>Unable to process export: {0} on a {1}</value>
+  </data>
+  <data name="Plugins_LogMessage_Scanner_UnableToProcessImport_WithContractName" xml:space="preserve">
+    <value>Unable to process import: {0}</value>
   </data>
   <data name="Plugins_PluginScanDomainName" xml:space="preserve">
     <value>Nuclei.Plugins.Discovery: plugin scan AppDomain</value>

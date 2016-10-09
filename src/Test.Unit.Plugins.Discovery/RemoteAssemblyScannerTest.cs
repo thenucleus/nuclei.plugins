@@ -919,6 +919,7 @@ namespace Nuclei.Plugins.Discovery
 
                 _types = types;
                 _parts = parts;
+                _discoverableMembers = discoverableMembers;
             }
             catch (Exception e)
             {

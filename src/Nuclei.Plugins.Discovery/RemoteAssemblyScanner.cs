@@ -271,32 +271,210 @@ namespace Nuclei.Plugins.Discovery
         {
             var result = new List<SerializableDiscoverableMemberDefinition>();
 
-            var types = assembly.GetTypes();
+            Type[] types = null;
+            try
+            {
+                types = assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                _logger.Log(
+                    LevelToLog.Error,
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        Resources.Plugins_LogMessage_Scanner_FailedToLoadCustomMemberTypes_WithAssemblyAndException,
+                        assembly,
+                        e));
+
+                return result;
+            }
+
             foreach (var type in types)
             {
-                var typeAttribute = GetDiscoverableMemberAttribute(type);
-                if (typeAttribute != null)
+                try
                 {
-                    result.Add(TypeBasedDiscoverableMember.CreateDefinition(type, typeAttribute.Metadata(), createTypeIdentity));
+                    var typeAttribute = GetDiscoverableMemberAttribute(type);
+                    if (typeAttribute != null)
+                    {
+                        var member = TypeBasedDiscoverableMember.CreateDefinition(type, typeAttribute.Metadata(), createTypeIdentity);
+                        result.Add(member);
+
+                        _logger.Log(
+                            LevelToLog.Info,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Resources.Plugins_LogMessage_Scanner_DiscoveredMember_WithDefinition,
+                                member));
+                    }
+                }
+                catch (ArgumentNullException e)
+                {
+                    _logger.Log(
+                        LevelToLog.Error,
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
+                            type.FullName,
+                            e));
+                }
+                catch (DuplicateDiscoverableMemberException e)
+                {
+                    _logger.Log(
+                        LevelToLog.Error,
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
+                            type.FullName,
+                            e));
+                }
+                catch (InvalidOperationException e)
+                {
+                    _logger.Log(
+                        LevelToLog.Error,
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
+                            type.FullName,
+                            e));
+                }
+                catch (TypeLoadException e)
+                {
+                    _logger.Log(
+                        LevelToLog.Error,
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
+                            type.FullName,
+                            e));
                 }
 
                 var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public);
                 foreach (var method in methods)
                 {
-                    var methodAttribute = GetDiscoverableMemberAttribute(method);
-                    if (methodAttribute != null)
+                    try
                     {
-                        result.Add(MethodBasedDiscoverableMember.CreateDefinition(method, typeAttribute.Metadata(), createTypeIdentity));
+                        var methodAttribute = GetDiscoverableMemberAttribute(method);
+                        if (methodAttribute != null)
+                        {
+                            var member = MethodBasedDiscoverableMember.CreateDefinition(method, methodAttribute.Metadata(), createTypeIdentity);
+                            result.Add(member);
+
+                            _logger.Log(
+                                LevelToLog.Info,
+                                string.Format(
+                                    CultureInfo.InvariantCulture,
+                                    Resources.Plugins_LogMessage_Scanner_DiscoveredMember_WithDefinition,
+                                    member));
+                        }
+                    }
+                    catch (ArgumentNullException e)
+                    {
+                        _logger.Log(
+                            LevelToLog.Error,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                method.Name,
+                                method.ReflectedType,
+                                e));
+                    }
+                    catch (DuplicateDiscoverableMemberException e)
+                    {
+                        _logger.Log(
+                            LevelToLog.Error,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                method.Name,
+                                method.ReflectedType,
+                                e));
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                        _logger.Log(
+                            LevelToLog.Error,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                method.Name,
+                                method.ReflectedType,
+                                e));
+                    }
+                    catch (TypeLoadException e)
+                    {
+                        _logger.Log(
+                            LevelToLog.Error,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                method.Name,
+                                method.ReflectedType,
+                                e));
                     }
                 }
 
                 var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
                 foreach (var property in properties)
                 {
-                    var propertyAttribute = GetDiscoverableMemberAttribute(property);
-                    if (propertyAttribute != null)
+                    try
                     {
-                        result.Add(PropertyBasedDiscoverableMember.CreateDefinition(property, typeAttribute.Metadata(), createTypeIdentity));
+                        var propertyAttribute = GetDiscoverableMemberAttribute(property);
+                        if (propertyAttribute != null)
+                        {
+                            var member = PropertyBasedDiscoverableMember.CreateDefinition(property, propertyAttribute.Metadata(), createTypeIdentity);
+                            result.Add(member);
+
+                            _logger.Log(
+                                LevelToLog.Info,
+                                string.Format(
+                                    CultureInfo.InvariantCulture,
+                                    Resources.Plugins_LogMessage_Scanner_DiscoveredMember_WithDefinition,
+                                    member));
+                        }
+                    }
+                    catch (ArgumentNullException e)
+                    {
+                        _logger.Log(
+                            LevelToLog.Error,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                property.Name,
+                                property.ReflectedType,
+                                e));
+                    }
+                    catch (DuplicateDiscoverableMemberException e)
+                    {
+                        _logger.Log(
+                            LevelToLog.Error,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                property.Name,
+                                property.ReflectedType,
+                                e));
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                        _logger.Log(
+                            LevelToLog.Error,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                property.Name,
+                                property.ReflectedType,
+                                e));
+                    }
+                    catch (TypeLoadException e)
+                    {
+                        _logger.Log(
+                            LevelToLog.Error,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                property.Name,
+                                property.ReflectedType,
+                                e));
                     }
                 }
             }
@@ -341,7 +519,7 @@ namespace Nuclei.Plugins.Discovery
                                 LevelToLog.Info,
                                 string.Format(
                                     CultureInfo.InvariantCulture,
-                                    "Discovered export: {0}",
+                                    Resources.Plugins_LogMessage_Scanner_DiscoveredExport_WithDefinition,
                                     exportDefinition));
                         }
                         else
@@ -350,7 +528,7 @@ namespace Nuclei.Plugins.Discovery
                                 LevelToLog.Warn,
                                 string.Format(
                                     CultureInfo.InvariantCulture,
-                                    "Unable to process export: {0} on a {1}",
+                                    Resources.Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractName,
                                     export.ContractName,
                                     memberInfo.MemberType));
                         }
@@ -398,7 +576,7 @@ namespace Nuclei.Plugins.Discovery
                                 LevelToLog.Info,
                                 string.Format(
                                     CultureInfo.InvariantCulture,
-                                    "Discovered import: {0}",
+                                    Resources.Plugins_LogMessage_Scanner_DiscoveredImport_WithDefinition,
                                     importDefinition));
                         }
                         else
@@ -407,7 +585,7 @@ namespace Nuclei.Plugins.Discovery
                                 LevelToLog.Warn,
                                 string.Format(
                                     CultureInfo.InvariantCulture,
-                                    "Unable to process import: {0}",
+                                    Resources.Plugins_LogMessage_Scanner_UnableToProcessImport_WithContractName,
                                     import.ContractName));
                         }
                     }

@@ -112,31 +112,31 @@ namespace Nuclei.Plugins.Discovery
         /// <summary>
         /// Returns the discoverable member that has the given method as declaring member.
         /// </summary>
-        /// <param name="method">The declaring method.</param>
+        /// <param name="definition">The declaring method.</param>
         /// <returns>The requested discoverable member.</returns>
-        public MethodBasedDiscoverableMember DiscoverableMember(MethodDefinition method)
+        public MethodBasedDiscoverableMember DiscoverableMember(MethodDefinition definition)
         {
-            return _repository.DiscoverableMember(method);
+            return _repository.DiscoverableMember(definition);
         }
 
         /// <summary>
         /// Returns the discoverable member that has the given property as declaring member.
         /// </summary>
-        /// <param name="property">The declaring property.</param>
+        /// <param name="definition">The declaring property.</param>
         /// <returns>The requested discoverable member.</returns>
-        public PropertyBasedDiscoverableMember DiscoverableMember(PropertyDefinition property)
+        public PropertyBasedDiscoverableMember DiscoverableMember(PropertyDefinition definition)
         {
-            return _repository.DiscoverableMember(property);
+            return _repository.DiscoverableMember(definition);
         }
 
         /// <summary>
         /// Returns the discoverable member that has the given type as declaring member.
         /// </summary>
-        /// <param name="type">The declaring type.</param>
+        /// <param name="identity">The declaring type.</param>
         /// <returns>The requested discoverable member.</returns>
-        public TypeBasedDiscoverableMember DiscoverableMember(TypeIdentity type)
+        public TypeBasedDiscoverableMember DiscoverableMember(TypeIdentity identity)
         {
-            return _repository.DiscoverableMember(type);
+            return _repository.DiscoverableMember(identity);
         }
 
         /// <summary>

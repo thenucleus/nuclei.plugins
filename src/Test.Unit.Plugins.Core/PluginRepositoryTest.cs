@@ -363,7 +363,6 @@ namespace Nuclei.Plugins.Core
 
             var propertyInfo = typeof(DiscoverableMemberOnProperty).GetProperty("DiscoverableProperty");
             metadata = propertyInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
-            Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
             var propertyMember = PropertyBasedDiscoverableMember.CreateDefinition(
                 propertyInfo,
                 metadata,
@@ -397,7 +396,6 @@ namespace Nuclei.Plugins.Core
 
             var propertyInfo = typeof(DiscoverableMemberOnProperty).GetProperty("DiscoverableProperty");
             metadata = propertyInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
-            Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
             var propertyMember = PropertyBasedDiscoverableMember.CreateDefinition(
                 propertyInfo,
                 metadata,

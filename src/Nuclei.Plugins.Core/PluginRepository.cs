@@ -243,9 +243,9 @@ namespace Nuclei.Plugins.Core
         /// <summary>
         /// Returns the discoverable member that has the given method as declaring member.
         /// </summary>
-        /// <param name="method">The declaring method.</param>
+        /// <param name="definition">The declaring method.</param>
         /// <returns>The requested discoverable member.</returns>
-        public MethodBasedDiscoverableMember DiscoverableMember(MethodDefinition method)
+        public MethodBasedDiscoverableMember DiscoverableMember(MethodDefinition definition)
         {
             lock (_lock)
             {
@@ -253,16 +253,16 @@ namespace Nuclei.Plugins.Core
                     .Where(m => m.Key is MethodBasedDiscoverableMember)
                     .Select(m => m.Key)
                     .Cast<MethodBasedDiscoverableMember>()
-                    .FirstOrDefault(m => m.Method.Equals(method));
+                    .FirstOrDefault(m => m.Method.Equals(definition));
             }
         }
 
         /// <summary>
         /// Returns the discoverable member that has the given property as declaring member.
         /// </summary>
-        /// <param name="property">The declaring property.</param>
+        /// <param name="definition">The declaring property.</param>
         /// <returns>The requested discoverable member.</returns>
-        public PropertyBasedDiscoverableMember DiscoverableMember(PropertyDefinition property)
+        public PropertyBasedDiscoverableMember DiscoverableMember(PropertyDefinition definition)
         {
             lock (_lock)
             {
@@ -270,16 +270,16 @@ namespace Nuclei.Plugins.Core
                     .Where(m => m.Key is PropertyBasedDiscoverableMember)
                     .Select(m => m.Key)
                     .Cast<PropertyBasedDiscoverableMember>()
-                    .FirstOrDefault(m => m.Property.Equals(property));
+                    .FirstOrDefault(m => m.Property.Equals(definition));
             }
         }
 
         /// <summary>
         /// Returns the discoverable member that has the given type as declaring member.
         /// </summary>
-        /// <param name="type">The declaring type.</param>
+        /// <param name="identity">The declaring type.</param>
         /// <returns>The requested discoverable member.</returns>
-        public TypeBasedDiscoverableMember DiscoverableMember(TypeIdentity type)
+        public TypeBasedDiscoverableMember DiscoverableMember(TypeIdentity identity)
         {
             lock (_lock)
             {
@@ -287,7 +287,7 @@ namespace Nuclei.Plugins.Core
                     .Where(m => m.Key is TypeBasedDiscoverableMember)
                     .Select(m => m.Key)
                     .Cast<TypeBasedDiscoverableMember>()
-                    .FirstOrDefault(m => m.DeclaringType.Equals(type));
+                    .FirstOrDefault(m => m.DeclaringType.Equals(identity));
             }
         }
 
@@ -452,7 +452,7 @@ namespace Nuclei.Plugins.Core
         {
             if (deletedPlugins == null)
             {
-                throw new ArgumentNullException("deletedFiles");
+                throw new ArgumentNullException("deletedPlugins");
             }
 
             lock (_lock)
