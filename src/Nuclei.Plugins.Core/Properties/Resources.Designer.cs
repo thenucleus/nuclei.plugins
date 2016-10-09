@@ -70,6 +70,15 @@ namespace Nuclei.Plugins.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A discoverable member with the given identity is already registered..
+        /// </summary>
+        internal static string Exceptions_Messages_DuplicateDiscoverableMember {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_DuplicateDiscoverableMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A part with the given type identity is already registered..
         /// </summary>
         internal static string Exceptions_Messages_DuplicatePartDefinition {

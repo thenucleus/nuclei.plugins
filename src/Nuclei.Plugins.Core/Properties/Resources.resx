@@ -120,6 +120,9 @@
   <data name="Exceptions_Messages_CannotMapExportToImport" xml:space="preserve">
     <value>The given export cannot be mapped to the given import.</value>
   </data>
+  <data name="Exceptions_Messages_DuplicateDiscoverableMember" xml:space="preserve">
+    <value>A discoverable member with the given identity is already registered.</value>
+  </data>
   <data name="Exceptions_Messages_DuplicatePartDefinition" xml:space="preserve">
     <value>A part with the given type identity is already registered.</value>
   </data>

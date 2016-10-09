@@ -15,11 +15,18 @@ namespace Nuclei.Plugins.Core
     public interface IPluginRepository : ISatisfyPluginRequests
     {
         /// <summary>
+        /// Adds a new discoverable member to the repository.
+        /// </summary>
+        /// <param name="member">The member that should be added.</param>
+        /// <param name="pluginOrigin">The origin of the assembly that owns the discoverable member</param>
+        void AddDiscoverableMember(SerializableDiscoverableMemberDefinition member, PluginOrigin pluginOrigin);
+
+        /// <summary>
         /// Adds a new part to the repository.
         /// </summary>
         /// <param name="part">The part definition.</param>
-        /// <param name="pluginFileInfo">The file info of the assembly which owns the part.</param>
-        void AddPart(PartDefinition part, PluginOrigin pluginFileInfo);
+        /// <param name="pluginOrigin">The origin of the assembly which owns the part.</param>
+        void AddPart(PartDefinition part, PluginOrigin pluginOrigin);
 
         /// <summary>
         /// Adds a new type definition to the repository.
@@ -33,12 +40,12 @@ namespace Nuclei.Plugins.Core
         /// <returns>
         /// A collection containing the descriptions of all the known plugins.
         /// </returns>
-        IEnumerable<PluginOrigin> KnownPluginFiles();
+        IEnumerable<PluginOrigin> KnownPluginOrigins();
 
         /// <summary>
-        /// Removes all the plugins related to the given plugin files.
+        /// Removes all the plugins related to the given plugin origins.
         /// </summary>
-        /// <param name="deletedFiles">The collection of plugin file paths that were removed.</param>
-        void RemovePlugins(IEnumerable<PluginOrigin> deletedFiles);
+        /// <param name="deletedPlugins">The collection of plugins that were removed.</param>
+        void RemovePlugins(IEnumerable<PluginOrigin> deletedPlugins);
     }
 }

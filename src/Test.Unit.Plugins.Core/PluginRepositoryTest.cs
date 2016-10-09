@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using Nuclei.Plugins.Discovery;
 using NUnit.Framework;
 using Test.Mocks;
@@ -23,6 +24,87 @@ namespace Nuclei.Plugins.Core
         Justification = "Unit tests do not need documentation.")]
     public sealed class PluginRepositoryTest
     {
+        [Test]
+        public void AddDiscoverableMemberWithMethodMember()
+        {
+            var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
+            var repository = new PluginRepository();
+
+            var memberInfo = typeof(DiscoverableMemberOnMethod).GetMethod("DiscoverableMethod", new Type[0]);
+            var metadata = memberInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
+            Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
+            var definition = MethodBasedDiscoverableMember.CreateDefinition(
+                memberInfo,
+                metadata,
+                identityGenerator);
+
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            repository.AddDiscoverableMember(definition, fileInfo);
+
+            var discoverableMembers = repository.DiscoverableMembers();
+            Assert.AreEqual(1, discoverableMembers.Count());
+            Assert.AreSame(definition, discoverableMembers.First());
+            Assert.AreSame(definition, repository.DiscoverableMember(MethodDefinition.CreateDefinition(memberInfo)));
+
+            var files = repository.KnownPluginOrigins();
+            Assert.AreEqual(1, files.Count());
+            Assert.AreSame(fileInfo, files.First());
+        }
+
+        [Test]
+        public void AddDiscoverableMemberWithPropertyMember()
+        {
+            var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
+            var repository = new PluginRepository();
+
+            var memberInfo = typeof(DiscoverableMemberOnProperty).GetProperty("DiscoverableProperty");
+            var metadata = memberInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
+            Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
+            var definition = PropertyBasedDiscoverableMember.CreateDefinition(
+                memberInfo,
+                metadata,
+                identityGenerator);
+
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            repository.AddDiscoverableMember(definition, fileInfo);
+
+            var discoverableMembers = repository.DiscoverableMembers();
+            Assert.AreEqual(1, discoverableMembers.Count());
+            Assert.AreSame(definition, discoverableMembers.First());
+            Assert.AreSame(definition, repository.DiscoverableMember(PropertyDefinition.CreateDefinition(memberInfo)));
+
+            var files = repository.KnownPluginOrigins();
+            Assert.AreEqual(1, files.Count());
+            Assert.AreSame(fileInfo, files.First());
+        }
+
+        [Test]
+        public void AddDiscoverableMemberWithTypeMember()
+        {
+            var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
+            var repository = new PluginRepository();
+
+            var memberInfo = typeof(DiscoverableMemberOnType);
+            var metadata = memberInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
+            Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
+            var definition = TypeBasedDiscoverableMember.CreateDefinition(
+                memberInfo,
+                metadata,
+                identityGenerator);
+
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            repository.AddDiscoverableMember(definition, fileInfo);
+
+            var discoverableMembers = repository.DiscoverableMembers();
+            Assert.AreEqual(1, discoverableMembers.Count());
+            Assert.AreSame(definition, discoverableMembers.First());
+            Assert.AreSame(definition, repository.DiscoverableMember(TypeIdentity.CreateDefinition(memberInfo)));
+
+            var files = repository.KnownPluginOrigins();
+            Assert.AreEqual(1, files.Count());
+            Assert.AreSame(fileInfo, files.First());
+        }
+
         [Test]
         public void AddPart()
         {
@@ -43,7 +125,7 @@ namespace Nuclei.Plugins.Core
             Assert.AreSame(definition, parts.First());
             Assert.AreSame(definition, repository.Part(TypeIdentity.CreateDefinition(typeof(ExportOnProperty))));
 
-            var files = repository.KnownPluginFiles();
+            var files = repository.KnownPluginOrigins();
             Assert.AreEqual(1, files.Count());
             Assert.AreSame(fileInfo, files.First());
         }
@@ -262,6 +344,70 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
+        public void DiscoverableMemberWithMetadataWithExistingMember()
+        {
+            var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
+            var repository = new PluginRepository();
+
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+
+            var methodInfo = typeof(DiscoverableMemberOnMethod).GetMethod("DiscoverableMethod", new Type[0]);
+            var metadata = methodInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
+            Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
+            var methodMember = MethodBasedDiscoverableMember.CreateDefinition(
+                methodInfo,
+                metadata,
+                identityGenerator);
+
+            repository.AddDiscoverableMember(methodMember, fileInfo);
+
+            var propertyInfo = typeof(DiscoverableMemberOnProperty).GetProperty("DiscoverableProperty");
+            metadata = propertyInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
+            var propertyMember = PropertyBasedDiscoverableMember.CreateDefinition(
+                propertyInfo,
+                metadata,
+                identityGenerator);
+
+            repository.AddDiscoverableMember(propertyMember, fileInfo);
+
+            var discoverableMembers = repository.DiscoverableMembersWithMetadata("Name", "Method");
+            Assert.AreEqual(1, discoverableMembers.Count());
+            Assert.AreSame(methodMember, discoverableMembers.First());
+            Assert.AreSame(methodMember, repository.DiscoverableMember(MethodDefinition.CreateDefinition(methodInfo)));
+        }
+
+        [Test]
+        public void DiscoverableMemberWithMetadataWithNonExistingMember()
+        {
+            var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
+            var repository = new PluginRepository();
+
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+
+            var methodInfo = typeof(DiscoverableMemberOnMethod).GetMethod("DiscoverableMethod", new Type[0]);
+            var metadata = methodInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
+            Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
+            var methodMember = MethodBasedDiscoverableMember.CreateDefinition(
+                methodInfo,
+                metadata,
+                identityGenerator);
+
+            repository.AddDiscoverableMember(methodMember, fileInfo);
+
+            var propertyInfo = typeof(DiscoverableMemberOnProperty).GetProperty("DiscoverableProperty");
+            metadata = propertyInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
+            var propertyMember = PropertyBasedDiscoverableMember.CreateDefinition(
+                propertyInfo,
+                metadata,
+                identityGenerator);
+
+            repository.AddDiscoverableMember(propertyMember, fileInfo);
+
+            var discoverableMembers = repository.DiscoverableMembersWithMetadata("Name", "Type");
+            Assert.AreEqual(0, discoverableMembers.Count());
+        }
+
+        [Test]
         public void IsSubtypeOfWithNonExistingChild()
         {
             var repository = new PluginRepository();
@@ -367,7 +513,7 @@ namespace Nuclei.Plugins.Core
             repository.AddPart(partDefinition, partFileInfo);
 
             Assert.That(
-                repository.KnownPluginFiles(),
+                repository.KnownPluginOrigins(),
                 Is.EquivalentTo(
                     new List<PluginFileOrigin>
                     {
@@ -381,7 +527,7 @@ namespace Nuclei.Plugins.Core
                     });
 
             Assert.That(
-                repository.KnownPluginFiles(),
+                repository.KnownPluginOrigins(),
                 Is.EquivalentTo(
                     new List<PluginFileOrigin>
                     {

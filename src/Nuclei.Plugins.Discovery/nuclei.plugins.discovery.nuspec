@@ -12,7 +12,7 @@
       Provides classes and functions for plugin discovery.
     </description>
     <releaseNotes>
-      $ReleaseNotes$
+      $ReleaseNotesHtmlEncoded$
     </releaseNotes>
     <dependencies>
       $Dependencies$

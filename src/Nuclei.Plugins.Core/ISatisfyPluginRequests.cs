@@ -46,6 +46,45 @@ namespace Nuclei.Plugins.Core
         bool ContainsDefinitionForType(TypeIdentity type);
 
         /// <summary>
+        /// Returns the discoverable member that has the given method as declaring member.
+        /// </summary>
+        /// <param name="definition">The declaring method.</param>
+        /// <returns>The requested discoverable member.</returns>
+        MethodBasedDiscoverableMember DiscoverableMember(MethodDefinition definition);
+
+        /// <summary>
+        /// Returns the discoverable member that has the given property as declaring member.
+        /// </summary>
+        /// <param name="definition">The declaring property.</param>
+        /// <returns>The requested discoverable member.</returns>
+        PropertyBasedDiscoverableMember DiscoverableMember(PropertyDefinition definition);
+
+        /// <summary>
+        /// Returns the discoverable member that has the given type as declaring member.
+        /// </summary>
+        /// <param name="identity">The declaring type.</param>
+        /// <returns>The requested discoverable member.</returns>
+        TypeBasedDiscoverableMember DiscoverableMember(TypeIdentity identity);
+
+        /// <summary>
+        /// Returns a collection containing all known discoverable members.
+        /// </summary>
+        /// <returns>The collection containing all known discoverable members.</returns>
+        IEnumerable<SerializableDiscoverableMemberDefinition> DiscoverableMembers();
+
+        /// <summary>
+        /// Returns a collection containing all known discoverable members which have the given key value pair in their
+        /// metadata set.
+        /// </summary>
+        /// <param name="key">The metadata key.</param>
+        /// <param name="value">The metadata value.</param>
+        /// <returns>
+        ///     The collection containing all known discoverable members with the given key-value pair in their given
+        ///     metadata set.
+        /// </returns>
+        IEnumerable<SerializableDiscoverableMemberDefinition> DiscoverableMembersWithMetadata(string key, string value);
+
+        /// <summary>
         /// Returns the identity for the type given by the name.
         /// </summary>
         /// <param name="fullyQualifiedName">The fully qualified name of the type.</param>

@@ -81,6 +81,9 @@
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Test.SourceOnly\Mocks\Attributes.cs">
+      <Link>Mocks\Attributes.cs</Link>
+    </Compile>
     <Compile Include="..\Test.SourceOnly\Mocks\Exports.cs">
       <Link>Mocks\Exports.cs</Link>
     </Compile>
@@ -91,19 +94,23 @@
     <Compile Include="CannotMapExportToImportExceptionTest.cs" />
     <Compile Include="ConstructorBasedImportDefinitionTest.cs" />
     <Compile Include="ConstructorDefinitionTest.cs" />
+    <Compile Include="DuplicateDiscoverableMemberExceptionTest.cs" />
     <Compile Include="DuplicatePartDefinitionExceptionTest.cs" />
     <Compile Include="DuplicateTypeDefinitionExceptionTest.cs" />
     <Compile Include="ExportRegistrationIdTest.cs" />
     <Compile Include="ImportRegistrationIdTest.cs" />
+    <Compile Include="MethodBasedDiscoverableMemberTest.cs" />
     <Compile Include="MethodBasedExportDefinitionTest.cs" />
     <Compile Include="MethodDefinitionTest.cs" />
     <Compile Include="ParameterDefinitionTest.cs" />
     <Compile Include="PartRegistrationIdTest.cs" />
     <Compile Include="PluginRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyBasedDiscoverableMemberTest.cs" />
     <Compile Include="PropertyBasedExportDefinitionTest.cs" />
     <Compile Include="PropertyBasedImportDefinitionTest.cs" />
     <Compile Include="PropertyDefinitionTest.cs" />
+    <Compile Include="TypeBasedDiscoverableMemberTest.cs" />
     <Compile Include="TypeBasedExportDefinitionTest.cs" />
     <Compile Include="TypeDefinitionTest.cs" />
     <Compile Include="TypeIdentityTest.cs" />
