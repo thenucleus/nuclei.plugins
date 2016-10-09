@@ -159,7 +159,7 @@ namespace Nuclei.Plugins.Discovery
                 return;
             }
 
-            var knownFiles = _repository.KnownPluginFiles().OfType<PluginFileOrigin>();
+            var knownFiles = _repository.KnownPluginOrigins().OfType<PluginFileOrigin>();
 
             var changedKnownFiles = knownFiles
                 .Where(p => files.Any(f => string.Equals(p.FilePath, f, StringComparison.OrdinalIgnoreCase)))

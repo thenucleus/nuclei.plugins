@@ -214,6 +214,20 @@ namespace Nuclei.Plugins.Discovery
             return memberType;
         }
 
+        private static DiscoverableMemberAttribute GetDiscoverableMemberAttribute(MemberInfo member)
+        {
+            var attributes = member.GetCustomAttributes(true);
+            foreach (var attribute in attributes)
+            {
+                if (typeof(DiscoverableMemberAttribute).IsAssignableFrom(attribute.GetType()))
+                {
+                    return attribute as DiscoverableMemberAttribute;
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// The object that will pass through the log messages.
         /// </summary>
@@ -251,6 +265,43 @@ namespace Nuclei.Plugins.Discovery
 
             _logger = logger;
             _repository = repository;
+        }
+
+        private IEnumerable<SerializableDiscoverableMemberDefinition> ExtractCustomMembers(Assembly assembly, Func<Type, TypeIdentity> createTypeIdentity)
+        {
+            var result = new List<SerializableDiscoverableMemberDefinition>();
+
+            var types = assembly.GetTypes();
+            foreach (var type in types)
+            {
+                var typeAttribute = GetDiscoverableMemberAttribute(type);
+                if (typeAttribute != null)
+                {
+                    result.Add(TypeBasedDiscoverableMember.CreateDefinition(type, typeAttribute.Metadata(), createTypeIdentity));
+                }
+
+                var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public);
+                foreach (var method in methods)
+                {
+                    var methodAttribute = GetDiscoverableMemberAttribute(method);
+                    if (methodAttribute != null)
+                    {
+                        result.Add(MethodBasedDiscoverableMember.CreateDefinition(method, typeAttribute.Metadata(), createTypeIdentity));
+                    }
+                }
+
+                var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                foreach (var property in properties)
+                {
+                    var propertyAttribute = GetDiscoverableMemberAttribute(property);
+                    if (propertyAttribute != null)
+                    {
+                        result.Add(PropertyBasedDiscoverableMember.CreateDefinition(property, typeAttribute.Metadata(), createTypeIdentity));
+                    }
+                }
+            }
+
+            return result;
         }
 
         private IEnumerable<PartDefinition> ExtractImportsAndExports(Assembly assembly, Func<Type, TypeIdentity> createTypeIdentity)
@@ -374,11 +425,11 @@ namespace Nuclei.Plugins.Discovery
                 }
 
                 yield return new PartDefinition
-                    {
-                        Identity = createTypeIdentity(type),
-                        Exports = exports,
-                        Imports = imports,
-                    };
+                {
+                    Identity = createTypeIdentity(type),
+                    Exports = exports,
+                    Imports = imports,
+                };
             }
         }
 
@@ -511,6 +562,19 @@ namespace Nuclei.Plugins.Discovery
                             pair.Identity));
 
                     _repository.AddPart(pair, fileInfo);
+                }
+
+                var customMembers = ExtractCustomMembers(assembly, createTypeIdentity);
+                foreach (var member in customMembers)
+                {
+                    _logger.Log(
+                        LevelToLog.Trace,
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            Resources.RemoteAssemblyScanner_LogMessage_AddingDiscoverableMemberToRepository_WithMemberInformation,
+                            member.DeclaringType));
+
+                    _repository.AddDiscoverableMember(member, fileInfo);
                 }
             }
             catch (Exception e)

@@ -28,8 +28,78 @@ namespace Nuclei.Plugins.Discovery
         Justification = "Unit tests do not need documentation.")]
     public sealed class RemoteAssemblyScannerTest
     {
-        private static IEnumerable<TypeDefinition> _types;
+        private static IEnumerable<SerializableDiscoverableMemberDefinition> _discoverableMembers;
         private static IEnumerable<PartDefinition> _parts;
+        private static IEnumerable<TypeDefinition> _types;
+
+        [Test]
+        public void AddDiscoverableMemberWithMethodMember()
+        {
+            var memberInfo = typeof(DiscoverableMemberOnMethod).GetMethod("DiscoverableMethod", new Type[0]);
+            var metadata = memberInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
+
+            var id = TypeIdentity.CreateDefinition(typeof(DiscoverableMemberOnMethod));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
+
+            var plugins = _discoverableMembers.Where(p => p.DeclaringType.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First() as MethodBasedDiscoverableMember;
+            Assert.IsNotNull(plugin);
+
+            Assert.AreEqual(id, plugin.DeclaringType);
+            Assert.AreEqual(MethodDefinition.CreateDefinition(memberInfo), plugin.Method);
+
+            Assert.AreEqual(1, plugin.Metadata.Count);
+            Assert.AreEqual(metadata.Keys.First(), plugin.Metadata.Keys.First());
+            Assert.AreEqual(metadata.Values.First(), plugin.Metadata.Values.First());
+        }
+
+        [Test]
+        public void AddDiscoverableMemberWithPropertyMember()
+        {
+            var memberInfo = typeof(DiscoverableMemberOnProperty).GetProperty("DiscoverableProperty");
+            var metadata = memberInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
+
+            var id = TypeIdentity.CreateDefinition(typeof(DiscoverableMemberOnProperty));
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
+
+            var plugins = _discoverableMembers.Where(p => p.DeclaringType.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First() as PropertyBasedDiscoverableMember;
+            Assert.IsNotNull(plugin);
+
+            Assert.AreEqual(id, plugin.DeclaringType);
+            Assert.AreEqual(PropertyDefinition.CreateDefinition(memberInfo), plugin.Property);
+
+            Assert.AreEqual(1, plugin.Metadata.Count);
+            Assert.AreEqual(metadata.Keys.First(), plugin.Metadata.Keys.First());
+            Assert.AreEqual(metadata.Values.First(), plugin.Metadata.Values.First());
+        }
+
+        [Test]
+        public void AddDiscoverableMemberWithTypeMember()
+        {
+            var memberInfo = typeof(DiscoverableMemberOnType);
+            var metadata = memberInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
+
+            var id = TypeIdentity.CreateDefinition(memberInfo);
+            Assert.IsTrue(_types.Any(s => s.Identity.Equals(id)));
+
+            var plugins = _discoverableMembers.Where(p => p.DeclaringType.Equals(id));
+            Assert.IsTrue(plugins.Count() == 1);
+
+            var plugin = plugins.First() as TypeBasedDiscoverableMember;
+            Assert.IsNotNull(plugin);
+
+            Assert.AreEqual(id, plugin.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(memberInfo), plugin.DeclaringType);
+
+            Assert.AreEqual(1, plugin.Metadata.Count);
+            Assert.AreEqual(metadata.Keys.First(), plugin.Metadata.Keys.First());
+            Assert.AreEqual(metadata.Values.First(), plugin.Metadata.Values.First());
+        }
 
         [Test]
         public void ExportOnMethod()
@@ -819,10 +889,17 @@ namespace Nuclei.Plugins.Discovery
         {
             try
             {
-                var types = new List<TypeDefinition>();
+                var discoverableMembers = new List<SerializableDiscoverableMemberDefinition>();
                 var parts = new List<PartDefinition>();
+                var types = new List<TypeDefinition>();
                 var repository = new Mock<IPluginRepository>();
                 {
+                    repository.Setup(r => r.AddDiscoverableMember(It.IsAny<SerializableDiscoverableMemberDefinition>(), It.IsAny<PluginOrigin>()))
+                        .Callback<SerializableDiscoverableMemberDefinition, PluginOrigin>((s, f) => discoverableMembers.Add(s));
+                    repository.Setup(r => r.AddPart(It.IsAny<PartDefinition>(), It.IsAny<PluginOrigin>()))
+                        .Callback<PartDefinition, PluginOrigin>((p, f) => parts.Add(p));
+                    repository.Setup(r => r.AddType(It.IsAny<TypeDefinition>()))
+                        .Callback<TypeDefinition>(types.Add);
                     repository.Setup(r => r.ContainsDefinitionForType(It.IsAny<string>()))
                         .Returns<string>(n => types.Any(t => t.Identity.AssemblyQualifiedName.Equals(n)));
                     repository.Setup(r => r.ContainsDefinitionForType(It.IsAny<TypeIdentity>()))
@@ -831,10 +908,6 @@ namespace Nuclei.Plugins.Discovery
                         .Returns<string>(n => types.Where(t => t.Identity.AssemblyQualifiedName.Equals(n)).Select(t => t.Identity).First());
                     repository.Setup(r => r.Parts())
                         .Returns(parts);
-                    repository.Setup(r => r.AddType(It.IsAny<TypeDefinition>()))
-                        .Callback<TypeDefinition>(types.Add);
-                    repository.Setup(r => r.AddPart(It.IsAny<PartDefinition>(), It.IsAny<PluginOrigin>()))
-                        .Callback<PartDefinition, PluginOrigin>((p, f) => parts.Add(p));
                 }
 
                 var scanner = new RemoteAssemblyScanner(

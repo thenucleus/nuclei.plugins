@@ -160,6 +160,16 @@ namespace Nuclei.Plugins.Discovery.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adding new discoverable member [{0}] to the repository..
+        /// </summary>
+        internal static string RemoteAssemblyScanner_LogMessage_AddingDiscoverableMemberToRepository_WithMemberInformation {
+            get {
+                return ResourceManager.GetString("RemoteAssemblyScanner_LogMessage_AddingDiscoverableMemberToRepository_WithMemberI" +
+                        "nformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adding new part [{0}] to repository..
         /// </summary>
         internal static string RemoteAssemblyScanner_LogMessage_AddingPartToRepository_WithPartInformation {

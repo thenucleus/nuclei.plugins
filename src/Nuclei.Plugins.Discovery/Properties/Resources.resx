@@ -150,6 +150,9 @@
   <data name="Plugins_PluginScanDomainName" xml:space="preserve">
     <value>Nuclei.Plugins.Discovery: plugin scan AppDomain</value>
   </data>
+  <data name="RemoteAssemblyScanner_LogMessage_AddingDiscoverableMemberToRepository_WithMemberInformation" xml:space="preserve">
+    <value>Adding new discoverable member [{0}] to the repository.</value>
+  </data>
   <data name="RemoteAssemblyScanner_LogMessage_AddingPartToRepository_WithPartInformation" xml:space="preserve">
     <value>Adding new part [{0}] to repository.</value>
   </data>
