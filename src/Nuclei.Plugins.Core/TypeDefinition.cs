@@ -78,6 +78,19 @@ namespace Nuclei.Plugins.Core
         /// Creates a new instance of the <see cref="TypeDefinition"/> class based on the given <see cref="Type"/>.
         /// </summary>
         /// <param name="type">The type for which a serialized definition needs to be created.</param>
+        /// <returns>The serialized definition for the given type.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="type"/> is <see langword="null" />.
+        /// </exception>
+        public static TypeDefinition CreateDefinition(Type type)
+        {
+            return CreateDefinition(type, t => TypeIdentity.CreateDefinition(t));
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="TypeDefinition"/> class based on the given <see cref="Type"/>.
+        /// </summary>
+        /// <param name="type">The type for which a serialized definition needs to be created.</param>
         /// <param name="identityGenerator">The function that creates type identities.</param>
         /// <returns>The serialized definition for the given type.</returns>
         /// <exception cref="ArgumentNullException">
