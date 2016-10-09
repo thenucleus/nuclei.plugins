@@ -81,6 +81,9 @@
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Test.SourceOnly\Mocks\Attributes.cs">
+      <Link>Mocks\Attributes.cs</Link>
+    </Compile>
     <Compile Include="..\Test.SourceOnly\Mocks\Exports.cs">
       <Link>Mocks\Exports.cs</Link>
     </Compile>
@@ -91,6 +94,7 @@
     <Compile Include="CannotMapExportToImportExceptionTest.cs" />
     <Compile Include="ConstructorBasedImportDefinitionTest.cs" />
     <Compile Include="ConstructorDefinitionTest.cs" />
+    <Compile Include="DuplicateDiscoverableMemberExceptionTest.cs" />
     <Compile Include="DuplicatePartDefinitionExceptionTest.cs" />
     <Compile Include="DuplicateTypeDefinitionExceptionTest.cs" />
     <Compile Include="ExportRegistrationIdTest.cs" />

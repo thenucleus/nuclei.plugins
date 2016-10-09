@@ -55,7 +55,7 @@ namespace Nuclei.Plugins.Discovery
 
             var repository = new Mock<IPluginRepository>();
             {
-                repository.Setup(r => r.KnownPluginFiles())
+                repository.Setup(r => r.KnownPluginOrigins())
                     .Returns(pluginFiles);
             }
 
@@ -99,7 +99,7 @@ namespace Nuclei.Plugins.Discovery
 
             var repository = new Mock<IPluginRepository>();
             {
-                repository.Setup(r => r.KnownPluginFiles())
+                repository.Setup(r => r.KnownPluginOrigins())
                     .Returns(pluginFiles);
             }
 
@@ -131,7 +131,7 @@ namespace Nuclei.Plugins.Discovery
         {
             var repository = new Mock<IPluginRepository>();
             {
-                repository.Setup(r => r.KnownPluginFiles())
+                repository.Setup(r => r.KnownPluginOrigins())
                     .Returns(Enumerable.Empty<PluginFileOrigin>());
             }
 
@@ -180,7 +180,7 @@ namespace Nuclei.Plugins.Discovery
 
             var repository = new Mock<IPluginRepository>();
             {
-                repository.Setup(r => r.KnownPluginFiles())
+                repository.Setup(r => r.KnownPluginOrigins())
                     .Returns(pluginFiles);
             }
 

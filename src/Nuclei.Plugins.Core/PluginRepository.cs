@@ -26,15 +26,21 @@ namespace Nuclei.Plugins.Core
         private readonly object _lock = new object();
 
         /// <summary>
+        /// The collection that keeps track of all the known discoverable members.
+        /// </summary>
+        private readonly Dictionary<SerializableDiscoverableMemberDefinition, PluginOrigin> _discoverableMembers
+            = new Dictionary<SerializableDiscoverableMemberDefinition, PluginOrigin>();
+
+        /// <summary>
         /// The collection that keeps track of all the known parts and their definitions.
         /// </summary>
         private readonly Dictionary<TypeIdentity, Tuple<PartDefinition, PluginOrigin>> _parts
             = new Dictionary<TypeIdentity, Tuple<PartDefinition, PluginOrigin>>();
 
         /// <summary>
-        /// The collection that keeps track of all the known plugin files.
+        /// The collection that keeps track of all the known plugin origins.
         /// </summary>
-        private readonly List<PluginOrigin> _pluginFiles
+        private readonly List<PluginOrigin> _pluginOrigins
             = new List<PluginOrigin>();
 
         /// <summary>
@@ -53,29 +59,61 @@ namespace Nuclei.Plugins.Core
             = new BidirectionalGraph<TypeIdentity, Edge<TypeIdentity>>();
 
         /// <summary>
+        /// Adds a new discoverable member to the repository.
+        /// </summary>
+        /// <param name="member">The member that should be added.</param>
+        /// <param name="pluginOrigin">The origin of the assembly that owns the discoverable member</param>
+        public void AddDiscoverableMember(SerializableDiscoverableMemberDefinition member, PluginOrigin pluginOrigin)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+
+            if (pluginOrigin == null)
+            {
+                throw new ArgumentNullException("pluginOrigin");
+            }
+
+            lock (_lock)
+            {
+                if (_discoverableMembers.ContainsKey(member))
+                {
+                    throw new DuplicateDiscoverableMemberException();
+                }
+
+                _discoverableMembers.Add(member, pluginOrigin);
+                if (!_pluginOrigins.Contains(pluginOrigin))
+                {
+                    _pluginOrigins.Add(pluginOrigin);
+                }
+            }
+        }
+
+        /// <summary>
         /// Adds a new part to the repository.
         /// </summary>
         /// <param name="part">The part definition.</param>
-        /// <param name="pluginFileInfo">The file info of the assembly which owns the part.</param>
+        /// <param name="pluginOrigin">The origin of the assembly which owns the part.</param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="part"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="pluginFileInfo"/> is <see langword="null" />.
+        ///     Thrown if <paramref name="pluginOrigin"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="DuplicatePartDefinitionException">
         ///     Thrown if <paramref name="part"/> is already registered with the repository.
         /// </exception>
-        public void AddPart(PartDefinition part, PluginOrigin pluginFileInfo)
+        public void AddPart(PartDefinition part, PluginOrigin pluginOrigin)
         {
             if (part == null)
             {
                 throw new ArgumentNullException("part");
             }
 
-            if (pluginFileInfo == null)
+            if (pluginOrigin == null)
             {
-                throw new ArgumentNullException("pluginFileInfo");
+                throw new ArgumentNullException("pluginOrigin");
             }
 
             lock (_lock)
@@ -85,10 +123,10 @@ namespace Nuclei.Plugins.Core
                     throw new DuplicatePartDefinitionException();
                 }
 
-                _parts.Add(part.Identity, new Tuple<PartDefinition, PluginOrigin>(part, pluginFileInfo));
-                if (!_pluginFiles.Contains(pluginFileInfo))
+                _parts.Add(part.Identity, new Tuple<PartDefinition, PluginOrigin>(part, pluginOrigin));
+                if (!_pluginOrigins.Contains(pluginOrigin))
                 {
-                    _pluginFiles.Add(pluginFileInfo);
+                    _pluginOrigins.Add(pluginOrigin);
                 }
             }
         }
@@ -203,6 +241,90 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
+        /// Returns the discoverable member that has the given method as declaring member.
+        /// </summary>
+        /// <param name="method">The declaring method.</param>
+        /// <returns>The requested discoverable member.</returns>
+        public MethodBasedDiscoverableMember DiscoverableMember(MethodDefinition method)
+        {
+            lock (_lock)
+            {
+                return _discoverableMembers
+                    .Where(m => m.Key is MethodBasedDiscoverableMember)
+                    .Select(m => m.Key)
+                    .Cast<MethodBasedDiscoverableMember>()
+                    .FirstOrDefault(m => m.Method.Equals(method));
+            }
+        }
+
+        /// <summary>
+        /// Returns the discoverable member that has the given property as declaring member.
+        /// </summary>
+        /// <param name="property">The declaring property.</param>
+        /// <returns>The requested discoverable member.</returns>
+        public PropertyBasedDiscoverableMember DiscoverableMember(PropertyDefinition property)
+        {
+            lock (_lock)
+            {
+                return _discoverableMembers
+                    .Where(m => m.Key is PropertyBasedDiscoverableMember)
+                    .Select(m => m.Key)
+                    .Cast<PropertyBasedDiscoverableMember>()
+                    .FirstOrDefault(m => m.Property.Equals(property));
+            }
+        }
+
+        /// <summary>
+        /// Returns the discoverable member that has the given type as declaring member.
+        /// </summary>
+        /// <param name="type">The declaring type.</param>
+        /// <returns>The requested discoverable member.</returns>
+        public TypeBasedDiscoverableMember DiscoverableMember(TypeIdentity type)
+        {
+            lock (_lock)
+            {
+                return _discoverableMembers
+                    .Where(m => m.Key is TypeBasedDiscoverableMember)
+                    .Select(m => m.Key)
+                    .Cast<TypeBasedDiscoverableMember>()
+                    .FirstOrDefault(m => m.DeclaringType.Equals(type));
+            }
+        }
+
+        /// <summary>
+        /// Returns a collection containing all known discoverable members.
+        /// </summary>
+        /// <returns>The collection containing all known discoverable members.</returns>
+        public IEnumerable<SerializableDiscoverableMemberDefinition> DiscoverableMembers()
+        {
+            lock (_lock)
+            {
+                return _discoverableMembers.Select(p => p.Key).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Returns a collection containing all known discoverable members which have the given key value pair in their
+        /// metadata set.
+        /// </summary>
+        /// <param name="key">The metadata key.</param>
+        /// <param name="value">The metadata value.</param>
+        /// <returns>
+        ///     The collection containing all known discoverable members with the given key-value pair in their given
+        ///     metadata set.
+        /// </returns>
+        public IEnumerable<SerializableDiscoverableMemberDefinition> DiscoverableMembersWithMetadata(string key, string value)
+        {
+            lock (_lock)
+            {
+                return _discoverableMembers
+                    .Where(m => m.Key.Metadata.ContainsKey(key) && m.Key.Metadata[key].Equals(value))
+                    .Select(p => p.Key)
+                    .ToList();
+            }
+        }
+
+        /// <summary>
         /// Returns the identity for the type given by the name.
         /// </summary>
         /// <param name="fullyQualifiedName">The fully qualified name of the type.</param>
@@ -270,11 +392,11 @@ namespace Nuclei.Plugins.Core
         /// <returns>
         /// A collection containing the descriptions of all the known plugins.
         /// </returns>
-        public IEnumerable<PluginOrigin> KnownPluginFiles()
+        public IEnumerable<PluginOrigin> KnownPluginOrigins()
         {
             lock (_lock)
             {
-                return _pluginFiles.ToList();
+                return _pluginOrigins.ToList();
             }
         }
 
@@ -320,31 +442,31 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
-        /// Removes all the plugins related to the given plugin files.
+        /// Removes all the plugins related to the given plugin origins.
         /// </summary>
-        /// <param name="deletedFiles">The collection of plugin file paths that were removed.</param>
+        /// <param name="deletedPlugins">The collection of plugins that were removed.</param>
         /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="deletedFiles"/> is <see langword="null" />.
+        ///     Thrown if <paramref name="deletedPlugins"/> is <see langword="null" />.
         /// </exception>
-        public void RemovePlugins(IEnumerable<PluginOrigin> deletedFiles)
+        public void RemovePlugins(IEnumerable<PluginOrigin> deletedPlugins)
         {
-            if (deletedFiles == null)
+            if (deletedPlugins == null)
             {
                 throw new ArgumentNullException("deletedFiles");
             }
 
             lock (_lock)
             {
-                var filesToDelete = _pluginFiles
+                var filesToDelete = _pluginOrigins
                     .Join(
-                        deletedFiles,
+                        deletedPlugins,
                         pluginFile => pluginFile,
                         filePath => filePath,
                         (pluginFile, filePath) => pluginFile)
                     .ToList();
                 foreach (var file in filesToDelete)
                 {
-                    _pluginFiles.Remove(file);
+                    _pluginOrigins.Remove(file);
                 }
 
                 var typesToDelete = _parts

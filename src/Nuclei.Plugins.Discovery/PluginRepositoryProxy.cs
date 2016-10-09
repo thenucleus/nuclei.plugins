@@ -45,13 +45,23 @@ namespace Nuclei.Plugins.Discovery
         }
 
         /// <summary>
+        /// Adds a new discoverable member to the repository.
+        /// </summary>
+        /// <param name="member">The member that should be added.</param>
+        /// <param name="pluginOrigin">The origin of the assembly that owns the discoverable member</param>
+        public void AddDiscoverableMember(SerializableDiscoverableMemberDefinition member, PluginOrigin pluginOrigin)
+        {
+            _repository.AddDiscoverableMember(member, pluginOrigin);
+        }
+
+        /// <summary>
         /// Adds a new part to the repository.
         /// </summary>
         /// <param name="part">The part definition.</param>
-        /// <param name="pluginFileInfo">The file info of the assembly which owns the part.</param>
-        public void AddPart(PartDefinition part, PluginOrigin pluginFileInfo)
+        /// <param name="pluginOrigin">The origin of the assembly which owns the part.</param>
+        public void AddPart(PartDefinition part, PluginOrigin pluginOrigin)
         {
-            _repository.AddPart(part, pluginFileInfo);
+            _repository.AddPart(part, pluginOrigin);
         }
 
         /// <summary>
@@ -100,6 +110,60 @@ namespace Nuclei.Plugins.Discovery
         }
 
         /// <summary>
+        /// Returns the discoverable member that has the given method as declaring member.
+        /// </summary>
+        /// <param name="method">The declaring method.</param>
+        /// <returns>The requested discoverable member.</returns>
+        public MethodBasedDiscoverableMember DiscoverableMember(MethodDefinition method)
+        {
+            return _repository.DiscoverableMember(method);
+        }
+
+        /// <summary>
+        /// Returns the discoverable member that has the given property as declaring member.
+        /// </summary>
+        /// <param name="property">The declaring property.</param>
+        /// <returns>The requested discoverable member.</returns>
+        public PropertyBasedDiscoverableMember DiscoverableMember(PropertyDefinition property)
+        {
+            return _repository.DiscoverableMember(property);
+        }
+
+        /// <summary>
+        /// Returns the discoverable member that has the given type as declaring member.
+        /// </summary>
+        /// <param name="type">The declaring type.</param>
+        /// <returns>The requested discoverable member.</returns>
+        public TypeBasedDiscoverableMember DiscoverableMember(TypeIdentity type)
+        {
+            return _repository.DiscoverableMember(type);
+        }
+
+        /// <summary>
+        /// Returns a collection containing all known discoverable members.
+        /// </summary>
+        /// <returns>The collection containing all known discoverable members.</returns>
+        public IEnumerable<SerializableDiscoverableMemberDefinition> DiscoverableMembers()
+        {
+            return _repository.DiscoverableMembers();
+        }
+
+        /// <summary>
+        /// Returns a collection containing all known discoverable members which have the given key value pair in their
+        /// metadata set.
+        /// </summary>
+        /// <param name="key">The metadata key.</param>
+        /// <param name="value">The metadata value.</param>
+        /// <returns>
+        ///     The collection containing all known discoverable members with the given key-value pair in their given
+        ///     metadata set.
+        /// </returns>
+        public IEnumerable<SerializableDiscoverableMemberDefinition> DiscoverableMembersWithMetadata(string key, string value)
+        {
+            return _repository.DiscoverableMembersWithMetadata(key, value);
+        }
+
+        /// <summary>
         /// Returns the identity for the type given by the name.
         /// </summary>
         /// <param name="fullyQualifiedName">The fully qualified name of the type.</param>
@@ -132,9 +196,9 @@ namespace Nuclei.Plugins.Discovery
         /// <returns>
         /// A collection containing the descriptions of all the known plugins.
         /// </returns>
-        public IEnumerable<PluginOrigin> KnownPluginFiles()
+        public IEnumerable<PluginOrigin> KnownPluginOrigins()
         {
-            return _repository.KnownPluginFiles();
+            return _repository.KnownPluginOrigins();
         }
 
         /// <summary>
@@ -157,12 +221,12 @@ namespace Nuclei.Plugins.Discovery
         }
 
         /// <summary>
-        /// Removes all the plugins related to the given plugin files.
+        /// Removes all the plugins related to the given plugin origins.
         /// </summary>
-        /// <param name="deletedFiles">The collection of plugin file paths that were removed.</param>
-        public void RemovePlugins(IEnumerable<PluginOrigin> deletedFiles)
+        /// <param name="deletedPlugins">The collection of plugins that were removed.</param>
+        public void RemovePlugins(IEnumerable<PluginOrigin> deletedPlugins)
         {
-            _repository.RemovePlugins(deletedFiles);
+            _repository.RemovePlugins(deletedPlugins);
         }
 
         /// <summary>
