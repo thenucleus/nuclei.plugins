@@ -43,14 +43,6 @@ namespace Nuclei.Plugins.Core
             }
         }
 
-        [SuppressMessage(
-            "Microsoft.Design",
-            "CA1034:NestedTypesShouldNotBeVisible",
-            Justification = "Type has to be public for it to be used for reflection.")]
-        public sealed class Nested<TKey, TValue>
-        {
-        }
-
         [Test]
         public void RoundTripSerialize()
         {
@@ -72,11 +64,11 @@ namespace Nuclei.Plugins.Core
         [Test]
         public void CreateWithNestedClass()
         {
-            var type = typeof(Nested<,>);
+            var type = typeof(Nested<int, string>);
             var obj = TypeBasedExportDefinition.CreateDefinition("A", "B", type);
 
             Assert.AreEqual("A", obj.ContractName);
-            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Nested<,>)), obj.DeclaringType);
+            Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(Nested<int, string>)), obj.DeclaringType);
         }
 
         [Test]
@@ -86,6 +78,14 @@ namespace Nuclei.Plugins.Core
 
             Assert.AreEqual("A", obj.ContractName);
             Assert.AreEqual(TypeIdentity.CreateDefinition(typeof(IEnumerable<>)), obj.DeclaringType);
+        }
+
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1034:NestedTypesShouldNotBeVisible",
+            Justification = "Type has to be public for it to be used for reflection.")]
+        public sealed class Nested<TKey, TValue>
+        {
         }
 
         private sealed class TypeBasedExportDefinitionEqualityContractVerifier : EqualityContractVerifier<TypeBasedExportDefinition>
