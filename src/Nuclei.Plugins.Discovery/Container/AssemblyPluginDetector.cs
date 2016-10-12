@@ -16,12 +16,12 @@ using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Discovery.Properties;
 
-namespace Nuclei.Plugins.Discovery
+namespace Nuclei.Plugins.Discovery.Container.Assembly
 {
     /// <summary>
     /// Provides the methods to find and scan plugins available in assembly files.
     /// </summary>
-    public sealed class PluginDetector
+    public sealed class AssemblyPluginDetector : IProcessPluginOriginChanges
     {
         /// <summary>
         /// The objects that provides the diagnostics methods for the application.
@@ -29,9 +29,10 @@ namespace Nuclei.Plugins.Discovery
         private readonly SystemDiagnostics _diagnostics;
 
         /// <summary>
-        /// The abstraction layer for the file system.
+        /// The collection containing all listeners.
         /// </summary>
-        private readonly IFileSystem _fileSystem;
+        private readonly List<IPluginListener> _listeners
+            = new List<IPluginListener>();
 
         /// <summary>
         /// The object that stores information about all the parts and the part groups.
@@ -45,28 +46,28 @@ namespace Nuclei.Plugins.Discovery
         private readonly Func<IPluginRepository, IAssemblyScanner> _scannerBuilder;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PluginDetector"/> class.
+        /// Initializes a new instance of the <see cref="AssemblyPluginDetector"/> class.
         /// </summary>
         /// <param name="repository">The object that stores information about all the parts and the part groups.</param>
+        /// <param name="listeners">The collection of object that detect changes to plugin files.</param>
         /// <param name="scannerBuilder">The function that is used to create an assembly scanner.</param>
-        /// <param name="fileSystem">The abstraction layer for the file system.</param>
         /// <param name="diagnostics">The object that provides the diagnostics methods for the application.</param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="repository"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="scannerBuilder"/> is <see langword="null" />.
+        ///     Thrown if <paramref name="listeners"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="fileSystem"/> is <see langword="null" />.
+        ///     Thrown if <paramref name="scannerBuilder"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="diagnostics"/> is <see langword="null" />.
         /// </exception>
-        public PluginDetector(
+        public AssemblyPluginDetector(
             IPluginRepository repository,
+            IEnumerable<IPluginListener> listeners,
             Func<IPluginRepository, IAssemblyScanner> scannerBuilder,
-            IFileSystem fileSystem,
             SystemDiagnostics diagnostics)
         {
             if (repository == null)
@@ -74,14 +75,14 @@ namespace Nuclei.Plugins.Discovery
                 throw new ArgumentNullException("repository");
             }
 
+            if (listeners == null)
+            {
+                throw new ArgumentNullException("listeners");
+            }
+
             if (scannerBuilder == null)
             {
                 throw new ArgumentNullException("scannerBuilder");
-            }
-
-            if (fileSystem == null)
-            {
-                throw new ArgumentNullException("fileSystem");
             }
 
             if (diagnostics == null)
@@ -90,75 +91,18 @@ namespace Nuclei.Plugins.Discovery
             }
 
             _diagnostics = diagnostics;
-            _fileSystem = fileSystem;
             _repository = repository;
             _scannerBuilder = scannerBuilder;
+
+            foreach (var listener in listeners)
+            {
+                _listeners.Add(listener);
+                listener.OnPluginDetected += HandlePluginDetected;
+            }
         }
 
-        private void RemoveDeletedPlugins(IEnumerable<string> changedFilePaths)
+        private void HandlePluginDetected(object sender, PluginFoundEventArgs e)
         {
-            var deletedFiles = changedFilePaths.Where(file => !_fileSystem.File.Exists(file)).Select(file => new PluginFileOrigin(file));
-            _repository.RemovePlugins(deletedFiles);
-        }
-
-        /// <summary>
-        /// Searches the given directory for plugins.
-        /// </summary>
-        /// <param name="directory">The directory to search.</param>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="directory"/> is <see langword="null" />.
-        /// </exception>
-        /// <exception cref="DirectoryNotFoundException">
-        ///     Thrown if <paramref name="directory"/> does not exist.
-        /// </exception>
-        public void SearchDirectory(string directory)
-        {
-            if (directory == null)
-            {
-                throw new ArgumentNullException("directory");
-            }
-
-            _diagnostics.Log(
-                LevelToLog.Info,
-                string.Format(
-                    CultureInfo.InvariantCulture,
-                    Resources.Plugins_LogMessage_Detector_FileScanStarted_WithDirectory,
-                    directory));
-
-            IEnumerable<string> files = Enumerable.Empty<string>();
-            try
-            {
-                files = _fileSystem.Directory.GetFiles(directory, "*.dll", SearchOption.AllDirectories);
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                // Something went wrong with the file IO. That probably means we don't have a complete list
-                // so we just exit to prevent any issues from occuring.
-                _diagnostics.Log(
-                    LevelToLog.Error,
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Resources.Plugins_LogMessage_Detector_FileScanFailed_WithDirectoryAndException,
-                        directory,
-                        e));
-
-                return;
-            }
-            catch (IOException e)
-            {
-                // Something went wrong with the file IO. That probably means we don't have a complete list
-                // so we just exit to prevent any issues from occuring.
-                _diagnostics.Log(
-                    LevelToLog.Error,
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Resources.Plugins_LogMessage_Detector_FileScanFailed_WithDirectoryAndException,
-                        directory,
-                        e));
-
-                return;
-            }
-
             var knownFiles = _repository.KnownPluginOrigins().OfType<PluginFileOrigin>();
 
             var changedKnownFiles = knownFiles
@@ -180,6 +124,12 @@ namespace Nuclei.Plugins.Discovery
                     CultureInfo.InvariantCulture,
                     Resources.Plugins_LogMessage_Detector_FileScanCompleted,
                     directory));
+        }
+
+        private void RemoveDeletedPlugins(IEnumerable<string> changedFilePaths)
+        {
+            var deletedFiles = changedFilePaths.Where(file => !_fileSystem.File.Exists(file)).Select(file => new PluginFileOrigin(file));
+            _repository.RemovePlugins(deletedFiles);
         }
 
         private void StorePlugins(IEnumerable<string> filesToScan)
