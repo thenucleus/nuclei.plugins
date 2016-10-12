@@ -126,6 +126,30 @@
   <data name="Exceptions_Messages_ParameterShouldNotBeAnEmptyString" xml:space="preserve">
     <value>The parameter should not be an empty string.</value>
   </data>
+  <data name="Log_Messages_FileSystemListener_CreatedFile_WithFilePath" xml:space="preserve">
+    <value>Discovered new rule file at: {0}</value>
+  </data>
+  <data name="Log_Messages_FileSystemListener_DeletedFile_ScannerFailed_WithScannerTypeAndFilePathsAndError" xml:space="preserve">
+    <value>The scanner of type {0} failed to delete the files  [{1}]. The error was {2}.</value>
+  </data>
+  <data name="Log_Messages_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFilePathsAndError" xml:space="preserve">
+    <value>The scanner of type {0} failed to scan the files  [{1}]. The error was {2}.</value>
+  </data>
+  <data name="Log_Messages_FileSystemListener_FileDiscovery_Disabled" xml:space="preserve">
+    <value>File discovery - Disabled</value>
+  </data>
+  <data name="Log_Messages_FileSystemListener_FileDiscovery_Enabled" xml:space="preserve">
+    <value>File discovery - Enabled</value>
+  </data>
+  <data name="Log_Messages_FileSystemListener_LocatedFile_WithFilePath" xml:space="preserve">
+    <value>Discovered new file at: {0}</value>
+  </data>
+  <data name="Log_Messages_FileSystemListener_RemovedFile_WithFilePath" xml:space="preserve">
+    <value>Discovered removed file at: {0}</value>
+  </data>
+  <data name="Log_Messages_FileSystemListener_UpdatedFile_WithFilePath" xml:space="preserve">
+    <value>Discovered updated file at: {0}</value>
+  </data>
   <data name="Plugins_LogMessage_Detector_FileScanCompleted" xml:space="preserve">
     <value>Plugin discovery process completed.</value>
   </data>

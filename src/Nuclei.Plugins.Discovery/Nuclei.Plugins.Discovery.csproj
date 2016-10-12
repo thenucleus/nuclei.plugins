@@ -71,10 +71,15 @@
     <Compile Include="AppDomainOwningPluginScanner.cs" />
     <Compile Include="AppDomainPluginClassLoader.cs" />
     <Compile Include="DuplicateContractNameException.cs" />
+    <Compile Include="FileSystem\FileSystemListener.cs" />
     <Compile Include="IAssemblyScanner.cs" />
     <Compile Include="InvalidExportMethodException.cs" />
+    <Compile Include="IPluginListener.cs" />
+    <Compile Include="IProcessPluginOriginChanges.cs" />
+    <Compile Include="PluginConfigurationKeys.cs" />
     <Compile Include="PluginDetector.cs" />
     <Compile Include="PluginDiscoveryConfigurationKeys.cs" />
+    <Compile Include="PluginDiscoveryConstants.cs" />
     <Compile Include="PluginFileOrigin.cs" />
     <Compile Include="PluginRepositoryProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

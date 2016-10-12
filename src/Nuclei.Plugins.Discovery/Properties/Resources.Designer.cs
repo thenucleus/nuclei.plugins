@@ -88,6 +88,80 @@ namespace Nuclei.Plugins.Discovery.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discovered new rule file at: {0}.
+        /// </summary>
+        internal static string Log_Messages_FileSystemListener_CreatedFile_WithFilePath {
+            get {
+                return ResourceManager.GetString("Log_Messages_FileSystemListener_CreatedFile_WithFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The scanner of type {0} failed to delete the files  [{1}]. The error was {2}..
+        /// </summary>
+        internal static string Log_Messages_FileSystemListener_DeletedFile_ScannerFailed_WithScannerTypeAndFilePathsAndError {
+            get {
+                return ResourceManager.GetString("Log_Messages_FileSystemListener_DeletedFile_ScannerFailed_WithScannerTypeAndFileP" +
+                        "athsAndError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The scanner of type {0} failed to scan the files  [{1}]. The error was {2}..
+        /// </summary>
+        internal static string Log_Messages_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFilePathsAndError {
+            get {
+                return ResourceManager.GetString("Log_Messages_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFi" +
+                        "lePathsAndError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File discovery - Disabled.
+        /// </summary>
+        internal static string Log_Messages_FileSystemListener_FileDiscovery_Disabled {
+            get {
+                return ResourceManager.GetString("Log_Messages_FileSystemListener_FileDiscovery_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File discovery - Enabled.
+        /// </summary>
+        internal static string Log_Messages_FileSystemListener_FileDiscovery_Enabled {
+            get {
+                return ResourceManager.GetString("Log_Messages_FileSystemListener_FileDiscovery_Enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discovered new file at: {0}.
+        /// </summary>
+        internal static string Log_Messages_FileSystemListener_LocatedFile_WithFilePath {
+            get {
+                return ResourceManager.GetString("Log_Messages_FileSystemListener_LocatedFile_WithFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discovered removed file at: {0}.
+        /// </summary>
+        internal static string Log_Messages_FileSystemListener_RemovedFile_WithFilePath {
+            get {
+                return ResourceManager.GetString("Log_Messages_FileSystemListener_RemovedFile_WithFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discovered updated file at: {0}.
+        /// </summary>
+        internal static string Log_Messages_FileSystemListener_UpdatedFile_WithFilePath {
+            get {
+                return ResourceManager.GetString("Log_Messages_FileSystemListener_UpdatedFile_WithFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Plugin discovery process completed..
         /// </summary>
         internal static string Plugins_LogMessage_Detector_FileScanCompleted {

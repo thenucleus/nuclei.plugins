@@ -76,9 +76,11 @@
     <Compile Include="DuplicatePartDefinitionException.cs" />
     <Compile Include="DuplicateTypeDefinitionException.cs" />
     <Compile Include="ExportRegistrationId.cs" />
+    <Compile Include="FilePluginType.cs" />
     <Compile Include="ImportRegistrationId.cs" />
     <Compile Include="IPartRegistration.cs" />
     <Compile Include="IPluginRepository.cs" />
+    <Compile Include="IPluginType.cs" />
     <Compile Include="ISatisfyPluginRequests.cs" />
     <Compile Include="MefConstants.cs" />
     <Compile Include="MethodBasedDiscoverableMember.cs" />
