@@ -8,7 +8,7 @@
 using System;
 using Nuclei.Plugins.Core;
 
-namespace Nuclei.Plugins.Discovery
+namespace Nuclei.Plugins.Discovery.Origin.FileSystem
 {
     /// <summary>
     /// Describes the location and last write time for a plugin assembly.

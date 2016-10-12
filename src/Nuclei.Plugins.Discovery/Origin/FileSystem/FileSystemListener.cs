@@ -19,7 +19,7 @@ using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Discovery.Properties;
 
-namespace Nuclei.Plugins.Discovery.FileSystem
+namespace Nuclei.Plugins.Discovery.Origin.FileSystem
 {
     /// <summary>
     /// Handles the detection of new, updated and removed plugin files stored in a directory.
