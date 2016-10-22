@@ -76,6 +76,8 @@
     <Compile Include="InvalidExportMethodException.cs" />
     <Compile Include="IPluginListener.cs" />
     <Compile Include="IProcessPluginOriginChanges.cs" />
+    <Compile Include="Origin\FileSystem\FileSystemWatcherProxy.cs" />
+    <Compile Include="Origin\FileSystem\IFileSystemWatcher.cs" />
     <Compile Include="PluginConfigurationKeys.cs" />
     <Compile Include="Container\AssemblyPluginDetector.cs" />
     <Compile Include="PluginDiscoveryConfigurationKeys.cs" />
