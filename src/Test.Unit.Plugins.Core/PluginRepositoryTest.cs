@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Nuclei.Plugins.Discovery;
+using Nuclei.Plugins.Discovery.Origin.FileSystem;
 using NUnit.Framework;
 using Test.Mocks;
 
@@ -38,7 +39,7 @@ namespace Nuclei.Plugins.Core
                 metadata,
                 identityGenerator);
 
-            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now, DateTimeOffset.Now);
             repository.AddDiscoverableMember(definition, fileInfo);
 
             var discoverableMembers = repository.DiscoverableMembers();
@@ -65,7 +66,7 @@ namespace Nuclei.Plugins.Core
                 metadata,
                 identityGenerator);
 
-            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now, DateTimeOffset.Now);
             repository.AddDiscoverableMember(definition, fileInfo);
 
             var discoverableMembers = repository.DiscoverableMembers();
@@ -92,7 +93,7 @@ namespace Nuclei.Plugins.Core
                 metadata,
                 identityGenerator);
 
-            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now, DateTimeOffset.Now);
             repository.AddDiscoverableMember(definition, fileInfo);
 
             var discoverableMembers = repository.DiscoverableMembers();
@@ -117,7 +118,7 @@ namespace Nuclei.Plugins.Core
                 Identity = identityGenerator(typeof(ExportOnProperty)),
             };
 
-            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now, DateTimeOffset.Now);
             repository.AddPart(definition, fileInfo);
 
             var parts = repository.Parts();
@@ -349,7 +350,7 @@ namespace Nuclei.Plugins.Core
             var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
             var repository = new PluginRepository();
 
-            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now, DateTimeOffset.Now);
 
             var methodInfo = typeof(DiscoverableMemberOnMethod).GetMethod("DiscoverableMethod", new Type[0]);
             var metadata = methodInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
@@ -382,7 +383,7 @@ namespace Nuclei.Plugins.Core
             var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
             var repository = new PluginRepository();
 
-            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            var fileInfo = new PluginFileOrigin("a", DateTimeOffset.Now, DateTimeOffset.Now);
 
             var methodInfo = typeof(DiscoverableMemberOnMethod).GetMethod("DiscoverableMethod", new Type[0]);
             var metadata = methodInfo.GetCustomAttribute<MockDiscoverableMemberAttribute>().Metadata();
@@ -509,7 +510,7 @@ namespace Nuclei.Plugins.Core
                 Identity = identityGenerator(typeof(ExportOnProperty)),
             };
 
-            var partFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            var partFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now, DateTimeOffset.Now);
             repository.AddPart(partDefinition, partFileInfo);
 
             Assert.That(
@@ -548,7 +549,7 @@ namespace Nuclei.Plugins.Core
                 Identity = identityGenerator(typeof(MockExportingInterfaceImplementation)),
             };
 
-            var parentFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            var parentFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now, DateTimeOffset.Now);
             repository.AddPart(parentDefinition, parentFileInfo);
 
             PartDefinition childDefinition = new PartDefinition
@@ -556,7 +557,7 @@ namespace Nuclei.Plugins.Core
                 Identity = identityGenerator(typeof(MockChildExportingInterfaceImplementation)),
             };
 
-            var childFileInfo = new PluginFileOrigin("b", DateTimeOffset.Now);
+            var childFileInfo = new PluginFileOrigin("b", DateTimeOffset.Now, DateTimeOffset.Now);
             repository.AddPart(childDefinition, childFileInfo);
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockExportingInterfaceImplementation))));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockChildExportingInterfaceImplementation))));
@@ -582,7 +583,7 @@ namespace Nuclei.Plugins.Core
                 Identity = identityGenerator(typeof(MockExportingInterfaceImplementation)),
             };
 
-            var parentFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now);
+            var parentFileInfo = new PluginFileOrigin("a", DateTimeOffset.Now, DateTimeOffset.Now);
             repository.AddPart(parentDefinition, parentFileInfo);
 
             PartDefinition childDefinition = new PartDefinition
@@ -590,7 +591,7 @@ namespace Nuclei.Plugins.Core
                 Identity = identityGenerator(typeof(MockChildExportingInterfaceImplementation)),
             };
 
-            var childFileInfo = new PluginFileOrigin("b", DateTimeOffset.Now);
+            var childFileInfo = new PluginFileOrigin("b", DateTimeOffset.Now, DateTimeOffset.Now);
             repository.AddPart(childDefinition, childFileInfo);
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockExportingInterfaceImplementation))));
             Assert.IsTrue(repository.ContainsDefinitionForType(TypeIdentity.CreateDefinition(typeof(MockChildExportingInterfaceImplementation))));
