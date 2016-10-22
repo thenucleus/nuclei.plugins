@@ -14,5 +14,10 @@ namespace Nuclei.Plugins.Core
     /// </summary>
     public interface IPluginType : IEquatable<IPluginType>
     {
+        /// <summary>
+        /// Makes a copy of the current instance.
+        /// </summary>
+        /// <returns>A copy of the current instance.</returns>
+        IPluginType Clone();
     }
 }

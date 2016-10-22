@@ -98,6 +98,7 @@
     <Compile Include="DuplicatePartDefinitionExceptionTest.cs" />
     <Compile Include="DuplicateTypeDefinitionExceptionTest.cs" />
     <Compile Include="ExportRegistrationIdTest.cs" />
+    <Compile Include="FilePluginTypeTest.cs" />
     <Compile Include="ImportRegistrationIdTest.cs" />
     <Compile Include="MethodBasedDiscoverableMemberTest.cs" />
     <Compile Include="MethodBasedExportDefinitionTest.cs" />

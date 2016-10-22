@@ -6,13 +6,14 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
+using Nuclei.Plugins.Core.Properties;
 
 namespace Nuclei.Plugins.Core
 {
+    /// <summary>
+    /// Defines an <see cref="IPluginType"/> that references plugins in a file with a given extension.
+    /// </summary>
     public sealed class FilePluginType : IPluginType
     {
         /// <summary>
@@ -69,8 +70,45 @@ namespace Nuclei.Plugins.Core
             return !nonNullObject.Equals(possibleNullObject);
         }
 
+        /// <summary>
+        /// The file extension of the plugin file.
+        /// </summary>
+        private readonly string _extension;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilePluginType"/> class.
+        /// </summary>
+        /// <param name="extension">The file extension of the plugin file.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="extension"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if <paramref name="extension"/> is an empty string.
+        /// </exception>
         public FilePluginType(string extension)
         {
+            if (extension == null)
+            {
+                throw new ArgumentNullException(extension);
+            }
+
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                throw new ArgumentException(
+                    Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString,
+                    "extension");
+            }
+
+            _extension = extension;
+        }
+
+        /// <summary>
+        /// Makes a copy of the current instance.
+        /// </summary>
+        /// <returns>A copy of the current instance.</returns>
+        public IPluginType Clone()
+        {
+            return new FilePluginType(_extension);
         }
 
         /// <summary>
@@ -83,7 +121,12 @@ namespace Nuclei.Plugins.Core
         /// </returns>
         public bool Equals(IPluginType other)
         {
-            throw new NotImplementedException();
+            var filePluginType = other as FilePluginType;
+
+            // Check if other is a null reference by using ReferenceEquals because
+            // we overload the == operator. If other isn't actually null then
+            // we get an infinite loop where we're constantly trying to compare to null.
+            return !ReferenceEquals(filePluginType, null) && string.Equals(_extension, filePluginType._extension, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -124,9 +167,7 @@ namespace Nuclei.Plugins.Core
                 int hash = 17;
 
                 // Mash the hash together with yet another random prime number
-                hash = (hash * 23) ^ DeclaringType.GetHashCode();
-                hash = (hash * 23) ^ PropertyName.GetHashCode();
-                hash = (hash * 23) ^ PropertyType.GetHashCode();
+                hash = (hash * 23) ^ _extension.GetHashCode();
 
                 return hash;
             }
@@ -142,10 +183,8 @@ namespace Nuclei.Plugins.Core
         {
             return string.Format(
                 CultureInfo.InvariantCulture,
-                "{0} {1}.{2}",
-                PropertyType,
-                DeclaringType,
-                PropertyName);
+                "Plugin files with extension {0}",
+                _extension);
         }
     }
 }
