@@ -105,7 +105,7 @@
     </Compile>
     <Compile Include="DuplicateContractNameExceptionTest.cs" />
     <Compile Include="InvalidExportMethodExceptionTest.cs" />
-    <Compile Include="PluginDetectorTest.cs" />
+    <Compile Include="Container\AssemblyPluginDetectorTest.cs" />
     <Compile Include="Origin\FileSystem\FileSystemListenerTest.cs" />
     <Compile Include="Origin\FileSystem\PluginFileOriginTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
