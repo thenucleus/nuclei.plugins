@@ -45,14 +45,15 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         /// <summary>
         /// The collection of objects that watch the file system for newly added packages.
         /// </summary>
-        private readonly IDictionary<string, FileSystemWatcher> _watchers
-            = new Dictionary<string, FileSystemWatcher>();
+        private readonly IDictionary<string, IFileSystemWatcher> _watchers
+            = new Dictionary<string, IFileSystemWatcher>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileSystemListener"/> class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="fileScanners">The collection of objects that scan plugin files.</param>
+        /// <param name="watcherBuilder">The function that returns new <see cref="IFileSystemWatcher"/> instances.</param>
         /// <param name="diagnostics">The object providing the diagnostics methods for the application.</param>
         /// <param name="fileSystem">The object that provides a virtualizing layer for the file system.</param>
         /// <exception cref="ArgumentNullException">
@@ -60,6 +61,9 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         /// </exception>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="fileScanners"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="watcherBuilder"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="diagnostics"/> is <see langword="null" />.
@@ -70,6 +74,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public FileSystemListener(
             IConfiguration configuration,
             IEnumerable<IProcessPluginOriginChanges> fileScanners,
+            Func<IFileSystemWatcher> watcherBuilder,
             SystemDiagnostics diagnostics,
             IFileSystem fileSystem)
         {
@@ -80,7 +85,12 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
 
             if (fileScanners == null)
             {
-                throw new ArgumentNullException("packageScanners");
+                throw new ArgumentNullException("fileScanners");
+            }
+
+            if (watcherBuilder == null)
+            {
+                throw new ArgumentNullException("watcherBuilder");
             }
 
             if (diagnostics == null)
@@ -115,17 +125,18 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
 
                     if (!_watchers.ContainsKey(localPath))
                     {
-                        var watcher = new FileSystemWatcher
+                        var watcher = watcherBuilder();
                         {
-                            Path = localPath,
-                            IncludeSubdirectories = true,
-                            EnableRaisingEvents = false,
-                            NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.CreationTime | NotifyFilters.LastWrite,
-                        };
+                            watcher.Path = localPath;
+                            watcher.IncludeSubdirectories = true;
+                            watcher.EnableRaisingEvents = false;
+                            watcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.CreationTime | NotifyFilters.LastWrite;
 
-                        watcher.Created += HandleFileCreated;
-                        watcher.Changed += HandleFileChanged;
-                        watcher.Deleted += HandleFileDeleted;
+                            watcher.Created += HandleFileCreated;
+                            watcher.Changed += HandleFileChanged;
+                            watcher.Deleted += HandleFileDeleted;
+                            watcher.Renamed += HandleFileRenamed;
+                        }
 
                         _watchers.Add(localPath, watcher);
                     }
@@ -145,7 +156,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
 
             _diagnostics.Log(
                 LevelToLog.Info,
-                Resources.Log_Messages_FileSystemListener_FileDiscovery_Disabled);
+                Resources.LogMessage_FileSystemListener_FileDiscovery_Disabled);
         }
 
         /// <summary>
@@ -155,7 +166,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         {
             _diagnostics.Log(
                 LevelToLog.Info,
-                Resources.Log_Messages_FileSystemListener_FileDiscovery_Enabled);
+                Resources.LogMessage_FileSystemListener_FileDiscovery_Enabled);
 
             EnqueueExistingFiles();
             foreach (var pair in _watchers)
@@ -177,7 +188,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                     LevelToLog.Info,
                     string.Format(
                         CultureInfo.InvariantCulture,
-                        Resources.Log_Messages_FileSystemListener_LocatedFile_WithFilePath,
+                        Resources.LogMessage_FileSystemListener_LocatedFile_WithFilePath,
                         file));
 
                 newFiles.Add(file);
@@ -191,7 +202,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                         .Where(
                             p => scanner.AcceptedPluginTypes.Any(
                                 t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(p)))))
-                        .Select(p => new PluginFileOrigin(p, _fileSystem.File.GetLastWriteTimeUtc(p)))
+                        .Select(p => new PluginFileOrigin(p, _fileSystem.File.GetLastWriteTimeUtc(p), _fileSystem.File.GetLastWriteTimeUtc(p)))
                         .ToArray();
                     scanner.Added(origins);
                 }
@@ -201,7 +212,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                         LevelToLog.Warn,
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            Resources.Log_Messages_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFilePathsAndError,
+                            Resources.LogMessage_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFilePathsAndError,
                             scanner.GetType(),
                             string.Join(";", newFiles),
                             e));
@@ -219,10 +230,9 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 LevelToLog.Info,
                 string.Format(
                     CultureInfo.InvariantCulture,
-                    Resources.Log_Messages_FileSystemListener_UpdatedFile_WithFilePath,
+                    Resources.LogMessage_FileSystemListener_UpdatedFile_WithFilePath,
                     e.FullPath));
 
-            var updatedPackages = new[] { new PluginFileOrigin(e.FullPath) };
             foreach (var scanner in _scanners)
             {
                 try
@@ -231,6 +241,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                     {
                         var origin = new PluginFileOrigin(
                             e.FullPath,
+                            _fileSystem.File.GetLastWriteTimeUtc(e.FullPath),
                             _fileSystem.File.GetLastWriteTimeUtc(e.FullPath));
                         scanner.Removed(origin);
                         scanner.Added(origin);
@@ -242,7 +253,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                         LevelToLog.Warn,
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            Resources.Log_Messages_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFilePathsAndError,
+                            Resources.LogMessage_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFilePathsAndError,
                             scanner.GetType(),
                             e.FullPath,
                             exception));
@@ -260,10 +271,9 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 LevelToLog.Info,
                 string.Format(
                     CultureInfo.InvariantCulture,
-                    Resources.Log_Messages_FileSystemListener_CreatedFile_WithFilePath,
+                    Resources.LogMessage_FileSystemListener_CreatedFile_WithFilePath,
                     e.FullPath));
 
-            var newPackages = new[] { new PluginFileOrigin(e.FullPath) };
             foreach (var scanner in _scanners)
             {
                 try
@@ -272,6 +282,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                     {
                         var origin = new PluginFileOrigin(
                             e.FullPath,
+                            _fileSystem.File.GetLastWriteTimeUtc(e.FullPath),
                             _fileSystem.File.GetLastWriteTimeUtc(e.FullPath));
                         scanner.Added(origin);
                     }
@@ -282,7 +293,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                         LevelToLog.Warn,
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            Resources.Log_Messages_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFilePathsAndError,
+                            Resources.LogMessage_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFilePathsAndError,
                             scanner.GetType(),
                             e.FullPath,
                             exception));
@@ -300,10 +311,9 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 LevelToLog.Info,
                 string.Format(
                     CultureInfo.InvariantCulture,
-                    Resources.Log_Messages_FileSystemListener_RemovedFile_WithFilePath,
+                    Resources.LogMessage_FileSystemListener_RemovedFile_WithFilePath,
                     e.FullPath));
 
-            var removedPackages = new[] { new PluginFileOrigin(e.FullPath) };
             foreach (var scanner in _scanners)
             {
                 try
@@ -320,7 +330,54 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                         LevelToLog.Warn,
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            Resources.Log_Messages_FileSystemListener_DeletedFile_ScannerFailed_WithScannerTypeAndFilePathsAndError,
+                            Resources.LogMessage_FileSystemListener_DeletedFile_ScannerFailed_WithScannerTypeAndFilePathsAndError,
+                            scanner.GetType(),
+                            e.FullPath,
+                            exception));
+                }
+            }
+        }
+
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1031:DoNotCatchGeneralExceptionTypes",
+            Justification = "Logging the exception but don't want to kill the process because one of the scanners can't handle the package.")]
+        private void HandleFileRenamed(object sender, RenamedEventArgs e)
+        {
+            _diagnostics.Log(
+                LevelToLog.Info,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    Resources.LogMessage_FileSystemListener_RenamedFile_WithOldAndNewFilePath,
+                    e.OldFullPath,
+                    e.FullPath));
+
+            foreach (var scanner in _scanners)
+            {
+                try
+                {
+                    if (scanner.AcceptedPluginTypes.Any(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.OldFullPath)))))
+                    {
+                        var removed = new PluginFileOrigin(e.OldFullPath);
+                        scanner.Removed(removed);
+                    }
+
+                    if (scanner.AcceptedPluginTypes.Any(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.FullPath)))))
+                    {
+                        var origin = new PluginFileOrigin(
+                            e.FullPath,
+                            _fileSystem.File.GetLastWriteTimeUtc(e.FullPath),
+                            _fileSystem.File.GetLastWriteTimeUtc(e.FullPath));
+                        scanner.Added(origin);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    _diagnostics.Log(
+                        LevelToLog.Warn,
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            Resources.LogMessage_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFilePathsAndError,
                             scanner.GetType(),
                             e.FullPath,
                             exception));
