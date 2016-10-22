@@ -106,6 +106,7 @@
     <Compile Include="DuplicateContractNameExceptionTest.cs" />
     <Compile Include="InvalidExportMethodExceptionTest.cs" />
     <Compile Include="PluginDetectorTest.cs" />
+    <Compile Include="Origin\FileSystem\PluginFileOriginTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteAssemblyScannerTest.cs" />
   </ItemGroup>
