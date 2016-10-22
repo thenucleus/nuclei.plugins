@@ -131,7 +131,7 @@ namespace Nuclei.Plugins.Discovery
                         _fileSystem.Path.Combine(Assembly.GetExecutingAssembly().LocalDirectoryPath(), PluginsDirectoryName)
                     };
 
-            var domain = _appDomainBuilder(Resources.Plugins_PluginScanDomainName, paths);
+            var domain = _appDomainBuilder(Resources.PluginScanDomainName, paths);
             try
             {
                 // Inject the actual scanner

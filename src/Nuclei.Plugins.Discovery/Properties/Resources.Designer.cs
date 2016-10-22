@@ -61,6 +61,15 @@ namespace Nuclei.Plugins.Discovery.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot compare these two objects, their types do not match [this: {0}; other: {1}].
+        /// </summary>
+        internal static string Exceptions_Messages_CompareArgument_WithTypes {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_CompareArgument_WithTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The given contract name is already registered..
         /// </summary>
         internal static string Exceptions_Messages_DuplicateContractName {
@@ -90,228 +99,209 @@ namespace Nuclei.Plugins.Discovery.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Discovered new rule file at: {0}.
         /// </summary>
-        internal static string Log_Messages_FileSystemListener_CreatedFile_WithFilePath {
+        internal static string LogMessage_FileSystemListener_CreatedFile_WithFilePath {
             get {
-                return ResourceManager.GetString("Log_Messages_FileSystemListener_CreatedFile_WithFilePath", resourceCulture);
+                return ResourceManager.GetString("LogMessage_FileSystemListener_CreatedFile_WithFilePath", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The scanner of type {0} failed to delete the files  [{1}]. The error was {2}..
         /// </summary>
-        internal static string Log_Messages_FileSystemListener_DeletedFile_ScannerFailed_WithScannerTypeAndFilePathsAndError {
+        internal static string LogMessage_FileSystemListener_DeletedFile_ScannerFailed_WithScannerTypeAndFilePathsAndError {
             get {
-                return ResourceManager.GetString("Log_Messages_FileSystemListener_DeletedFile_ScannerFailed_WithScannerTypeAndFileP" +
-                        "athsAndError", resourceCulture);
+                return ResourceManager.GetString("LogMessage_FileSystemListener_DeletedFile_ScannerFailed_WithScannerTypeAndFilePat" +
+                        "hsAndError", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The scanner of type {0} failed to scan the files  [{1}]. The error was {2}..
         /// </summary>
-        internal static string Log_Messages_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFilePathsAndError {
+        internal static string LogMessage_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFilePathsAndError {
             get {
-                return ResourceManager.GetString("Log_Messages_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFi" +
-                        "lePathsAndError", resourceCulture);
+                return ResourceManager.GetString("LogMessage_FileSystemListener_DiscoveredFile_ScannerFailed_WithScannerTypeAndFile" +
+                        "PathsAndError", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to File discovery - Disabled.
         /// </summary>
-        internal static string Log_Messages_FileSystemListener_FileDiscovery_Disabled {
+        internal static string LogMessage_FileSystemListener_FileDiscovery_Disabled {
             get {
-                return ResourceManager.GetString("Log_Messages_FileSystemListener_FileDiscovery_Disabled", resourceCulture);
+                return ResourceManager.GetString("LogMessage_FileSystemListener_FileDiscovery_Disabled", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to File discovery - Enabled.
         /// </summary>
-        internal static string Log_Messages_FileSystemListener_FileDiscovery_Enabled {
+        internal static string LogMessage_FileSystemListener_FileDiscovery_Enabled {
             get {
-                return ResourceManager.GetString("Log_Messages_FileSystemListener_FileDiscovery_Enabled", resourceCulture);
+                return ResourceManager.GetString("LogMessage_FileSystemListener_FileDiscovery_Enabled", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Discovered new file at: {0}.
         /// </summary>
-        internal static string Log_Messages_FileSystemListener_LocatedFile_WithFilePath {
+        internal static string LogMessage_FileSystemListener_LocatedFile_WithFilePath {
             get {
-                return ResourceManager.GetString("Log_Messages_FileSystemListener_LocatedFile_WithFilePath", resourceCulture);
+                return ResourceManager.GetString("LogMessage_FileSystemListener_LocatedFile_WithFilePath", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Discovered removed file at: {0}.
         /// </summary>
-        internal static string Log_Messages_FileSystemListener_RemovedFile_WithFilePath {
+        internal static string LogMessage_FileSystemListener_RemovedFile_WithFilePath {
             get {
-                return ResourceManager.GetString("Log_Messages_FileSystemListener_RemovedFile_WithFilePath", resourceCulture);
+                return ResourceManager.GetString("LogMessage_FileSystemListener_RemovedFile_WithFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discovered renamed file at: {0}. New path is: {1}.
+        /// </summary>
+        internal static string LogMessage_FileSystemListener_RenamedFile_WithOldAndNewFilePath {
+            get {
+                return ResourceManager.GetString("LogMessage_FileSystemListener_RenamedFile_WithOldAndNewFilePath", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Discovered updated file at: {0}.
         /// </summary>
-        internal static string Log_Messages_FileSystemListener_UpdatedFile_WithFilePath {
+        internal static string LogMessage_FileSystemListener_UpdatedFile_WithFilePath {
             get {
-                return ResourceManager.GetString("Log_Messages_FileSystemListener_UpdatedFile_WithFilePath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Plugin discovery process completed..
-        /// </summary>
-        internal static string Plugins_LogMessage_Detector_FileScanCompleted {
-            get {
-                return ResourceManager.GetString("Plugins_LogMessage_Detector_FileScanCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Discovering all the files in {0} failed due to an exception. Exception information is: {1}.
-        /// </summary>
-        internal static string Plugins_LogMessage_Detector_FileScanFailed_WithDirectoryAndException {
-            get {
-                return ResourceManager.GetString("Plugins_LogMessage_Detector_FileScanFailed_WithDirectoryAndException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Discovering plugins in {0}..
-        /// </summary>
-        internal static string Plugins_LogMessage_Detector_FileScanStarted_WithDirectory {
-            get {
-                return ResourceManager.GetString("Plugins_LogMessage_Detector_FileScanStarted_WithDirectory", resourceCulture);
+                return ResourceManager.GetString("LogMessage_FileSystemListener_UpdatedFile_WithFilePath", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The loading of the plugin assembly {0} failed. Exception information is: {1}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException {
+        internal static string LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Discovered export: {0}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_DiscoveredExport_WithDefinition {
+        internal static string LogMessage_Scanner_DiscoveredExport_WithDefinition {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_DiscoveredExport_WithDefinition", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_DiscoveredExport_WithDefinition", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Discovered import: {0}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_DiscoveredImport_WithDefinition {
+        internal static string LogMessage_Scanner_DiscoveredImport_WithDefinition {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_DiscoveredImport_WithDefinition", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_DiscoveredImport_WithDefinition", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Discovered custom member: {0}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_DiscoveredMember_WithDefinition {
+        internal static string LogMessage_Scanner_DiscoveredMember_WithDefinition {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_DiscoveredMember_WithDefinition", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_DiscoveredMember_WithDefinition", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Failed to load all types from the custom member assembly {0}. Error was: {1}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_FailedToLoadCustomMemberTypes_WithAssemblyAndException {
+        internal static string LogMessage_Scanner_FailedToLoadCustomMemberTypes_WithAssemblyAndException {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_FailedToLoadCustomMemberTypes_WithAssemblyAndException" +
-                        "", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_FailedToLoadCustomMemberTypes_WithAssemblyAndException", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The given discoverable custom member {0} on {1} is not valid. Error was: {2}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException {
+        internal static string LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The given discoverable custom type {0} is not valid. Error was: {1}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException {
+        internal static string LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The given export with contract name {0} on {1} is not valid. Error was: {2}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException {
+        internal static string LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The given import with contract name {0} on {1} is not valid. Error was: {2}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_InvalidImport_WithContractNameAndTypeAndException {
+        internal static string LogMessage_Scanner_InvalidImport_WithContractNameAndTypeAndException {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_InvalidImport_WithContractNameAndTypeAndException", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_InvalidImport_WithContractNameAndTypeAndException", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Extracting information from Assembly {0} failed. Exception information is: {1}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException {
+        internal static string LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unable to process export: {0}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractName {
+        internal static string LogMessage_Scanner_UnableToProcessExport_WithContractName {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractName", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_UnableToProcessExport_WithContractName", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unable to process export: {0} on a {1}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractNameAndType {
+        internal static string LogMessage_Scanner_UnableToProcessExport_WithContractNameAndType {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractNameAndType", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_UnableToProcessExport_WithContractNameAndType", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unable to process import: {0}.
         /// </summary>
-        internal static string Plugins_LogMessage_Scanner_UnableToProcessImport_WithContractName {
+        internal static string LogMessage_Scanner_UnableToProcessImport_WithContractName {
             get {
-                return ResourceManager.GetString("Plugins_LogMessage_Scanner_UnableToProcessImport_WithContractName", resourceCulture);
+                return ResourceManager.GetString("LogMessage_Scanner_UnableToProcessImport_WithContractName", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Nuclei.Plugins.Discovery: plugin scan AppDomain.
         /// </summary>
-        internal static string Plugins_PluginScanDomainName {
+        internal static string PluginScanDomainName {
             get {
-                return ResourceManager.GetString("Plugins_PluginScanDomainName", resourceCulture);
+                return ResourceManager.GetString("PluginScanDomainName", resourceCulture);
             }
         }
         
