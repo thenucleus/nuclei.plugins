@@ -402,6 +402,7 @@
             <Term CompoundAlternate="NetBios">netbios</Term>
             <Term CompoundAlternate="NewLine">newline</Term>
             <Term CompoundAlternate="NewLines">newlines</Term>
+            <Term CompoundAlternate="NuGet">nuget</Term>
             <Term CompoundAlternate="PathName">pathname</Term>
             <Term CompoundAlternate="PathNames">pathnames</Term>
             <Term CompoundAlternate="PushButton">pushbutton</Term>
@@ -482,6 +483,7 @@
             <Acronym>Na</Acronym>
             <!-- North East South West -->
             <Acronym>NESW</Acronym>
+            <Acronym>Nu</Acronym>
             <!-- North West South East -->
             <Acronym>NWSE</Acronym>
             <Acronym>Pi</Acronym>

@@ -24,13 +24,13 @@ namespace Nuclei.Plugins.Discovery
         }
 
         /// <summary>
-        /// Processes the added files.
+        /// Processes the added plugins.
         /// </summary>
         /// <param name="newPlugins">The collection that contains the names of all the new plugins.</param>
         void Added(params PluginOrigin[] newPlugins);
 
         /// <summary>
-        /// Processes the removed files.
+        /// Processes the removed plugins.
         /// </summary>
         /// <param name="removedPlugins">The collection that contains the names of all the plugins that were removed.</param>
         void Removed(params PluginOrigin[] removedPlugins);

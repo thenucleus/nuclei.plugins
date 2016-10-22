@@ -19,6 +19,7 @@ using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Composition.Mef;
 using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Discovery;
+using Nuclei.Plugins.Discovery.Origin.FileSystem;
 using NUnit.Framework;
 using Test.Mocks;
 
