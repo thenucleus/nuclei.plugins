@@ -22,7 +22,7 @@ using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Discovery.Origin.FileSystem;
 using Nuclei.Plugins.Discovery.Properties;
 
-namespace Nuclei.Plugins.Discovery
+namespace Nuclei.Plugins.Discovery.Container
 {
     /// <summary>
     /// Performs assembly scanning in search for plugin information.
@@ -684,7 +684,7 @@ namespace Nuclei.Plugins.Discovery
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "Will catch an log here because we don't actually know what exceptions can happen due to the LoadAssembly() call.")]
-        public void Scan(IEnumerable<string> assemblyFilesToScan)
+        public void Scan(IEnumerable<PluginFileOrigin> assemblyFilesToScan)
         {
             if (assemblyFilesToScan == null)
             {
@@ -695,8 +695,8 @@ namespace Nuclei.Plugins.Discovery
             {
                 try
                 {
-                    var assembly = LoadAssembly(a);
-                    ScanAssembly(assembly);
+                    var assembly = LoadAssembly(a.FilePath);
+                    ScanAssembly(assembly, a);
                 }
                 catch (Exception e)
                 {
@@ -715,7 +715,7 @@ namespace Nuclei.Plugins.Discovery
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "Will catch an log here because we don't actually know what exceptions can happen due to the ExtractGroups() call.")]
-        private void ScanAssembly(Assembly assembly)
+        private void ScanAssembly(Assembly assembly, PluginFileOrigin origin)
         {
             try
             {
@@ -725,9 +725,6 @@ namespace Nuclei.Plugins.Discovery
                         CultureInfo.InvariantCulture,
                         Resources.RemoteAssemblyScanner_LogMessage_ScanningAssembly_WithName,
                         assembly.FullName));
-
-                var file = new FileInfo(assembly.LocalFilePath());
-                var fileInfo = new PluginFileOrigin(file.FullName, file.CreationTimeUtc, file.LastWriteTimeUtc);
 
                 var createTypeIdentity = TypeIdentityBuilder.IdentityFactory(_repository, new Dictionary<Type, TypeIdentity>());
                 var mefParts = ExtractImportsAndExports(assembly, createTypeIdentity);
@@ -740,7 +737,7 @@ namespace Nuclei.Plugins.Discovery
                             Resources.RemoteAssemblyScanner_LogMessage_AddingPartToRepository_WithPartInformation,
                             pair.Identity));
 
-                    _repository.AddPart(pair, fileInfo);
+                    _repository.AddPart(pair, origin);
                 }
 
                 var customMembers = ExtractCustomMembers(assembly, createTypeIdentity);
@@ -753,7 +750,7 @@ namespace Nuclei.Plugins.Discovery
                             Resources.RemoteAssemblyScanner_LogMessage_AddingDiscoverableMemberToRepository_WithMemberInformation,
                             member.DeclaringType));
 
-                    _repository.AddDiscoverableMember(member, fileInfo);
+                    _repository.AddDiscoverableMember(member, origin);
                 }
             }
             catch (Exception e)

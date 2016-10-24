@@ -6,8 +6,9 @@
 //-----------------------------------------------------------------------
 
 using System.Collections.Generic;
+using Nuclei.Plugins.Discovery.Origin.FileSystem;
 
-namespace Nuclei.Plugins.Discovery
+namespace Nuclei.Plugins.Discovery.Container
 {
     /// <summary>
     /// Defines the interface for objects that perform scanning of plugin assemblies.
@@ -21,6 +22,6 @@ namespace Nuclei.Plugins.Discovery
         /// <param name="assemblyFilesToScan">
         /// The collection that contains the file paths to all the assemblies to be scanned.
         /// </param>
-        void Scan(IEnumerable<string> assemblyFilesToScan);
+        void Scan(IEnumerable<PluginFileOrigin> assemblyFilesToScan);
     }
 }
