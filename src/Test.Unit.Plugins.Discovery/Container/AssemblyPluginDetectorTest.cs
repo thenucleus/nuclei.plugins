@@ -65,7 +65,7 @@ namespace Nuclei.Plugins.Discovery.Container
 
             var origins = files.Cast<PluginOrigin>().ToArray();
             detector.Added(origins.ToArray());
-            Assert.That(scanner.FilesToScan, Is.EquivalentTo(files));
+            Assert.That(scanner.FilesToScan, Is.EquivalentTo(files.Select(p => p.FilePath).ToArray()));
         }
 
         [Test]

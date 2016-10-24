@@ -23,9 +23,24 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         /// Initializes a new instance of the <see cref="PluginFileOrigin"/> class.
         /// </summary>
         /// <param name="path">The full path to the plugin file.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="path"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if <paramref name="path"/> is an empty string.
+        /// </exception>
         public PluginFileOrigin(string path)
             : base(new PluginFileOriginData(path, DateTimeOffset.MinValue, DateTimeOffset.MinValue))
         {
+            if (path == null)
+            {
+                throw new ArgumentNullException("path");
+            }
+
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException(Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString, "path");
+            }
         }
 
         /// <summary>
@@ -34,9 +49,24 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         /// <param name="path">The full path to the plugin file.</param>
         /// <param name="creationTimeUtc">The time the file was created.</param>
         /// <param name="lastWriteTimeUtc">The last time the file was changed.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="path"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if <paramref name="path"/> is an empty string.
+        /// </exception>
         public PluginFileOrigin(string path, DateTimeOffset creationTimeUtc, DateTimeOffset lastWriteTimeUtc)
             : base(new PluginFileOriginData(path, creationTimeUtc, lastWriteTimeUtc))
         {
+            if (path == null)
+            {
+                throw new ArgumentNullException("path");
+            }
+
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException(Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString, "path");
+            }
         }
 
         /// <summary>

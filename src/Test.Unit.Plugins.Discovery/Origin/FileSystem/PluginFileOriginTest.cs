@@ -169,7 +169,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Justification = "Testing that the constructor throws an exception.")]
         public void CreateWithNullFilePath()
         {
-            Assert.Throws<ArgumentException>(() => new PluginFileOrigin(null));
+            Assert.Throws<ArgumentNullException>(() => new PluginFileOrigin(null));
         }
 
         [Test]

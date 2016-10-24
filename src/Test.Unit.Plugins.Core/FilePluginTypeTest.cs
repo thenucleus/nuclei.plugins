@@ -60,7 +60,7 @@ namespace Nuclei.Plugins.Core
             Justification = "Testing that the constructor throws an exception.")]
         public void CreateWithNullExtension()
         {
-            Assert.Throws<ArgumentException>(() => new FilePluginType(null));
+            Assert.Throws<ArgumentNullException>(() => new FilePluginType(null));
         }
 
         private sealed class FilePluginTypeEqualityContractVerifier : EqualityContractVerifier<FilePluginType>

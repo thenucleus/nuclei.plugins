@@ -510,9 +510,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Changed += null,
                 new FileSystemEventArgs(WatcherChangeTypes.Changed, path, pluginFile));
@@ -607,9 +604,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Changed += null,
                 new FileSystemEventArgs(WatcherChangeTypes.Changed, path, pluginFile));
@@ -680,9 +674,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 watcherBuilder,
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
-
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
 
             fileSystemWatcher.Raise(
                 f => f.Changed += null,
@@ -760,9 +751,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 watcherBuilder,
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
-
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
 
             fileSystemWatcher.Raise(
                 f => f.Changed += null,
@@ -869,9 +857,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Created += null,
                 new FileSystemEventArgs(WatcherChangeTypes.Created, path, pluginFile));
@@ -950,9 +935,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Created += null,
                 new FileSystemEventArgs(WatcherChangeTypes.Created, path, pluginFile));
@@ -1016,9 +998,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 watcherBuilder,
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
-
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
 
             fileSystemWatcher.Raise(
                 f => f.Created += null,
@@ -1092,9 +1071,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 watcherBuilder,
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
-
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
 
             fileSystemWatcher.Raise(
                 f => f.Created += null,
@@ -1187,9 +1163,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Deleted += null,
                 new FileSystemEventArgs(WatcherChangeTypes.Deleted, path, pluginFile));
@@ -1270,9 +1243,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Deleted += null,
                 new FileSystemEventArgs(WatcherChangeTypes.Deleted, path, pluginFile));
@@ -1336,9 +1306,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 watcherBuilder,
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
-
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
 
             fileSystemWatcher.Raise(
                 f => f.Deleted += null,
@@ -1412,9 +1379,6 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 watcherBuilder,
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
-
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
 
             fileSystemWatcher.Raise(
                 f => f.Deleted += null,
@@ -1514,14 +1478,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Renamed += null,
                 new RenamedEventArgs(WatcherChangeTypes.Renamed, path, pluginFile, oldFileName));
 
-            scanner1.Verify(s => s.AcceptedPluginTypes, Times.Once());
+            scanner1.Verify(s => s.AcceptedPluginTypes, Times.Exactly(2));
             scanner1.Verify(s => s.Added(It.IsAny<PluginOrigin[]>()), Times.Once());
             scanner1.Verify(s => s.Removed(It.IsAny<PluginOrigin[]>()), Times.Once());
 
@@ -1539,7 +1500,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(origin);
             Assert.AreEqual(oldFilePath, origin.FilePath);
 
-            scanner2.Verify(s => s.AcceptedPluginTypes, Times.Once());
+            scanner2.Verify(s => s.AcceptedPluginTypes, Times.Exactly(2));
             scanner2.Verify(s => s.Added(It.IsAny<PluginOrigin[]>()), Times.Once());
             scanner2.Verify(s => s.Removed(It.IsAny<PluginOrigin[]>()), Times.Once());
 
@@ -1614,13 +1575,10 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Renamed += null,
                 new RenamedEventArgs(WatcherChangeTypes.Renamed, path, pluginFile, oldFileName));
-            scanner.Verify(s => s.AcceptedPluginTypes, Times.Once());
+            scanner.Verify(s => s.AcceptedPluginTypes, Times.Exactly(2));
             scanner.Verify(s => s.Added(It.IsAny<PluginOrigin[]>()), Times.Once());
             scanner.Verify(s => s.Removed(It.IsAny<PluginOrigin[]>()), Times.Once());
 
@@ -1690,13 +1648,10 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Renamed += null,
                 new RenamedEventArgs(WatcherChangeTypes.Renamed, path, pluginFile, oldFileName));
-            scanner.Verify(s => s.AcceptedPluginTypes, Times.Once());
+            scanner.Verify(s => s.AcceptedPluginTypes, Times.Exactly(2));
             scanner.Verify(s => s.Added(It.IsAny<PluginOrigin[]>()), Times.Never());
             scanner.Verify(s => s.Removed(It.IsAny<PluginOrigin[]>()), Times.Never());
         }
@@ -1741,6 +1696,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var pluginFilePath = Path.Combine(path, pluginFile);
 
             var oldFileName = "old.dll";
+            var oldFilePath = Path.Combine(path, oldFileName);
             var fileSystem = new Mock<IFileSystem>();
             {
                 fileSystem.Setup(f => f.File)
@@ -1756,13 +1712,10 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Renamed += null,
                 new RenamedEventArgs(WatcherChangeTypes.Renamed, path, pluginFile, oldFileName));
-            scanner.Verify(s => s.AcceptedPluginTypes, Times.Once());
+            scanner.Verify(s => s.AcceptedPluginTypes, Times.Exactly(2));
             scanner.Verify(s => s.Added(It.IsAny<PluginOrigin[]>()), Times.Never());
             scanner.Verify(s => s.Removed(It.IsAny<PluginOrigin[]>()), Times.Once());
 
@@ -1771,7 +1724,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
 
             var origin = removedPlugins[0] as PluginFileOrigin;
             Assert.IsNotNull(origin);
-            Assert.AreEqual(pluginFilePath, origin.FilePath);
+            Assert.AreEqual(oldFilePath, origin.FilePath);
         }
 
         [Test]
@@ -1827,13 +1780,10 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Renamed += null,
                 new RenamedEventArgs(WatcherChangeTypes.Renamed, path, pluginFile, oldFileName));
-            scanner.Verify(s => s.AcceptedPluginTypes, Times.Once());
+            scanner.Verify(s => s.AcceptedPluginTypes, Times.Exactly(2));
             scanner.Verify(s => s.Added(It.IsAny<PluginOrigin[]>()), Times.Once());
             scanner.Verify(s => s.Removed(It.IsAny<PluginOrigin[]>()), Times.Never());
 
@@ -1917,14 +1867,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 new SystemDiagnostics(new Mock<ILogger>().Object, null),
                 fileSystem.Object);
 
-            Assert.AreEqual(path, fileSystemWatcher.Object.Path);
-            Assert.IsFalse(fileSystemWatcher.Object.EnableRaisingEvents);
-
             fileSystemWatcher.Raise(
                 f => f.Renamed += null,
                 new RenamedEventArgs(WatcherChangeTypes.Renamed, path, pluginFile, oldFileName));
 
-            scanner1.Verify(s => s.AcceptedPluginTypes, Times.Once());
+            scanner1.Verify(s => s.AcceptedPluginTypes, Times.Exactly(2));
             scanner1.Verify(s => s.Added(It.IsAny<PluginOrigin[]>()), Times.Once());
             scanner1.Verify(s => s.Removed(It.IsAny<PluginOrigin[]>()), Times.Once());
 
@@ -1942,7 +1889,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(origin);
             Assert.AreEqual(oldFilePath, origin.FilePath);
 
-            scanner2.Verify(s => s.AcceptedPluginTypes, Times.Once());
+            scanner2.Verify(s => s.AcceptedPluginTypes, Times.Exactly(2));
             scanner2.Verify(s => s.Added(It.IsAny<PluginOrigin[]>()), Times.Once());
             scanner2.Verify(s => s.Removed(It.IsAny<PluginOrigin[]>()), Times.Once());
 

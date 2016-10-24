@@ -204,7 +204,10 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                                 t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(p)))))
                         .Select(p => new PluginFileOrigin(p, _fileSystem.File.GetLastWriteTimeUtc(p), _fileSystem.File.GetLastWriteTimeUtc(p)))
                         .ToArray();
-                    scanner.Added(origins);
+                    if (origins.Any())
+                    {
+                        scanner.Added(origins);
+                    }
                 }
                 catch (Exception e)
                 {
