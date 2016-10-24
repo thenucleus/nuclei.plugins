@@ -19,6 +19,7 @@ using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Composition.Mef;
 using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Discovery;
+using Nuclei.Plugins.Discovery.Container;
 using Nuclei.Plugins.Discovery.Origin.FileSystem;
 using NUnit.Framework;
 using Test.Mocks;
@@ -452,7 +453,7 @@ namespace Nuclei.Plugins.Composition.Mef
                     new Mock<ILogMessagesFromRemoteAppDomains>().Object);
 
                 var localPath = Assembly.GetExecutingAssembly().LocalFilePath();
-                scanner.Scan(new List<string> { localPath });
+                scanner.Scan(new List<PluginFileOrigin> { new PluginFileOrigin(localPath) });
 
                 _types = types;
                 _parts = parts;

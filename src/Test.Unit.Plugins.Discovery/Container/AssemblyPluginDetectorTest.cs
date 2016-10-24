@@ -25,14 +25,14 @@ namespace Nuclei.Plugins.Discovery.Container
     {
         private sealed class MockScanner : IAssemblyScanner
         {
-            private IEnumerable<string> _files;
+            private IEnumerable<PluginFileOrigin> _files;
 
-            public void Scan(IEnumerable<string> assemblyFilesToScan)
+            public void Scan(IEnumerable<PluginFileOrigin> assemblyFilesToScan)
             {
                 _files = assemblyFilesToScan;
             }
 
-            public IEnumerable<string> FilesToScan
+            public IEnumerable<PluginFileOrigin> FilesToScan
             {
                 get
                 {
@@ -65,7 +65,7 @@ namespace Nuclei.Plugins.Discovery.Container
 
             var origins = files.Cast<PluginOrigin>().ToArray();
             detector.Added(origins.ToArray());
-            Assert.That(scanner.FilesToScan, Is.EquivalentTo(files.Select(p => p.FilePath).ToArray()));
+            Assert.That(scanner.FilesToScan, Is.EquivalentTo(files));
         }
 
         [Test]

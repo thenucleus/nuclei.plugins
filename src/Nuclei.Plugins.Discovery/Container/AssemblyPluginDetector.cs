@@ -81,8 +81,7 @@ namespace Nuclei.Plugins.Discovery.Container
         public void Added(params PluginOrigin[] newPlugins)
         {
             var filesToAdd = newPlugins
-                .OfType<PluginFileOrigin>()
-                .Select(f => f.FilePath);
+                .OfType<PluginFileOrigin>();
             StorePlugins(filesToAdd);
         }
 
@@ -95,7 +94,7 @@ namespace Nuclei.Plugins.Discovery.Container
             _repository.RemovePlugins(removedPlugins);
         }
 
-        private void StorePlugins(IEnumerable<string> filesToScan)
+        private void StorePlugins(IEnumerable<PluginFileOrigin> filesToScan)
         {
             if (!filesToScan.Any())
             {
