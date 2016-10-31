@@ -19,7 +19,6 @@ using System.Linq;
 using System.Reflection;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
-using Nuclei.Plugins.Discovery.Origin.FileSystem;
 using Nuclei.Plugins.Discovery.Properties;
 
 namespace Nuclei.Plugins.Discovery.Container
@@ -675,7 +674,8 @@ namespace Nuclei.Plugins.Discovery.Container
         /// returns the plugin description information.
         /// </summary>
         /// <param name="assemblyFilesToScan">
-        /// The collection that contains the file paths to all the assemblies to be scanned.
+        /// The collection that maps the file paths of the assemblies that need to be scanned to the plugin container that stores
+        /// the assemblies.
         /// </param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="assemblyFilesToScan"/> is <see langword="null" />.
@@ -684,19 +684,19 @@ namespace Nuclei.Plugins.Discovery.Container
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "Will catch an log here because we don't actually know what exceptions can happen due to the LoadAssembly() call.")]
-        public void Scan(IEnumerable<PluginFileOrigin> assemblyFilesToScan)
+        public void Scan(IDictionary<string, PluginOrigin> assemblyFilesToScan)
         {
             if (assemblyFilesToScan == null)
             {
                 throw new ArgumentNullException("assemblyFilesToScan");
             }
 
-            foreach (var a in assemblyFilesToScan)
+            foreach (var pair in assemblyFilesToScan)
             {
                 try
                 {
-                    var assembly = LoadAssembly(a.FilePath);
-                    ScanAssembly(assembly, a);
+                    var assembly = LoadAssembly(pair.Key);
+                    ScanAssembly(assembly, pair.Value);
                 }
                 catch (Exception e)
                 {
@@ -705,7 +705,7 @@ namespace Nuclei.Plugins.Discovery.Container
                         string.Format(
                             CultureInfo.InvariantCulture,
                             Resources.LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException,
-                            a,
+                            pair.Key,
                             e));
                 }
             }
@@ -715,7 +715,7 @@ namespace Nuclei.Plugins.Discovery.Container
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "Will catch an log here because we don't actually know what exceptions can happen due to the ExtractGroups() call.")]
-        private void ScanAssembly(Assembly assembly, PluginFileOrigin origin)
+        private void ScanAssembly(Assembly assembly, PluginOrigin origin)
         {
             try
             {

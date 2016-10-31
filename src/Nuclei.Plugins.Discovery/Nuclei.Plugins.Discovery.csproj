@@ -67,12 +67,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Container\IAssemblyScanner.cs" />
     <Compile Include="CreateAppDomain.cs" />
     <Compile Include="Container\AppDomainOwningPluginScanner.cs" />
     <Compile Include="Container\AppDomainPluginClassLoader.cs" />
     <Compile Include="DuplicateContractNameException.cs" />
     <Compile Include="Origin\FileSystem\FileSystemListener.cs" />
-    <Compile Include="Container\IAssemblyScanner.cs" />
     <Compile Include="InvalidExportMethodException.cs" />
     <Compile Include="IPluginListener.cs" />
     <Compile Include="IProcessPluginOriginChanges.cs" />

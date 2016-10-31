@@ -13,7 +13,6 @@ using Nuclei.Configuration;
 using Nuclei.Diagnostics;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
-using Nuclei.Plugins.Discovery.Origin.FileSystem;
 using Nuclei.Plugins.Discovery.Properties;
 
 namespace Nuclei.Plugins.Discovery.Container
@@ -121,9 +120,10 @@ namespace Nuclei.Plugins.Discovery.Container
         /// returns the plugin description information.
         /// </summary>
         /// <param name="assemblyFilesToScan">
-        /// The collection that contains the file paths to all the assemblies to be scanned.
+        /// The collection that maps the file paths of the assemblies that need to be scanned to the plugin container that stores
+        /// the assemblies.
         /// </param>
-        public void Scan(IEnumerable<PluginFileOrigin> assemblyFilesToScan)
+        public void Scan(IDictionary<string, PluginOrigin> assemblyFilesToScan)
         {
             var paths = _configuration.HasValueFor(PluginDiscoveryConfigurationKeys.PluginDirectories)
                 ? _configuration.Value(PluginDiscoveryConfigurationKeys.PluginDirectories)
