@@ -6,11 +6,6 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NuGet.Client;
 using NuGet.Packaging.Core;
 
 namespace Nuclei.Plugins.Core.NuGet
@@ -25,13 +20,10 @@ namespace Nuclei.Plugins.Core.NuGet
         /// </summary>
         /// <param name="name">The ID of the package.</param>
         /// <param name="outputLocation">The full path of the directory where the packages should be installed.</param>
-        /// <param name="postInstallAction">
-        /// An action that is run after each package is installed. The input values are the <paramref name="outputLocation"/>,
-        /// the path to the installed package and the package ID.
-        /// </param>
+        /// <param name="postInstallAction">An action that is run after each package is installed.</param>
         void Install(
             PackageIdentity name,
             string outputLocation,
-            Action<string, string, PackageIdentity> postInstallAction = null);
+            PackagePostInstall postInstallAction = null);
     }
 }
