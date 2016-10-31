@@ -19,5 +19,12 @@ namespace Nuclei.Plugins.Core
         /// </summary>
         /// <returns>A copy of the current instance.</returns>
         IPluginType Clone();
+
+        /// <summary>
+        /// Returns the origin for the specific plugin.
+        /// </summary>
+        /// <param name="source">The source of the plugin.</param>
+        /// <returns>The <see cref="PluginOrigin"/> object for the plugin.</returns>
+        PluginOrigin Origin(string source);
     }
 }

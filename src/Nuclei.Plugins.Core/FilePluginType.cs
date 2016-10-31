@@ -76,16 +76,25 @@ namespace Nuclei.Plugins.Core
         private readonly string _extension;
 
         /// <summary>
+        /// The function used to create a <see cref="PluginOrigin"/> instance.
+        /// </summary>
+        private readonly Func<string, PluginOrigin> _originBuilder;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="FilePluginType"/> class.
         /// </summary>
         /// <param name="extension">The file extension of the plugin file.</param>
+        /// <param name="originBuilder">The function used to create a <see cref="PluginOrigin"/> instance.</param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="extension"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="ArgumentException">
         ///     Thrown if <paramref name="extension"/> is an empty string.
         /// </exception>
-        public FilePluginType(string extension)
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="originBuilder"/> is <see langword="null" />.
+        /// </exception>
+        public FilePluginType(string extension, Func<string, PluginOrigin> originBuilder)
         {
             if (extension == null)
             {
@@ -99,7 +108,13 @@ namespace Nuclei.Plugins.Core
                     "extension");
             }
 
+            if (originBuilder == null)
+            {
+                throw new ArgumentNullException("originBuilder");
+            }
+
             _extension = extension;
+            _originBuilder = originBuilder;
         }
 
         /// <summary>
@@ -108,7 +123,7 @@ namespace Nuclei.Plugins.Core
         /// <returns>A copy of the current instance.</returns>
         public IPluginType Clone()
         {
-            return new FilePluginType(_extension);
+            return new FilePluginType(_extension, _originBuilder);
         }
 
         /// <summary>
@@ -171,6 +186,16 @@ namespace Nuclei.Plugins.Core
 
                 return hash;
             }
+        }
+
+        /// <summary>
+        /// Returns the origin for the specific plugin.
+        /// </summary>
+        /// <param name="source">The source of the plugin.</param>
+        /// <returns>The <see cref="PluginOrigin"/> object for the plugin.</returns>
+        public PluginOrigin Origin(string source)
+        {
+            return _originBuilder(source);
         }
 
         /// <summary>

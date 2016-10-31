@@ -202,7 +202,10 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                         .Where(
                             p => scanner.AcceptedPluginTypes.Any(
                                 t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(p)))))
-                        .Select(p => new PluginFileOrigin(p, _fileSystem.File.GetLastWriteTimeUtc(p), _fileSystem.File.GetLastWriteTimeUtc(p)))
+                        .Select(
+                            p => scanner.AcceptedPluginTypes.First(
+                                    t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(p))))
+                                .Origin(p))
                         .ToArray();
                     if (origins.Any())
                     {
@@ -240,12 +243,10 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             {
                 try
                 {
-                    if (scanner.AcceptedPluginTypes.Any(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.FullPath)))))
+                    var pluginType = scanner.AcceptedPluginTypes.FirstOrDefault(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.FullPath))));
+                    if (pluginType != null)
                     {
-                        var origin = new PluginFileOrigin(
-                            e.FullPath,
-                            _fileSystem.File.GetLastWriteTimeUtc(e.FullPath),
-                            _fileSystem.File.GetLastWriteTimeUtc(e.FullPath));
+                        var origin = pluginType.Origin(e.FullPath);
                         scanner.Removed(origin);
                         scanner.Added(origin);
                     }
@@ -281,12 +282,10 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             {
                 try
                 {
-                    if (scanner.AcceptedPluginTypes.Any(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.FullPath)))))
+                    var pluginType = scanner.AcceptedPluginTypes.FirstOrDefault(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.FullPath))));
+                    if (pluginType != null)
                     {
-                        var origin = new PluginFileOrigin(
-                            e.FullPath,
-                            _fileSystem.File.GetLastWriteTimeUtc(e.FullPath),
-                            _fileSystem.File.GetLastWriteTimeUtc(e.FullPath));
+                        var origin = pluginType.Origin(e.FullPath);
                         scanner.Added(origin);
                     }
                 }
@@ -321,9 +320,10 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             {
                 try
                 {
-                    if (scanner.AcceptedPluginTypes.Any(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.FullPath)))))
+                    var pluginType = scanner.AcceptedPluginTypes.FirstOrDefault(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.FullPath))));
+                    if (pluginType != null)
                     {
-                        var origin = new PluginFileOrigin(e.FullPath);
+                        var origin = pluginType.Origin(e.FullPath);
                         scanner.Removed(origin);
                     }
                 }
@@ -359,18 +359,17 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             {
                 try
                 {
-                    if (scanner.AcceptedPluginTypes.Any(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.OldFullPath)))))
+                    var pluginType = scanner.AcceptedPluginTypes.FirstOrDefault(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.OldFullPath))));
+                    if (pluginType != null)
                     {
-                        var removed = new PluginFileOrigin(e.OldFullPath);
-                        scanner.Removed(removed);
+                        var origin = pluginType.Origin(e.OldFullPath);
+                        scanner.Removed(origin);
                     }
 
-                    if (scanner.AcceptedPluginTypes.Any(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.FullPath)))))
+                    pluginType = scanner.AcceptedPluginTypes.FirstOrDefault(t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(e.FullPath))));
+                    if (pluginType != null)
                     {
-                        var origin = new PluginFileOrigin(
-                            e.FullPath,
-                            _fileSystem.File.GetLastWriteTimeUtc(e.FullPath),
-                            _fileSystem.File.GetLastWriteTimeUtc(e.FullPath));
+                        var origin = pluginType.Origin(e.FullPath);
                         scanner.Added(origin);
                     }
                 }
