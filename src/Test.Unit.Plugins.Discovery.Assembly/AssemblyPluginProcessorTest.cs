@@ -11,28 +11,28 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Moq;
 using Nuclei.Plugins.Core;
-using Nuclei.Plugins.Discovery.Origin.FileSystem;
+using Nuclei.Plugins.Discovery.Container;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins.Discovery.Container
+namespace Nuclei.Plugins.Discovery.Assembly
 {
     [TestFixture]
     [SuppressMessage(
         "Microsoft.StyleCop.CSharp.DocumentationRules",
         "SA1600:ElementsMustBeDocumented",
         Justification = "Unit tests do not need documentation.")]
-    public sealed class AssemblyPluginDetectorTest
+    public sealed class AssemblyPluginProcessorTest
     {
         private sealed class MockScanner : IAssemblyScanner
         {
-            private IEnumerable<PluginFileOrigin> _files;
+            private IDictionary<string, PluginOrigin> _files;
 
-            public void Scan(IEnumerable<PluginFileOrigin> assemblyFilesToScan)
+            public void Scan(IDictionary<string, PluginOrigin> assemblyFilesToScan)
             {
                 _files = assemblyFilesToScan;
             }
 
-            public IEnumerable<PluginFileOrigin> FilesToScan
+            public IDictionary<string, PluginOrigin> FilesToScan
             {
                 get
                 {
@@ -47,19 +47,19 @@ namespace Nuclei.Plugins.Discovery.Container
             var repository = new Mock<IPluginRepository>();
             {
                 repository.Setup(r => r.KnownPluginOrigins())
-                    .Returns(Enumerable.Empty<PluginFileOrigin>());
+                    .Returns(Enumerable.Empty<PluginAssemblyOrigin>());
             }
 
-            var files = new List<PluginFileOrigin>
+            var files = new List<PluginAssemblyOrigin>
                 {
-                    new PluginFileOrigin(@"c:\temp\foobar.dll", DateTimeOffset.Now, DateTimeOffset.Now),
-                    new PluginFileOrigin(@"c:\temp\foobar2.dll", DateTimeOffset.Now.AddHours(-2), DateTimeOffset.Now),
+                    new PluginAssemblyOrigin(@"c:\temp\foobar.dll", DateTimeOffset.Now, DateTimeOffset.Now),
+                    new PluginAssemblyOrigin(@"c:\temp\foobar2.dll", DateTimeOffset.Now.AddHours(-2), DateTimeOffset.Now),
                 };
 
             var scanner = new MockScanner();
             Func<IPluginRepository, IAssemblyScanner> scannerBuilder = r => scanner;
 
-            var detector = new AssemblyPluginDetector(
+            var detector = new AssemblyPluginProcessor(
                 repository.Object,
                 scannerBuilder);
 
@@ -71,10 +71,10 @@ namespace Nuclei.Plugins.Discovery.Container
         [Test]
         public void Removed()
         {
-            var files = new List<PluginFileOrigin>
+            var files = new List<PluginAssemblyOrigin>
                 {
-                    new PluginFileOrigin(@"c:\temp\foobar.dll", DateTimeOffset.Now, DateTimeOffset.Now),
-                    new PluginFileOrigin(@"c:\temp\foobar2.dll", DateTimeOffset.Now.AddHours(-2), DateTimeOffset.Now),
+                    new PluginAssemblyOrigin(@"c:\temp\foobar.dll", DateTimeOffset.Now, DateTimeOffset.Now),
+                    new PluginAssemblyOrigin(@"c:\temp\foobar2.dll", DateTimeOffset.Now.AddHours(-2), DateTimeOffset.Now),
                 };
 
             IEnumerable<PluginOrigin> removedPlugins = null;
@@ -89,7 +89,7 @@ namespace Nuclei.Plugins.Discovery.Container
             var scanner = new MockScanner();
             Func<IPluginRepository, IAssemblyScanner> scannerBuilder = r => scanner;
 
-            var detector = new AssemblyPluginDetector(
+            var detector = new AssemblyPluginProcessor(
                 repository.Object,
                 scannerBuilder);
 

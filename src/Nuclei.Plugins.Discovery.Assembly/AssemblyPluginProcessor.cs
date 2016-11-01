@@ -7,21 +7,27 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO.Abstractions;
 using System.Linq;
 using Nuclei.Plugins.Core;
-using Nuclei.Plugins.Discovery.Origin.FileSystem;
+using Nuclei.Plugins.Discovery.Container;
 
-namespace Nuclei.Plugins.Discovery.Container
+namespace Nuclei.Plugins.Discovery.Assembly
 {
     /// <summary>
     /// Provides the methods to find and scan plugins available in assembly files.
     /// </summary>
-    public sealed class AssemblyPluginDetector : IProcessPluginOriginChanges
+    public sealed class AssemblyPluginProcessor : IProcessPluginOriginChanges
     {
-        private static readonly IPluginType[] _acceptedPluginTypes = new[]
-            {
-                new FilePluginType("dll"),
-            };
+        /// <summary>
+        /// The collection of plugin types that the current processor can handle.
+        /// </summary>
+        private readonly IPluginType[] _acceptedPluginTypes;
+
+        /// <summary>
+        /// The object that provides an abstraction of the file system.
+        /// </summary>
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// The object that stores information about all the parts and the part groups.
@@ -35,19 +41,24 @@ namespace Nuclei.Plugins.Discovery.Container
         private readonly Func<IPluginRepository, IAssemblyScanner> _scannerBuilder;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AssemblyPluginDetector"/> class.
+        /// Initializes a new instance of the <see cref="AssemblyPluginProcessor"/> class.
         /// </summary>
         /// <param name="repository">The object that stores information about all the parts and the part groups.</param>
         /// <param name="scannerBuilder">The function that is used to create an assembly scanner.</param>
+        /// <param name="fileSystem">The object that provides an abstraction of the file system.</param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="repository"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="scannerBuilder"/> is <see langword="null" />.
         /// </exception>
-        public AssemblyPluginDetector(
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="fileSystem"/> is <see langword="null" />.
+        /// </exception>
+        public AssemblyPluginProcessor(
             IPluginRepository repository,
-            Func<IPluginRepository, IAssemblyScanner> scannerBuilder)
+            Func<IPluginRepository, IAssemblyScanner> scannerBuilder,
+            IFileSystem fileSystem)
         {
             if (repository == null)
             {
@@ -59,8 +70,21 @@ namespace Nuclei.Plugins.Discovery.Container
                 throw new ArgumentNullException("scannerBuilder");
             }
 
+            if (fileSystem == null)
+            {
+                throw new ArgumentNullException("fileSystem");
+            }
+
+            _fileSystem = fileSystem;
             _repository = repository;
             _scannerBuilder = scannerBuilder;
+
+            _acceptedPluginTypes = new[]
+                {
+                    new FilePluginType(
+                        "dll",
+                        s => new PluginAssemblyOrigin(s, _fileSystem.File.GetCreationTimeUtc(s), _fileSystem.File.GetLastWriteTimeUtc(s)))
+                };
         }
 
         /// <summary>
@@ -81,7 +105,7 @@ namespace Nuclei.Plugins.Discovery.Container
         public void Added(params PluginOrigin[] newPlugins)
         {
             var filesToAdd = newPlugins
-                .OfType<PluginFileOrigin>();
+                .OfType<PluginAssemblyOrigin>();
             StorePlugins(filesToAdd);
         }
 
@@ -94,7 +118,7 @@ namespace Nuclei.Plugins.Discovery.Container
             _repository.RemovePlugins(removedPlugins);
         }
 
-        private void StorePlugins(IEnumerable<PluginFileOrigin> filesToScan)
+        private void StorePlugins(IEnumerable<PluginAssemblyOrigin> filesToScan)
         {
             if (!filesToScan.Any())
             {
@@ -102,7 +126,10 @@ namespace Nuclei.Plugins.Discovery.Container
             }
 
             var scanner = _scannerBuilder(_repository);
-            scanner.Scan(filesToScan);
+            scanner.Scan(
+                filesToScan.ToDictionary(
+                    f => f.FilePath,
+                    f => (PluginOrigin)f));
         }
     }
 }

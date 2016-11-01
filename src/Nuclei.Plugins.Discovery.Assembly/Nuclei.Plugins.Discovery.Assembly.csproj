@@ -5,11 +5,11 @@
     <SolutionDir Condition="'$(SolutionDir)' == '' or '$(SolutionDir)' == '*undefined*'">$(MSBuildProjectDirectory)\..</SolutionDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{89667ADE-301D-455C-88C9-E2D5C9AE18CD}</ProjectGuid>
+    <ProjectGuid>{B05BCF2B-081A-4008-A62E-FE515B6480D0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nuclei.Plugins.Discovery</RootNamespace>
-    <AssemblyName>Nuclei.Plugins.Discovery</AssemblyName>
+    <RootNamespace>Nuclei.Plugins.Discovery.Assembly</RootNamespace>
+    <AssemblyName>Nuclei.Plugins.Discovery.Assembly</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,10 +32,6 @@
   </PropertyGroup>
   <Import Project="$(SolutionDir)/base.props" />
   <ItemGroup>
-    <Reference Include="Consul, Version=0.6.4.7, Culture=neutral, PublicKeyToken=20a6ad9a81df1d95, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Consul.0.6.4.7\lib\net45\Consul.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Nuclei, Version=0.9.0.0, Culture=neutral, PublicKeyToken=ee5b68ec5ad4ef93, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Nuclei.0.9.2\lib\net452\Nuclei.dll</HintPath>
       <Private>True</Private>
@@ -44,16 +40,7 @@
       <HintPath>..\..\packages\Nuclei.Build.0.9.0\lib\net40\Nuclei.Build.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Nuclei.Configuration, Version=0.9.0.0, Culture=neutral, PublicKeyToken=ee5b68ec5ad4ef93, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Nuclei.Configuration.0.9.0\lib\net452\Nuclei.Configuration.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Nuclei.Diagnostics, Version=0.10.0.0, Culture=neutral, PublicKeyToken=ee5b68ec5ad4ef93, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Nuclei.Diagnostics.0.10.0\lib\net452\Nuclei.Diagnostics.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Abstractions, Version=2.0.0.124, Culture=neutral, PublicKeyToken=d480b5b72fb413da, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.IO.Abstractions.2.0.0.124\lib\net40\System.IO.Abstractions.dll</HintPath>
@@ -67,32 +54,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Container\IAssemblyScanner.cs" />
-    <Compile Include="CreateAppDomain.cs" />
-    <Compile Include="Container\AppDomainOwningPluginScanner.cs" />
-    <Compile Include="Container\AppDomainPluginClassLoader.cs" />
-    <Compile Include="DuplicateContractNameException.cs" />
-    <Compile Include="Origin\FileSystem\FileSystemListener.cs" />
-    <Compile Include="InvalidExportMethodException.cs" />
-    <Compile Include="IPluginListener.cs" />
-    <Compile Include="IProcessPluginOriginChanges.cs" />
-    <Compile Include="Origin\FileSystem\FileSystemWatcherProxy.cs" />
-    <Compile Include="Origin\FileSystem\IFileSystemWatcher.cs" />
-    <Compile Include="PluginConfigurationKeys.cs" />
-    <Compile Include="PluginDiscoveryConfigurationKeys.cs" />
-    <Compile Include="PluginDiscoveryConstants.cs" />
-    <Compile Include="PluginRepositoryProxy.cs" />
+    <Compile Include="AssemblyPluginProcessor.cs" />
+    <Compile Include="PluginAssemblyOrigin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Container\RemoteAssemblyScanner.cs" />
-    <Compile Include="TypeIdentityBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="nuclei.plugins.discovery.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -101,18 +72,21 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
+      <Project>{E39027F6-757D-4F16-9014-EA3FA25C0D0C}</Project>
+      <Name>Nuclei.Plugins.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
+      <Project>{89667ADE-301D-455C-88C9-E2D5C9AE18CD}</Project>
+      <Name>Nuclei.Plugins.Discovery</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
-      <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
-      <Name>Nuclei.Plugins.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

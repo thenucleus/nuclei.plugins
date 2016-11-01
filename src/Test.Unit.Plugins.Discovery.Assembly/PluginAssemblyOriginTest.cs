@@ -12,18 +12,18 @@ using System.Linq;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins.Discovery.Origin.FileSystem
+namespace Nuclei.Plugins.Discovery.Assembly
 {
     [TestFixture]
     [SuppressMessage(
         "Microsoft.StyleCop.CSharp.DocumentationRules",
         "SA1600:ElementsMustBeDocumented",
         Justification = "Unit tests do not need documentation.")]
-    public sealed class PluginFileOriginTest : EqualityContractVerifierTest
+    public sealed class PluginAssemblyOriginTest : EqualityContractVerifierTest
     {
-        private readonly PluginFileOriginHashcodeContractVerfier _hashCodeVerifier = new PluginFileOriginHashcodeContractVerfier();
+        private readonly PluginAssemblyOriginHashcodeContractVerfier _hashCodeVerifier = new PluginAssemblyOriginHashcodeContractVerfier();
 
-        private readonly PluginFileOriginEqualityContractVerifier _equalityVerifier = new PluginFileOriginEqualityContractVerifier();
+        private readonly PluginAssemblyOriginEqualityContractVerifier _equalityVerifier = new PluginAssemblyOriginEqualityContractVerifier();
 
         protected override HashCodeContractVerifier HashContract
         {
@@ -44,8 +44,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void Clone()
         {
-            PluginFileOrigin first = new PluginFileOrigin("a");
-            PluginFileOrigin second = (PluginFileOrigin)first.Clone();
+            PluginAssemblyOrigin first = new PluginAssemblyOrigin("a");
+            PluginAssemblyOrigin second = (PluginAssemblyOrigin)first.Clone();
 
             Assert.AreEqual(first, second);
         }
@@ -53,8 +53,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void CompareToOperatorWithEqualObjects()
         {
-            var first = new PluginFileOrigin("a");
-            object second = (PluginFileOrigin)first.Clone();
+            var first = new PluginAssemblyOrigin("a");
+            object second = (PluginAssemblyOrigin)first.Clone();
 
             Assert.AreEqual(0, first.CompareTo(second));
         }
@@ -63,8 +63,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void CompareToWithLargerFirstObjectBasedOnCreationTime()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now + TimeSpan.FromHours(2), now);
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now + TimeSpan.FromHours(2), now);
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsTrue(first.CompareTo(second) > 0);
         }
@@ -73,8 +73,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void CompareToWithLargerFirstObjectBasedOnModifiedTime()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now, now + TimeSpan.FromHours(2));
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now, now + TimeSpan.FromHours(2));
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsTrue(first.CompareTo(second) > 0);
         }
@@ -82,8 +82,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void CompareToWithLargerFirstObjectBasedOnPath()
         {
-            var first = new PluginFileOrigin("b");
-            var second = new PluginFileOrigin("a");
+            var first = new PluginAssemblyOrigin("b");
+            var second = new PluginAssemblyOrigin("a");
 
             Assert.IsTrue(first.CompareTo(second) > 0);
         }
@@ -91,7 +91,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void CompareToWithNullObject()
         {
-            PluginFileOrigin first = new PluginFileOrigin("a");
+            PluginAssemblyOrigin first = new PluginAssemblyOrigin("a");
             object second = null;
 
             Assert.AreEqual(1, first.CompareTo(second));
@@ -101,8 +101,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void CompareToWithSmallerFirstObjectBasedOnCreationTime()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now - TimeSpan.FromHours(2), now);
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now - TimeSpan.FromHours(2), now);
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsTrue(first.CompareTo(second) < 0);
         }
@@ -111,8 +111,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void CompareToWithSmallerFirstObjectBasedOnModifiedTimed()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now, now - TimeSpan.FromHours(2));
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now, now - TimeSpan.FromHours(2));
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsTrue(first.CompareTo(second) < 0);
         }
@@ -120,8 +120,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void CompareToWithSmallerFirstObjectBasedOnPath()
         {
-            var first = new PluginFileOrigin("a");
-            var second = new PluginFileOrigin("b");
+            var first = new PluginAssemblyOrigin("a");
+            var second = new PluginAssemblyOrigin("b");
 
             Assert.IsTrue(first.CompareTo(second) < 0);
         }
@@ -129,7 +129,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void CompareToWithUnequalObjectTypes()
         {
-            PluginFileOrigin first = new PluginFileOrigin("a");
+            PluginAssemblyOrigin first = new PluginAssemblyOrigin("a");
             object second = new object();
 
             Assert.Throws<ArgumentException>(() => first.CompareTo(second));
@@ -142,7 +142,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var now = DateTimeOffset.Now;
             var creation = now;
             var modified = now + TimeSpan.FromHours(2);
-            var origin = new PluginFileOrigin(path, creation, modified);
+            var origin = new PluginAssemblyOrigin(path, creation, modified);
 
             Assert.IsNotNull(origin);
             Assert.AreEqual(path, origin.FilePath);
@@ -154,29 +154,29 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [SuppressMessage(
             "Microsoft.Usage",
             "CA1806:DoNotIgnoreMethodResults",
-            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.PluginFileOrigin",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.PluginAssemblyOrigin",
             Justification = "Testing that the constructor throws an exception.")]
         public void CreateWithEmptyFilePath()
         {
-            Assert.Throws<ArgumentException>(() => new PluginFileOrigin(string.Empty));
+            Assert.Throws<ArgumentException>(() => new PluginAssemblyOrigin(string.Empty));
         }
 
         [Test]
         [SuppressMessage(
             "Microsoft.Usage",
             "CA1806:DoNotIgnoreMethodResults",
-            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.PluginFileOrigin",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.PluginAssemblyOrigin",
             Justification = "Testing that the constructor throws an exception.")]
         public void CreateWithNullFilePath()
         {
-            Assert.Throws<ArgumentNullException>(() => new PluginFileOrigin(null));
+            Assert.Throws<ArgumentNullException>(() => new PluginAssemblyOrigin(null));
         }
 
         [Test]
         public void LargerThanOperatorWithBothObjectsNull()
         {
-            PluginFileOrigin first = null;
-            PluginFileOrigin second = null;
+            PluginAssemblyOrigin first = null;
+            PluginAssemblyOrigin second = null;
 
             Assert.IsFalse(first > second);
         }
@@ -184,8 +184,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void LargerThanOperatorWithEqualObjects()
         {
-            var first = new PluginFileOrigin("a");
-            var second = (PluginFileOrigin)first.Clone();
+            var first = new PluginAssemblyOrigin("a");
+            var second = (PluginAssemblyOrigin)first.Clone();
 
             Assert.IsFalse(first > second);
         }
@@ -194,8 +194,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void LargerThanOperatorWithFirstObjectLargerBasedOnCreationTime()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now + TimeSpan.FromHours(2), now);
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now + TimeSpan.FromHours(2), now);
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsTrue(first > second);
         }
@@ -204,8 +204,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void LargerThanOperatorWithFirstObjectLargerBasedOnModifiedTime()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now, now + TimeSpan.FromHours(2));
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now, now + TimeSpan.FromHours(2));
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsTrue(first > second);
         }
@@ -213,8 +213,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void LargerThanOperatorWithFirstObjectLargerBasedOnPath()
         {
-            var first = new PluginFileOrigin("b");
-            var second = new PluginFileOrigin("a");
+            var first = new PluginAssemblyOrigin("b");
+            var second = new PluginAssemblyOrigin("a");
 
             Assert.IsTrue(first > second);
         }
@@ -222,8 +222,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void LargerThanOperatorWithFirstObjectNull()
         {
-            PluginFileOrigin first = null;
-            PluginFileOrigin second = new PluginFileOrigin("a");
+            PluginAssemblyOrigin first = null;
+            PluginAssemblyOrigin second = new PluginAssemblyOrigin("a");
 
             Assert.IsFalse(first > second);
         }
@@ -232,8 +232,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void LargerThanOperatorWithFirstObjectSmallerBasedOnCreationTime()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now - TimeSpan.FromHours(2), now);
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now - TimeSpan.FromHours(2), now);
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsFalse(first > second);
         }
@@ -242,8 +242,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void LargerThanOperatorWithFirstObjectSmallerBasedOnModifiedTime()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now, now - TimeSpan.FromHours(2));
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now, now - TimeSpan.FromHours(2));
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsFalse(first > second);
         }
@@ -251,8 +251,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void LargerThanOperatorWithFirstObjectSmallerBasedOnPath()
         {
-            var first = new PluginFileOrigin("a");
-            var second = new PluginFileOrigin("b");
+            var first = new PluginAssemblyOrigin("a");
+            var second = new PluginAssemblyOrigin("b");
 
             Assert.IsFalse(first > second);
         }
@@ -260,8 +260,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void LargerThanOperatorWithSecondObjectNull()
         {
-            PluginFileOrigin first = new PluginFileOrigin("a");
-            PluginFileOrigin second = null;
+            PluginAssemblyOrigin first = new PluginAssemblyOrigin("a");
+            PluginAssemblyOrigin second = null;
 
             Assert.IsTrue(first > second);
         }
@@ -269,8 +269,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void SmallerThanOperatorWithBothObjectsNull()
         {
-            PluginFileOrigin first = null;
-            PluginFileOrigin second = null;
+            PluginAssemblyOrigin first = null;
+            PluginAssemblyOrigin second = null;
 
             Assert.IsFalse(first < second);
         }
@@ -278,8 +278,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void SmallerThanOperatorWithEqualObjects()
         {
-            var first = new PluginFileOrigin("a");
-            var second = (PluginFileOrigin)first.Clone();
+            var first = new PluginAssemblyOrigin("a");
+            var second = (PluginAssemblyOrigin)first.Clone();
 
             Assert.IsFalse(first < second);
         }
@@ -288,8 +288,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void SmallerThanOperatorWithFirstObjectLargerBasedOnCreationTime()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now + TimeSpan.FromHours(2), now);
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now + TimeSpan.FromHours(2), now);
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsFalse(first < second);
         }
@@ -298,8 +298,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void SmallerThanOperatorWithFirstObjectLargerBasedOnModifiedTime()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now, now + TimeSpan.FromHours(2));
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now, now + TimeSpan.FromHours(2));
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsFalse(first < second);
         }
@@ -307,8 +307,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void SmallerThanOperatorWithFirstObjectLargerBasedOnPath()
         {
-            var first = new PluginFileOrigin("b");
-            var second = new PluginFileOrigin("a");
+            var first = new PluginAssemblyOrigin("b");
+            var second = new PluginAssemblyOrigin("a");
 
             Assert.IsFalse(first < second);
         }
@@ -316,8 +316,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void SmallerThanOperatorWithFirstObjectNull()
         {
-            PluginFileOrigin first = null;
-            PluginFileOrigin second = new PluginFileOrigin("a");
+            PluginAssemblyOrigin first = null;
+            PluginAssemblyOrigin second = new PluginAssemblyOrigin("a");
 
             Assert.IsTrue(first < second);
         }
@@ -326,8 +326,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void SmallerThanOperatorWithFirstObjectSmallerBasedOnCreationTime()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now - TimeSpan.FromHours(2), now);
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now - TimeSpan.FromHours(2), now);
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsTrue(first < second);
         }
@@ -336,8 +336,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         public void SmallerThanOperatorWithFirstObjectSmallerBasedOnModifiedTime()
         {
             var now = DateTimeOffset.Now;
-            var first = new PluginFileOrigin("a", now, now - TimeSpan.FromHours(2));
-            var second = new PluginFileOrigin("a", now, now);
+            var first = new PluginAssemblyOrigin("a", now, now - TimeSpan.FromHours(2));
+            var second = new PluginAssemblyOrigin("a", now, now);
 
             Assert.IsTrue(first < second);
         }
@@ -345,8 +345,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void SmallerThanOperatorWithFirstObjectSmallerBasedOnPath()
         {
-            var first = new PluginFileOrigin("a");
-            var second = new PluginFileOrigin("b");
+            var first = new PluginAssemblyOrigin("a");
+            var second = new PluginAssemblyOrigin("b");
 
             Assert.IsTrue(first < second);
         }
@@ -354,24 +354,24 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         [Test]
         public void SmallerThanOperatorWithSecondObjectNull()
         {
-            PluginFileOrigin first = new PluginFileOrigin("a");
-            PluginFileOrigin second = null;
+            PluginAssemblyOrigin first = new PluginAssemblyOrigin("a");
+            PluginAssemblyOrigin second = null;
 
             Assert.IsFalse(first < second);
         }
 
-        private sealed class PluginFileOriginEqualityContractVerifier : EqualityContractVerifier<PluginFileOrigin>
+        private sealed class PluginAssemblyOriginEqualityContractVerifier : EqualityContractVerifier<PluginAssemblyOrigin>
         {
-            private readonly PluginFileOrigin _first = new PluginFileOrigin("a");
+            private readonly PluginAssemblyOrigin _first = new PluginAssemblyOrigin("a");
 
-            private readonly PluginFileOrigin _second = new PluginFileOrigin("b");
+            private readonly PluginAssemblyOrigin _second = new PluginAssemblyOrigin("b");
 
-            protected override PluginFileOrigin Copy(PluginFileOrigin original)
+            protected override PluginAssemblyOrigin Copy(PluginAssemblyOrigin original)
             {
-                return (PluginFileOrigin)original.Clone();
+                return (PluginAssemblyOrigin)original.Clone();
             }
 
-            protected override PluginFileOrigin FirstInstance
+            protected override PluginAssemblyOrigin FirstInstance
             {
                 get
                 {
@@ -379,7 +379,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 }
             }
 
-            protected override PluginFileOrigin SecondInstance
+            protected override PluginAssemblyOrigin SecondInstance
             {
                 get
                 {
@@ -396,17 +396,17 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             }
         }
 
-        private sealed class PluginFileOriginHashcodeContractVerfier : HashCodeContractVerifier
+        private sealed class PluginAssemblyOriginHashcodeContractVerfier : HashCodeContractVerifier
         {
-            private readonly IEnumerable<PluginFileOrigin> _distinctInstances
-                = new List<PluginFileOrigin>
+            private readonly IEnumerable<PluginAssemblyOrigin> _distinctInstances
+                = new List<PluginAssemblyOrigin>
                      {
-                        new PluginFileOrigin("a"),
-                        new PluginFileOrigin("b"),
-                        new PluginFileOrigin("c"),
-                        new PluginFileOrigin("d"),
-                        new PluginFileOrigin("e"),
-                        new PluginFileOrigin("f"),
+                        new PluginAssemblyOrigin("a"),
+                        new PluginAssemblyOrigin("b"),
+                        new PluginAssemblyOrigin("c"),
+                        new PluginAssemblyOrigin("d"),
+                        new PluginAssemblyOrigin("e"),
+                        new PluginAssemblyOrigin("f"),
                      };
 
             protected override IEnumerable<int> GetHashCodes()

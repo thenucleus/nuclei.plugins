@@ -9,18 +9,18 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using Nuclei.Plugins.Core;
-using Nuclei.Plugins.Discovery.Properties;
+using Nuclei.Plugins.Discovery.Assembly.Properties;
 
-namespace Nuclei.Plugins.Discovery.Origin.FileSystem
+namespace Nuclei.Plugins.Discovery.Assembly
 {
     /// <summary>
     /// Describes the location and last write time for a plugin assembly.
     /// </summary>
     [Serializable]
-    public sealed class PluginFileOrigin : PluginOrigin
+    public sealed class PluginAssemblyOrigin : PluginOrigin
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PluginFileOrigin"/> class.
+        /// Initializes a new instance of the <see cref="PluginAssemblyOrigin"/> class.
         /// </summary>
         /// <param name="path">The full path to the plugin file.</param>
         /// <exception cref="ArgumentNullException">
@@ -29,8 +29,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         /// <exception cref="ArgumentException">
         ///     Thrown if <paramref name="path"/> is an empty string.
         /// </exception>
-        public PluginFileOrigin(string path)
-            : base(new PluginFileOriginData(path, DateTimeOffset.MinValue, DateTimeOffset.MinValue))
+        public PluginAssemblyOrigin(string path)
+            : base(new PluginAssemblyOriginData(path, DateTimeOffset.MinValue, DateTimeOffset.MinValue))
         {
             if (path == null)
             {
@@ -44,7 +44,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PluginFileOrigin"/> class.
+        /// Initializes a new instance of the <see cref="PluginAssemblyOrigin"/> class.
         /// </summary>
         /// <param name="path">The full path to the plugin file.</param>
         /// <param name="creationTimeUtc">The time the file was created.</param>
@@ -55,8 +55,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         /// <exception cref="ArgumentException">
         ///     Thrown if <paramref name="path"/> is an empty string.
         /// </exception>
-        public PluginFileOrigin(string path, DateTimeOffset creationTimeUtc, DateTimeOffset lastWriteTimeUtc)
-            : base(new PluginFileOriginData(path, creationTimeUtc, lastWriteTimeUtc))
+        public PluginAssemblyOrigin(string path, DateTimeOffset creationTimeUtc, DateTimeOffset lastWriteTimeUtc)
+            : base(new PluginAssemblyOriginData(path, creationTimeUtc, lastWriteTimeUtc))
         {
             if (path == null)
             {
@@ -78,10 +78,10 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         /// </returns>
         protected override PluginOrigin Clone(PluginOriginData value)
         {
-            var fileOriginData = value as PluginFileOriginData;
-            Debug.Assert(fileOriginData != null, "The internal value should be a PluginFileOriginData instance.");
+            var fileOriginData = value as PluginAssemblyOriginData;
+            Debug.Assert(fileOriginData != null, "The internal value should be a PluginAssemblyOriginData instance.");
 
-            return new PluginFileOrigin(fileOriginData.FilePath, fileOriginData.CreationTimeUtc, fileOriginData.LastWriteTimeUtc);
+            return new PluginAssemblyOrigin(fileOriginData.FilePath, fileOriginData.CreationTimeUtc, fileOriginData.LastWriteTimeUtc);
         }
 
         /// <summary>
@@ -117,11 +117,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             }
         }
 
-        private PluginFileOriginData OriginData
+        private PluginAssemblyOriginData OriginData
         {
             get
             {
-                return InternalValue as PluginFileOriginData;
+                return InternalValue as PluginAssemblyOriginData;
             }
         }
 
@@ -142,7 +142,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
         }
 
         [Serializable]
-        private sealed class PluginFileOriginData : PluginOriginData
+        private sealed class PluginAssemblyOriginData : PluginOriginData
         {
             /// <summary>
             /// The time the file was created.
@@ -160,12 +160,12 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             private readonly DateTimeOffset _lastWriteTimeUtc;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="PluginFileOriginData"/> class.
+            /// Initializes a new instance of the <see cref="PluginAssemblyOriginData"/> class.
             /// </summary>
             /// <param name="path">The full path to the plugin file.</param>
             /// <param name="creationTimeUtc">The date and time the plugin file was created in UTC time.</param>
             /// <param name="lastWriteTimeUtc">The date and time the plugin file was last changed in UTC time.</param>
-            public PluginFileOriginData(string path, DateTimeOffset creationTimeUtc, DateTimeOffset lastWriteTimeUtc)
+            public PluginAssemblyOriginData(string path, DateTimeOffset creationTimeUtc, DateTimeOffset lastWriteTimeUtc)
             {
                 _filePath = path;
                 _creationTimeUtc = creationTimeUtc;
@@ -202,7 +202,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 // Check if other is a null reference by using ReferenceEquals because
                 // we overload the == operator. If other isn't actually null then
                 // we get an infinite loop where we're constantly trying to compare to null.
-                var data = other as PluginFileOriginData;
+                var data = other as PluginAssemblyOriginData;
                 if (ReferenceEquals(data, null))
                 {
                     throw new ArgumentException(
@@ -253,7 +253,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                     return true;
                 }
 
-                var data = obj as PluginFileOriginData;
+                var data = obj as PluginAssemblyOriginData;
                 return Equals(data);
             }
 
@@ -267,7 +267,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             /// </returns>
             public override bool Equals(PluginOriginData other)
             {
-                var data = other as PluginFileOriginData;
+                var data = other as PluginAssemblyOriginData;
 
                 // Check if other is a null reference by using ReferenceEquals because
                 // we overload the == operator. If other isn't actually null then
