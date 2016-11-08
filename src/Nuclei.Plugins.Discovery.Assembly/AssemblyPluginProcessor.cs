@@ -82,7 +82,7 @@ namespace Nuclei.Plugins.Discovery.Assembly
             _acceptedPluginTypes = new[]
                 {
                     new FilePluginType(
-                        "dll",
+                        CoreConstants.AssemblyExtension,
                         s => new PluginAssemblyOrigin(s, _fileSystem.File.GetCreationTimeUtc(s), _fileSystem.File.GetLastWriteTimeUtc(s)))
                 };
         }

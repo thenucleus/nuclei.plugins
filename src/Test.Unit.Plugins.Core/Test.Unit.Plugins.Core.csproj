@@ -134,6 +134,10 @@
       <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
       <Name>Nuclei.Plugins.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Nuclei.Plugins.Discovery.Assembly\Nuclei.Plugins.Discovery.Assembly.csproj">
+      <Project>{b05bcf2b-081a-4008-a62e-fe515b6480d0}</Project>
+      <Name>Nuclei.Plugins.Discovery.Assembly</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
       <Project>{89667ade-301d-455c-88c9-e2d5c9ae18cd}</Project>
       <Name>Nuclei.Plugins.Discovery</Name>

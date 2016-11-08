@@ -181,8 +181,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CopyPackageFiles.cs" />
     <Compile Include="CoreNuGetConfigurationKeys.cs" />
     <Compile Include="IInstallPackages.cs" />
+    <Compile Include="NuGetConstants.cs" />
     <Compile Include="NuGetPackageInstaller.cs" />
     <Compile Include="NuGetPackageInstallerContext.cs" />
     <Compile Include="PackagePostInstall.cs" />

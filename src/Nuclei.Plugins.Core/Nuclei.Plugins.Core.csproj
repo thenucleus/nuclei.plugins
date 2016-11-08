@@ -71,6 +71,7 @@
     <Compile Include="CannotMapExportToImportException.cs" />
     <Compile Include="ConstructorBasedImportDefinition.cs" />
     <Compile Include="ConstructorDefinition.cs" />
+    <Compile Include="CoreConstants.cs" />
     <Compile Include="DiscoverableMemberAttribute.cs" />
     <Compile Include="DuplicateDiscoverableMemberException.cs" />
     <Compile Include="DuplicatePartDefinitionException.cs" />

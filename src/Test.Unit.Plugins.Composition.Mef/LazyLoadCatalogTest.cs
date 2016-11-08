@@ -19,6 +19,7 @@ using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Composition.Mef;
 using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Discovery;
+using Nuclei.Plugins.Discovery.Assembly;
 using Nuclei.Plugins.Discovery.Container;
 using Nuclei.Plugins.Discovery.Origin.FileSystem;
 using NUnit.Framework;
@@ -413,7 +414,7 @@ namespace Nuclei.Plugins.Composition.Mef
                 repository.AddType(type);
             }
 
-            var origin = new PluginFileOrigin(Assembly.GetExecutingAssembly().LocalFilePath());
+            var origin = new PluginAssemblyOrigin(Assembly.GetExecutingAssembly().LocalFilePath());
             foreach (var part in _parts)
             {
                 if (typeNames.Contains(part.Identity.AssemblyQualifiedName))
@@ -453,7 +454,7 @@ namespace Nuclei.Plugins.Composition.Mef
                     new Mock<ILogMessagesFromRemoteAppDomains>().Object);
 
                 var localPath = Assembly.GetExecutingAssembly().LocalFilePath();
-                scanner.Scan(new List<PluginFileOrigin> { new PluginFileOrigin(localPath) });
+                scanner.Scan(new Dictionary<string, PluginOrigin> { { localPath, new PluginAssemblyOrigin(localPath) } });
 
                 _types = types;
                 _parts = parts;

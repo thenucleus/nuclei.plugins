@@ -16,12 +16,12 @@ using System.Reflection;
 using Moq;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
-using Nuclei.Plugins.Discovery.Container;
+using Nuclei.Plugins.Discovery.Assembly;
 using Nuclei.Plugins.Discovery.Origin.FileSystem;
 using NUnit.Framework;
 using Test.Mocks;
 
-namespace Nuclei.Plugins.Discovery
+namespace Nuclei.Plugins.Discovery.Container
 {
     [TestFixture]
     [SuppressMessage(
@@ -916,8 +916,8 @@ namespace Nuclei.Plugins.Discovery
                     repository.Object,
                     new Mock<ILogMessagesFromRemoteAppDomains>().Object);
 
-                var localPath = Assembly.GetExecutingAssembly().LocalFilePath();
-                scanner.Scan(new List<PluginFileOrigin> { new PluginFileOrigin(localPath) });
+                var localPath = System.Reflection.Assembly.GetExecutingAssembly().LocalFilePath();
+                scanner.Scan(new Dictionary<string, PluginOrigin> { { localPath,  new PluginAssemblyOrigin(localPath) } });
 
                 _types = types;
                 _parts = parts;

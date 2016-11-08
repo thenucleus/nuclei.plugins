@@ -154,7 +154,7 @@ namespace Nuclei.Plugins.Discovery.Assembly
         [SuppressMessage(
             "Microsoft.Usage",
             "CA1806:DoNotIgnoreMethodResults",
-            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.PluginAssemblyOrigin",
+            MessageId = "Nuclei.Plugins.Discovery.Assembly.PluginAssemblyOrigin",
             Justification = "Testing that the constructor throws an exception.")]
         public void CreateWithEmptyFilePath()
         {
@@ -165,7 +165,7 @@ namespace Nuclei.Plugins.Discovery.Assembly
         [SuppressMessage(
             "Microsoft.Usage",
             "CA1806:DoNotIgnoreMethodResults",
-            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.PluginAssemblyOrigin",
+            MessageId = "Nuclei.Plugins.Discovery.Assembly.PluginAssemblyOrigin",
             Justification = "Testing that the constructor throws an exception.")]
         public void CreateWithNullFilePath()
         {

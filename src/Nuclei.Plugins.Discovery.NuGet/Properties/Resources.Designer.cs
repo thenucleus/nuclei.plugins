@@ -79,7 +79,7 @@ namespace Nuclei.Plugins.Discovery.NuGet.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating the temporary directory to hold the files from the nuget packages at {0}.
+        ///   Looks up a localized string similar to Creating the temporary directory to hold the files from the NuGet packages at {0}.
         /// </summary>
         internal static string LogMessage_PackageScanner_CreatingBinDirectory_WithPath {
             get {

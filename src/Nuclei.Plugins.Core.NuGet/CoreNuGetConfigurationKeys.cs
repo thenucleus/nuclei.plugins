@@ -23,8 +23,8 @@ namespace Nuclei.Plugins.Core.NuGet
                 "Microsoft.Security",
                 "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
                 Justification = "ConfigurationKey is immutable")]
-        public static readonly ConfigurationKey<string[]> NugetFeeds
-                = new ConfigurationKey<string[]>("NugetFeeds");
+        public static readonly ConfigurationKey<string[]> NuGetFeeds
+                = new ConfigurationKey<string[]>("NuGetFeeds");
 
         /// <summary>
         /// Returns a collection containing all the configuration keys for the diagnostics section.
@@ -34,7 +34,7 @@ namespace Nuclei.Plugins.Core.NuGet
         {
             return new List<ConfigurationKeyBase>
                 {
-                    NugetFeeds,
+                    NuGetFeeds,
                 };
         }
     }

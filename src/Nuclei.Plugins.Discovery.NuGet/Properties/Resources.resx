@@ -124,6 +124,6 @@
     <value>The parameter should not be an empty string.</value>
   </data>
   <data name="LogMessage_PackageScanner_CreatingBinDirectory_WithPath" xml:space="preserve">
-    <value>Creating the temporary directory to hold the files from the nuget packages at {0}</value>
+    <value>Creating the temporary directory to hold the files from the NuGet packages at {0}</value>
   </data>
 </root>

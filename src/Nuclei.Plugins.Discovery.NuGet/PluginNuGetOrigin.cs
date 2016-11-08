@@ -28,16 +28,9 @@ namespace Nuclei.Plugins.Discovery.NuGet
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="id"/> is <see langword="null" />.
         /// </exception>
-        /// <exception cref="ArgumentException">
-        ///     Thrown if <paramref name="id"/> is an empty string.
-        /// </exception>
         public PluginNuGetOrigin(PackageIdentity id)
             : base(new PluginNuGetOriginData(id))
         {
-            if (id == null)
-            {
-                throw new ArgumentNullException("id");
-            }
         }
 
         /// <summary>
@@ -45,6 +38,18 @@ namespace Nuclei.Plugins.Discovery.NuGet
         /// </summary>
         /// <param name="name">The name of the nuget package.</param>
         /// <param name="version">The version of the nuget package.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="name"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if <paramref name="name"/> is an empty string.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="version"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if <paramref name="version"/> is an empty string.
+        /// </exception>
         private PluginNuGetOrigin(string name, string version)
             : base(new PluginNuGetOriginData(name, version))
         {
@@ -116,9 +121,18 @@ namespace Nuclei.Plugins.Discovery.NuGet
             /// Initializes a new instance of the <see cref="PluginNuGetOriginData"/> class.
             /// </summary>
             /// <param name="id">The ID of the package.</param>
+            /// <exception cref="ArgumentNullException">
+            ///     Thrown if <paramref name="id"/> is <see langword="null" />.
+            /// </exception>
             public PluginNuGetOriginData(PackageIdentity id)
-                : this(id.Id, id.Version.ToNormalizedString())
             {
+                if (id == null)
+                {
+                    throw new ArgumentNullException("id");
+                }
+
+                _packageName = id.Id;
+                _packageVersion = id.Version.ToNormalizedString();
             }
 
             /// <summary>
@@ -126,8 +140,40 @@ namespace Nuclei.Plugins.Discovery.NuGet
             /// </summary>
             /// <param name="name">The name of the package.</param>
             /// <param name="version">The version of the package.</param>
+            /// <exception cref="ArgumentNullException">
+            ///     Thrown if <paramref name="name"/> is <see langword="null" />.
+            /// </exception>
+            /// <exception cref="ArgumentException">
+            ///     Thrown if <paramref name="name"/> is an empty string.
+            /// </exception>
+            /// <exception cref="ArgumentNullException">
+            ///     Thrown if <paramref name="version"/> is <see langword="null" />.
+            /// </exception>
+            /// <exception cref="ArgumentException">
+            ///     Thrown if <paramref name="version"/> is an empty string.
+            /// </exception>
             public PluginNuGetOriginData(string name, string version)
             {
+                if (name == null)
+                {
+                    throw new ArgumentNullException("name");
+                }
+
+                if (string.IsNullOrEmpty(name))
+                {
+                    throw new ArgumentException(Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString, "name");
+                }
+
+                if (version == null)
+                {
+                    throw new ArgumentNullException("version");
+                }
+
+                if (string.IsNullOrEmpty(version))
+                {
+                    throw new ArgumentException(Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString, "version");
+                }
+
                 _packageName = name;
                 _packageVersion = version;
             }

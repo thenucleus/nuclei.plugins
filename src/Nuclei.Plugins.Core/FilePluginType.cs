@@ -16,6 +16,8 @@ namespace Nuclei.Plugins.Core
     /// </summary>
     public sealed class FilePluginType : IPluginType
     {
+        private static readonly Func<string, PluginOrigin> NullOriginBuilder = s => null;
+
         /// <summary>
         /// Implements the operator ==.
         /// </summary>
@@ -79,6 +81,21 @@ namespace Nuclei.Plugins.Core
         /// The function used to create a <see cref="PluginOrigin"/> instance.
         /// </summary>
         private readonly Func<string, PluginOrigin> _originBuilder;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilePluginType"/> class.
+        /// </summary>
+        /// <param name="extension">The file extension of the plugin file.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="extension"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if <paramref name="extension"/> is an empty string.
+        /// </exception>
+        public FilePluginType(string extension)
+            : this(extension, NullOriginBuilder)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilePluginType"/> class.

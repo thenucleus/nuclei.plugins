@@ -63,11 +63,6 @@ namespace Nuclei.Plugins.Core.NuGet
         private readonly SystemDiagnostics _diagnostics;
 
         /// <summary>
-        /// Abstracts the file system.
-        /// </summary>
-        private readonly System.IO.Abstractions.IFileSystem _fileSystem;
-
-        /// <summary>
         /// Provides NuGet repositories for a given source.
         /// </summary>
         private readonly ISourceRepositoryProvider _nugetRepositoryProvider;
@@ -76,35 +71,30 @@ namespace Nuclei.Plugins.Core.NuGet
         /// Initializes a new instance of the <see cref="NuGetPackageInstaller"/> class.
         /// </summary>
         /// <param name="configuration">The object that stores the configuration for the application.</param>
-        /// <param name="nugetRepositoryProvider">The object that provides repositories for a given source.</param>
+        /// <param name="repositoryProvider">The object that provides repositories for a given source.</param>
         /// <param name="diagnostics">The object that provides the diagnostics methods for the application.</param>
-        /// <param name="fileSystem">The object that provides a virtualizing layer for the file system.</param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="configuration"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="nugetRepositoryProvider"/> is <see langword="null" />.
+        ///     Thrown if <paramref name="repositoryProvider"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="diagnostics"/> is <see langword="null" />.
         /// </exception>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown if <paramref name="fileSystem"/> is <see langword="null" />.
-        /// </exception>
         public NuGetPackageInstaller(
             IConfiguration configuration,
-            ISourceRepositoryProvider nugetRepositoryProvider,
-            SystemDiagnostics diagnostics,
-            System.IO.Abstractions.IFileSystem fileSystem)
+            ISourceRepositoryProvider repositoryProvider,
+            SystemDiagnostics diagnostics)
         {
             if (configuration == null)
             {
                 throw new ArgumentNullException("configuration");
             }
 
-            if (nugetRepositoryProvider == null)
+            if (repositoryProvider == null)
             {
-                throw new ArgumentNullException("nugetRepositoryProvider");
+                throw new ArgumentNullException("repositoryProvider");
             }
 
             if (diagnostics == null)
@@ -112,15 +102,9 @@ namespace Nuclei.Plugins.Core.NuGet
                 throw new ArgumentNullException("diagnostics");
             }
 
-            if (fileSystem == null)
-            {
-                throw new ArgumentNullException("fileSystem");
-            }
-
             _configuration = configuration;
             _diagnostics = diagnostics;
-            _fileSystem = fileSystem;
-            _nugetRepositoryProvider = nugetRepositoryProvider;
+            _nugetRepositoryProvider = repositoryProvider;
         }
 
         private IReadOnlyCollection<NuGetConfiguration.PackageSource> GetPackageSources(NuGetConfiguration.ISettings settings)
@@ -129,8 +113,8 @@ namespace Nuclei.Plugins.Core.NuGet
             var availableSources = sourceProvider.LoadPackageSources().Where(source => source.IsEnabled);
             var packageSources = new List<NuGetConfiguration.PackageSource>();
 
-            var configuredSources = _configuration.HasValueFor(CoreNuGetConfigurationKeys.NugetFeeds)
-                ? _configuration.Value(CoreNuGetConfigurationKeys.NugetFeeds)
+            var configuredSources = _configuration.HasValueFor(CoreNuGetConfigurationKeys.NuGetFeeds)
+                ? _configuration.Value(CoreNuGetConfigurationKeys.NuGetFeeds)
                 : new string[0];
 
             foreach (var source in configuredSources)
@@ -161,6 +145,21 @@ namespace Nuclei.Plugins.Core.NuGet
             string outputLocation,
             PackagePostInstall postInstallAction = null)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            if (outputLocation == null)
+            {
+                throw new ArgumentNullException("outputLocation");
+            }
+
+            if (string.IsNullOrWhiteSpace(outputLocation))
+            {
+                throw new ArgumentException(Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString, "outputLocation");
+            }
+
             var nugetProject = new PluginNuGetProject(
                 outputLocation,
                 new PackagePathResolver(outputLocation),

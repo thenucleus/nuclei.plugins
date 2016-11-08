@@ -7,7 +7,7 @@
     <ProjectGuid>{29F66546-5182-495E-967E-A4424C17BF70}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test.Unit.Plugins.Discovery.Assembly</RootNamespace>
+    <RootNamespace>Nuclei.Plugins.Discovery.Assembly</RootNamespace>
     <AssemblyName>Test.Unit.Plugins.Discovery.Assembly</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -68,6 +68,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Test.SourceOnly\Mocks\MockDirectory.cs">
+      <Link>Mocks\MockDirectory.cs</Link>
+    </Compile>
+    <Compile Include="..\Test.SourceOnly\Mocks\MockFile.cs">
+      <Link>Mocks\MockFile.cs</Link>
+    </Compile>
+    <Compile Include="..\Test.SourceOnly\Mocks\MockPath.cs">
+      <Link>Mocks\MockPath.cs</Link>
+    </Compile>
     <Compile Include="AssemblyPluginProcessorTest.cs" />
     <Compile Include="PluginAssemblyOriginTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

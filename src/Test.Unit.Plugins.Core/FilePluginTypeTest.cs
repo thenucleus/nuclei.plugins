@@ -9,7 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Moq;
 using Nuclei.Nunit.Extensions;
+using Nuclei.Plugins.Discovery.Assembly;
 using NUnit.Framework;
 
 namespace Nuclei.Plugins.Core
@@ -42,6 +44,19 @@ namespace Nuclei.Plugins.Core
         }
 
         [Test]
+        public void Create()
+        {
+            var extension = "a";
+
+            var origin = new PluginAssemblyOrigin("a");
+            Func<string, PluginOrigin> builder = s => origin;
+            var type = new FilePluginType(extension, builder);
+
+            Assert.IsNotNull(type);
+            Assert.AreSame(origin, type.Origin("b"));
+        }
+
+        [Test]
         [SuppressMessage(
             "Microsoft.Usage",
             "CA1806:DoNotIgnoreMethodResults",
@@ -49,7 +64,7 @@ namespace Nuclei.Plugins.Core
             Justification = "Testing that the constructor throws an exception.")]
         public void CreateWithEmptyExtension()
         {
-            Assert.Throws<ArgumentException>(() => new FilePluginType(string.Empty));
+            Assert.Throws<ArgumentException>(() => new FilePluginType(string.Empty, s => null));
         }
 
         [Test]
@@ -60,14 +75,25 @@ namespace Nuclei.Plugins.Core
             Justification = "Testing that the constructor throws an exception.")]
         public void CreateWithNullExtension()
         {
-            Assert.Throws<ArgumentNullException>(() => new FilePluginType(null));
+            Assert.Throws<ArgumentNullException>(() => new FilePluginType(null, s => null));
+        }
+
+        [Test]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Core.FilePluginType",
+            Justification = "Testing that the constructor throws an exception.")]
+        public void CreateWithNullOriginBuilder()
+        {
+            Assert.Throws<ArgumentNullException>(() => new FilePluginType("a", null));
         }
 
         private sealed class FilePluginTypeEqualityContractVerifier : EqualityContractVerifier<FilePluginType>
         {
-            private readonly FilePluginType _first = new FilePluginType("a");
+            private readonly FilePluginType _first = new FilePluginType("a", s => null);
 
-            private readonly FilePluginType _second = new FilePluginType("b");
+            private readonly FilePluginType _second = new FilePluginType("b", s => null);
 
             protected override FilePluginType Copy(FilePluginType original)
             {
@@ -104,12 +130,12 @@ namespace Nuclei.Plugins.Core
             private readonly IEnumerable<FilePluginType> _distinctInstances
                 = new List<FilePluginType>
                      {
-                        new FilePluginType("a"),
-                        new FilePluginType("b"),
-                        new FilePluginType("c"),
-                        new FilePluginType("d"),
-                        new FilePluginType("e"),
-                        new FilePluginType("f"),
+                        new FilePluginType("a", s => null),
+                        new FilePluginType("b", s => null),
+                        new FilePluginType("c", s => null),
+                        new FilePluginType("d", s => null),
+                        new FilePluginType("e", s => null),
+                        new FilePluginType("f", s => null),
                      };
 
             protected override IEnumerable<int> GetHashCodes()

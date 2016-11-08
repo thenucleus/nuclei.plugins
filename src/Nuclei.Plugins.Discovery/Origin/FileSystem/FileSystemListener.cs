@@ -199,13 +199,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
                 try
                 {
                     var origins = newFiles
-                        .Where(
-                            p => scanner.AcceptedPluginTypes.Any(
-                                t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(p)))))
                         .Select(
-                            p => scanner.AcceptedPluginTypes.First(
+                            p => scanner.AcceptedPluginTypes.FirstOrDefault(
                                     t => t.Equals(new FilePluginType(_fileSystem.Path.GetExtension(p))))
                                 .Origin(p))
+                        .Where(p => p != null)
                         .ToArray();
                     if (origins.Any())
                     {

@@ -11,19 +11,24 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO.Abstractions;
 using System.Linq;
 using Moq;
+using Nuclei.Diagnostics;
+using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
+using Nuclei.Plugins.Core.NuGet;
 using Nuclei.Plugins.Discovery.Container;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using NUnit.Framework;
 using Test.Mocks;
 
-namespace Nuclei.Plugins.Discovery.Assembly
+namespace Nuclei.Plugins.Discovery.NuGet
 {
     [TestFixture]
     [SuppressMessage(
         "Microsoft.StyleCop.CSharp.DocumentationRules",
         "SA1600:ElementsMustBeDocumented",
         Justification = "Unit tests do not need documentation.")]
-    public sealed class AssemblyPluginProcessorTest
+    public sealed class NuGetPluginProcessorTest
     {
         private sealed class MockScanner : IAssemblyScanner
         {
@@ -46,16 +51,29 @@ namespace Nuclei.Plugins.Discovery.Assembly
         [Test]
         public void Added()
         {
+            var packageInstaller = new Mock<IInstallPackages>();
+            {
+                packageInstaller.Setup(p => p.Install(It.IsAny<PackageIdentity>(), It.IsAny<string>(), It.IsAny<PackagePostInstall>()))
+                    .Callback<PackageIdentity, string, PackagePostInstall>((id, p, install) => install("a", "b", id));
+            }
+
+            var binaries = new List<string>
+                {
+                    "a.dll",
+                    "b.dll",
+                    "c.txt",
+                };
+            CopyPackageFiles copier = (id, pattern, source, destination) => binaries;
+
             var repository = new Mock<IPluginRepository>();
             {
                 repository.Setup(r => r.KnownPluginOrigins())
-                    .Returns(Enumerable.Empty<PluginAssemblyOrigin>());
+                    .Returns(Enumerable.Empty<PluginNuGetOrigin>());
             }
 
-            var files = new List<PluginAssemblyOrigin>
+            var packages = new List<PluginNuGetOrigin>
                 {
-                    new PluginAssemblyOrigin(@"c:\temp\foobar.dll", DateTimeOffset.Now, DateTimeOffset.Now),
-                    new PluginAssemblyOrigin(@"c:\temp\foobar2.dll", DateTimeOffset.Now.AddHours(-2), DateTimeOffset.Now),
+                    new PluginNuGetOrigin(new PackageIdentity("a", new NuGetVersion(1, 2, 3))),
                 };
 
             var scanner = new MockScanner();
@@ -63,37 +81,44 @@ namespace Nuclei.Plugins.Discovery.Assembly
 
             var fileSystem = new Mock<IFileSystem>();
             {
+                fileSystem.Setup(f => f.Directory)
+                    .Returns(new MockDirectory(new List<string>()));
                 fileSystem.Setup(f => f.File)
                     .Returns(new MockFile(new Dictionary<string, string>()));
+                fileSystem.Setup(f => f.Path)
+                    .Returns(new MockPath());
             }
 
-            var detector = new AssemblyPluginProcessor(
+            var detector = new NuGetPluginProcessor(
+                packageInstaller.Object,
+                copier,
                 repository.Object,
                 scannerBuilder,
-                fileSystem.Object);
+                fileSystem.Object,
+                new SystemDiagnostics(new Mock<ILogger>().Object, null));
 
-            var origins = files.Cast<PluginOrigin>().ToArray();
+            var origins = packages.Cast<PluginOrigin>().ToArray();
             detector.Added(origins.ToArray());
-            Assert.That(scanner.FilesToScan.Values, Is.EquivalentTo(files));
+            Assert.That(scanner.FilesToScan.Keys, Is.EquivalentTo(binaries.Take(2)));
         }
 
         [Test]
         public void Removed()
         {
-            var files = new List<PluginAssemblyOrigin>
-                {
-                    new PluginAssemblyOrigin(@"c:\temp\foobar.dll", DateTimeOffset.Now, DateTimeOffset.Now),
-                    new PluginAssemblyOrigin(@"c:\temp\foobar2.dll", DateTimeOffset.Now.AddHours(-2), DateTimeOffset.Now),
-                };
+            var packageInstaller = new Mock<IInstallPackages>();
+            CopyPackageFiles copier = (id, pattern, source, destination) => new List<string>();
 
             IEnumerable<PluginOrigin> removedPlugins = null;
             var repository = new Mock<IPluginRepository>();
             {
-                repository.Setup(r => r.KnownPluginOrigins())
-                    .Returns(files);
                 repository.Setup(r => r.RemovePlugins(It.IsAny<IEnumerable<PluginOrigin>>()))
                     .Callback<IEnumerable<PluginOrigin>>(i => removedPlugins = i);
             }
+
+            var packages = new List<PluginNuGetOrigin>
+                {
+                    new PluginNuGetOrigin(new PackageIdentity("a", new NuGetVersion(1, 2, 3))),
+                };
 
             var scanner = new MockScanner();
             Func<IPluginRepository, IAssemblyScanner> scannerBuilder = r => scanner;
@@ -104,12 +129,15 @@ namespace Nuclei.Plugins.Discovery.Assembly
                     .Returns(new MockFile(new Dictionary<string, string>()));
             }
 
-            var detector = new AssemblyPluginProcessor(
+            var detector = new NuGetPluginProcessor(
+                packageInstaller.Object,
+                copier,
                 repository.Object,
                 scannerBuilder,
-                fileSystem.Object);
+                fileSystem.Object,
+                new SystemDiagnostics(new Mock<ILogger>().Object, null));
 
-            var origins = files.Cast<PluginOrigin>().ToArray();
+            var origins = packages.Cast<PluginOrigin>().ToArray();
             detector.Removed(origins);
             Assert.IsNotNull(removedPlugins);
             Assert.AreSame(origins, removedPlugins);

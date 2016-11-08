@@ -55,7 +55,7 @@ namespace Nuclei.Plugins.Core.NuGet
 
         public void Log(MessageLevel level, string message, params object[] args)
         {
-            if (args.Length > 0)
+            if ((args == null) || (args.Length > 0))
             {
                 message = string.Format(CultureInfo.CurrentCulture, message, args);
             }

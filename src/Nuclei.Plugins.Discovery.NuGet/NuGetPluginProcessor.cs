@@ -28,7 +28,7 @@ namespace Nuclei.Plugins.Discovery.NuGet
         private static readonly IPluginType[] _acceptedPluginTypes = new[]
             {
                 new FilePluginType(
-                    "nupkg",
+                    NuGetConstants.NuGetPackageExtension,
                     p =>
                     {
                         using (var reader = new PackageArchiveReader(p))
@@ -42,6 +42,11 @@ namespace Nuclei.Plugins.Discovery.NuGet
         /// The object that provides the diagnostics for the system.
         /// </summary>
         private readonly SystemDiagnostics _diagnostics;
+
+        /// <summary>
+        /// The function used to copy the files from the installed NuGet packages.
+        /// </summary>
+        private readonly CopyPackageFiles _fileCopy;
 
         /// <summary>
         /// The object that provides an abstraction of the file system.
@@ -68,12 +73,16 @@ namespace Nuclei.Plugins.Discovery.NuGet
         /// Initializes a new instance of the <see cref="NuGetPluginProcessor"/> class.
         /// </summary>
         /// <param name="packageInstaller"> The object that installs NuGet packages.</param>
+        /// <param name="fileCopy">The function used to copy the files from the installed NuGet packages.</param>
         /// <param name="repository">The object that stores information about all the parts and the part groups.</param>
         /// <param name="scannerBuilder">The function that is used to create an NuGet package scanner.</param>
         /// <param name="fileSystem">The object that provides an abstraction of the file system.</param>
         /// <param name="diagnostics">The object that provides the diagnostics methods for the system.</param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="packageInstaller"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="fileCopy"/> is <see langword="null" />.
         /// </exception>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="repository"/> is <see langword="null" />.
@@ -89,6 +98,7 @@ namespace Nuclei.Plugins.Discovery.NuGet
         /// </exception>
         public NuGetPluginProcessor(
             IInstallPackages packageInstaller,
+            CopyPackageFiles fileCopy,
             IPluginRepository repository,
             Func<IPluginRepository, IAssemblyScanner> scannerBuilder,
             IFileSystem fileSystem,
@@ -97,6 +107,11 @@ namespace Nuclei.Plugins.Discovery.NuGet
             if (packageInstaller == null)
             {
                 throw new ArgumentNullException("packageInstaller");
+            }
+
+            if (fileCopy == null)
+            {
+                throw new ArgumentNullException("fileCopy");
             }
 
             if (repository == null)
@@ -120,7 +135,9 @@ namespace Nuclei.Plugins.Discovery.NuGet
             }
 
             _diagnostics = diagnostics;
+            _fileCopy = fileCopy;
             _fileSystem = fileSystem;
+            _packageInstaller = packageInstaller;
             _repository = repository;
             _scannerBuilder = scannerBuilder;
         }
@@ -187,19 +204,17 @@ namespace Nuclei.Plugins.Discovery.NuGet
                         tempDirectory,
                         (outputLocation, path, id) =>
                         {
-                            var copiedFiles = PackageUtilities.CopyPackageFilesToSinglePath(
-                                path,
+                            var copiedFiles = _fileCopy(
                                 id,
                                 "*.*",
-                                binPath,
-                                _diagnostics,
-                                _fileSystem);
+                                path,
+                                binPath);
 
                             if (id.Equals(package))
                             {
                                 var origin = new PluginNuGetOrigin(id);
                                 var packageAssemblies = copiedFiles
-                                    .Where(p => _fileSystem.Path.GetExtension(p).Equals("dll"))
+                                    .Where(p => _fileSystem.Path.GetExtension(p).Equals(CoreConstants.AssemblyExtension))
                                     .ToDictionary(k => k, v => origin);
                                 foreach (var pair in packageAssemblies)
                                 {

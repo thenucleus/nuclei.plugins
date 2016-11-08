@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Nuclei.Plugins.Core.NuGet.Properties;
+using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.ProjectManagement;
@@ -76,6 +77,9 @@ namespace Nuclei.Plugins.Core.NuGet
             _folderProject = new FolderNuGetProject(root, packagePathResolver);
             _packagePathResolver = packagePathResolver;
             _postInstallAction = postInstallAction;
+
+            InternalMetadata.Add(NuGetProjectMetadataKeys.TargetFramework, NuGetFramework.AnyFramework);
+            InternalMetadata.Add(NuGetProjectMetadataKeys.Name, root);
         }
 
         /// <summary>

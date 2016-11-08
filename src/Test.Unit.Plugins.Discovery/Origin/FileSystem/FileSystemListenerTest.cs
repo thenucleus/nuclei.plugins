@@ -18,6 +18,7 @@ using Nuclei.Configuration;
 using Nuclei.Diagnostics;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
+using Nuclei.Plugins.Discovery.Assembly;
 using NUnit.Framework;
 using Test.Mocks;
 
@@ -93,7 +94,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner1 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner1.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner1.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => plugins1 = p)
@@ -106,7 +107,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner2 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner2.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner2.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => plugins2 = p)
@@ -153,7 +154,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(plugins1);
             Assert.AreEqual(1, plugins1.Length);
 
-            var origin = plugins1[0] as PluginFileOrigin;
+            var origin = plugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
@@ -164,7 +165,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(plugins2);
             Assert.AreEqual(1, plugins2.Length);
 
-            origin = plugins2[0] as PluginFileOrigin;
+            origin = plugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -185,7 +186,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => plugins = p)
@@ -232,7 +233,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(plugins);
             Assert.AreEqual(1, plugins.Length);
 
-            var origin = plugins[0] as PluginFileOrigin;
+            var origin = plugins[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -309,7 +310,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner1 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner1.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner1.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => plugins1 = p)
@@ -323,7 +324,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner2 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner2.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner2.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => plugins2 = p)
@@ -370,7 +371,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(plugins1);
             Assert.AreEqual(1, plugins1.Length);
 
-            var origin = plugins1[0] as PluginFileOrigin;
+            var origin = plugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
@@ -381,7 +382,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(plugins2);
             Assert.AreEqual(1, plugins2.Length);
 
-            origin = plugins2[0] as PluginFileOrigin;
+            origin = plugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -464,7 +465,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner1 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner1.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner1.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins1 = p)
@@ -479,7 +480,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner2 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner2.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner2.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins2 = p)
@@ -521,14 +522,14 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins1);
             Assert.AreEqual(1, addedPlugins1.Length);
 
-            var origin = addedPlugins1[0] as PluginFileOrigin;
+            var origin = addedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
             Assert.IsNotNull(removedPlugins1);
             Assert.AreEqual(1, removedPlugins1.Length);
 
-            origin = removedPlugins1[0] as PluginFileOrigin;
+            origin = removedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
@@ -539,14 +540,14 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins2);
             Assert.AreEqual(1, addedPlugins2.Length);
 
-            origin = addedPlugins2[0] as PluginFileOrigin;
+            origin = addedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
             Assert.IsNotNull(removedPlugins2);
             Assert.AreEqual(1, removedPlugins2.Length);
 
-            origin = removedPlugins2[0] as PluginFileOrigin;
+            origin = removedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -573,7 +574,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins = p)
@@ -614,14 +615,14 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins);
             Assert.AreEqual(1, addedPlugins.Length);
 
-            var origin = addedPlugins[0] as PluginFileOrigin;
+            var origin = addedPlugins[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
             Assert.IsNotNull(removedPlugins);
             Assert.AreEqual(1, removedPlugins.Length);
 
-            origin = removedPlugins[0] as PluginFileOrigin;
+            origin = removedPlugins[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -705,7 +706,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner1 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner1.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner1.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins1 = p)
@@ -721,7 +722,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner2 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner2.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner2.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins2 = p)
@@ -763,14 +764,14 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins1);
             Assert.AreEqual(1, addedPlugins1.Length);
 
-            var origin = addedPlugins1[0] as PluginFileOrigin;
+            var origin = addedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
             Assert.IsNotNull(removedPlugins1);
             Assert.AreEqual(1, removedPlugins1.Length);
 
-            origin = removedPlugins1[0] as PluginFileOrigin;
+            origin = removedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
@@ -781,14 +782,14 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins2);
             Assert.AreEqual(1, addedPlugins2.Length);
 
-            origin = addedPlugins2[0] as PluginFileOrigin;
+            origin = addedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
             Assert.IsNotNull(removedPlugins2);
             Assert.AreEqual(1, removedPlugins2.Length);
 
-            origin = removedPlugins2[0] as PluginFileOrigin;
+            origin = removedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -814,7 +815,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner1 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner1.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner1.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins1 = p)
@@ -827,7 +828,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner2 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner2.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner2.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins2 = p)
@@ -868,7 +869,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins1);
             Assert.AreEqual(1, addedPlugins1.Length);
 
-            var origin = addedPlugins1[0] as PluginFileOrigin;
+            var origin = addedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
@@ -879,7 +880,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins2);
             Assert.AreEqual(1, addedPlugins2.Length);
 
-            origin = addedPlugins2[0] as PluginFileOrigin;
+            origin = addedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -905,7 +906,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins = p)
@@ -945,7 +946,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins);
             Assert.AreEqual(1, addedPlugins.Length);
 
-            var origin = addedPlugins[0] as PluginFileOrigin;
+            var origin = addedPlugins[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -1028,7 +1029,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner1 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner1.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner1.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins1 = p)
@@ -1042,7 +1043,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner2 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner2.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner2.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins2 = p)
@@ -1083,7 +1084,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins1);
             Assert.AreEqual(1, addedPlugins1.Length);
 
-            var origin = addedPlugins1[0] as PluginFileOrigin;
+            var origin = addedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
@@ -1094,7 +1095,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins2);
             Assert.AreEqual(1, addedPlugins2.Length);
 
-            origin = addedPlugins2[0] as PluginFileOrigin;
+            origin = addedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -1120,7 +1121,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner1 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner1.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner1.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Verifiable();
@@ -1133,7 +1134,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner2 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner2.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner2.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Verifiable();
@@ -1174,7 +1175,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(removedPlugins1);
             Assert.AreEqual(1, removedPlugins1.Length);
 
-            var origin = removedPlugins1[0] as PluginFileOrigin;
+            var origin = removedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
@@ -1185,7 +1186,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(removedPlugins2);
             Assert.AreEqual(1, removedPlugins2.Length);
 
-            origin = removedPlugins2[0] as PluginFileOrigin;
+            origin = removedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -1212,7 +1213,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins = p)
@@ -1253,7 +1254,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(removedPlugins);
             Assert.AreEqual(1, removedPlugins.Length);
 
-            var origin = removedPlugins[0] as PluginFileOrigin;
+            var origin = removedPlugins[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -1336,7 +1337,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner1 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner1.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner1.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Throws<ArgumentException>()
@@ -1350,7 +1351,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner2 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner2.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner2.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Verifiable();
@@ -1391,7 +1392,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(removedPlugins1);
             Assert.AreEqual(1, removedPlugins1.Length);
 
-            var origin = removedPlugins1[0] as PluginFileOrigin;
+            var origin = removedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
@@ -1402,7 +1403,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(removedPlugins2);
             Assert.AreEqual(1, removedPlugins2.Length);
 
-            origin = removedPlugins2[0] as PluginFileOrigin;
+            origin = removedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -1429,7 +1430,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner1 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner1.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner1.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins1 = p)
@@ -1444,7 +1445,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner2 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner2.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner2.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins2 = p)
@@ -1489,14 +1490,14 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins1);
             Assert.AreEqual(1, addedPlugins1.Length);
 
-            var origin = addedPlugins1[0] as PluginFileOrigin;
+            var origin = addedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
             Assert.IsNotNull(removedPlugins1);
             Assert.AreEqual(1, removedPlugins1.Length);
 
-            origin = removedPlugins1[0] as PluginFileOrigin;
+            origin = removedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(oldFilePath, origin.FilePath);
 
@@ -1507,14 +1508,14 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins2);
             Assert.AreEqual(1, addedPlugins2.Length);
 
-            origin = addedPlugins2[0] as PluginFileOrigin;
+            origin = addedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
             Assert.IsNotNull(removedPlugins2);
             Assert.AreEqual(1, removedPlugins2.Length);
 
-            origin = removedPlugins2[0] as PluginFileOrigin;
+            origin = removedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(oldFilePath, origin.FilePath);
         }
@@ -1541,7 +1542,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins = p)
@@ -1585,14 +1586,14 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins);
             Assert.AreEqual(1, addedPlugins.Length);
 
-            var origin = addedPlugins[0] as PluginFileOrigin;
+            var origin = addedPlugins[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
             Assert.IsNotNull(removedPlugins);
             Assert.AreEqual(1, removedPlugins.Length);
 
-            origin = removedPlugins[0] as PluginFileOrigin;
+            origin = removedPlugins[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(oldFilePath, origin.FilePath);
         }
@@ -1678,7 +1679,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins = p)
@@ -1722,7 +1723,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(removedPlugins);
             Assert.AreEqual(1, removedPlugins.Length);
 
-            var origin = removedPlugins[0] as PluginFileOrigin;
+            var origin = removedPlugins[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(oldFilePath, origin.FilePath);
         }
@@ -1748,7 +1749,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins = p)
@@ -1790,7 +1791,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins);
             Assert.AreEqual(1, addedPlugins.Length);
 
-            var origin = addedPlugins[0] as PluginFileOrigin;
+            var origin = addedPlugins[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
         }
@@ -1817,7 +1818,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner1 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner1.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner1.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins1 = p)
@@ -1833,7 +1834,7 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             var scanner2 = new Mock<IProcessPluginOriginChanges>();
             {
                 scanner2.Setup(s => s.AcceptedPluginTypes)
-                    .Returns(new IPluginType[] { new FilePluginType(".dll") })
+                    .Returns(new IPluginType[] { new FilePluginType(".dll", s => new PluginAssemblyOrigin(s)) })
                     .Verifiable();
                 scanner2.Setup(s => s.Added(It.IsAny<PluginOrigin[]>()))
                     .Callback<PluginOrigin[]>(p => addedPlugins2 = p)
@@ -1878,14 +1879,14 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins1);
             Assert.AreEqual(1, addedPlugins1.Length);
 
-            var origin = addedPlugins1[0] as PluginFileOrigin;
+            var origin = addedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
             Assert.IsNotNull(removedPlugins1);
             Assert.AreEqual(1, removedPlugins1.Length);
 
-            origin = removedPlugins1[0] as PluginFileOrigin;
+            origin = removedPlugins1[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(oldFilePath, origin.FilePath);
 
@@ -1896,14 +1897,14 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             Assert.IsNotNull(addedPlugins2);
             Assert.AreEqual(1, addedPlugins2.Length);
 
-            origin = addedPlugins2[0] as PluginFileOrigin;
+            origin = addedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(pluginFilePath, origin.FilePath);
 
             Assert.IsNotNull(removedPlugins2);
             Assert.AreEqual(1, removedPlugins2.Length);
 
-            origin = removedPlugins2[0] as PluginFileOrigin;
+            origin = removedPlugins2[0] as PluginAssemblyOrigin;
             Assert.IsNotNull(origin);
             Assert.AreEqual(oldFilePath, origin.FilePath);
         }
