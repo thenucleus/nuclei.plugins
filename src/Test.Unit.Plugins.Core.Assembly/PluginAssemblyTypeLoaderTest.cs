@@ -18,7 +18,7 @@ namespace Nuclei.Plugins.Core.Assembly
         "Microsoft.StyleCop.CSharp.DocumentationRules",
         "SA1600:ElementsMustBeDocumented",
         Justification = "Unit tests do not need documentation.")]
-    public sealed class PluginNuGetTypeLoaderTest
+    public sealed class PluginAssemblyTypeLoaderTest
     {
         [Test]
         public void Load()

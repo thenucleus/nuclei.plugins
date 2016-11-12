@@ -77,7 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PluginAssemblyOriginTest.cs" />
-    <Compile Include="PluginNuGetTypeLoaderTest.cs" />
+    <Compile Include="PluginAssemblyTypeLoaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
