@@ -8,10 +8,9 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using Nuclei.Plugins.Core;
-using Nuclei.Plugins.Discovery.Assembly.Properties;
+using Nuclei.Plugins.Core.Assembly.Properties;
 
-namespace Nuclei.Plugins.Discovery.Assembly
+namespace Nuclei.Plugins.Core.Assembly
 {
     /// <summary>
     /// Describes the location and last write time for a plugin assembly.

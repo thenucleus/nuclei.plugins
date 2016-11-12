@@ -12,7 +12,7 @@ using System.Linq;
 using Nuclei.Nunit.Extensions;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins.Discovery.Assembly
+namespace Nuclei.Plugins.Core.Assembly
 {
     [TestFixture]
     [SuppressMessage(

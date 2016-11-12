@@ -4,11 +4,11 @@
     <SolutionDir Condition="'$(SolutionDir)' == '' or '$(SolutionDir)' == '*undefined*'">$(MSBuildProjectDirectory)\..</SolutionDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{29F66546-5182-495E-967E-A4424C17BF70}</ProjectGuid>
+    <ProjectGuid>{89283F47-B1EB-467B-938E-7BCFB7739B23}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nuclei.Plugins.Discovery.Assembly</RootNamespace>
-    <AssemblyName>Test.Unit.Plugins.Discovery.Assembly</AssemblyName>
+    <RootNamespace>Nuclei.Plugins.Core.Assembly</RootNamespace>
+    <AssemblyName>Test.Unit.Plugins.Core.Assembly</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -37,14 +37,7 @@
   </PropertyGroup>
   <Import Project="$(SolutionDir)/base.props" />
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Moq, Version=4.5.21.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Moq.4.5.21\lib\net45\Moq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Nuclei, Version=0.9.0.0, Culture=neutral, PublicKeyToken=ee5b68ec5ad4ef93, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Nuclei.0.9.2\lib\net452\Nuclei.dll</HintPath>
       <Private>True</Private>
@@ -57,27 +50,34 @@
       <HintPath>..\..\packages\Nuclei.Nunit.Extensions.2.6.2\lib\net40\Nuclei.Nunit.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NuGet.Frameworks, Version=3.4.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NuGet.Frameworks.3.4.4-rtm-final\lib\net45\NuGet.Frameworks.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NuGet.Packaging.Core, Version=3.4.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NuGet.Packaging.Core.3.4.4-rtm-final\lib\net45\NuGet.Packaging.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NuGet.Packaging.Core.Types, Version=3.4.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NuGet.Packaging.Core.Types.3.4.4-rtm-final\lib\net45\NuGet.Packaging.Core.Types.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NuGet.Versioning, Version=3.4.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NuGet.Versioning.3.4.4-rtm-final\lib\net45\NuGet.Versioning.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.IO.Abstractions, Version=2.0.0.124, Culture=neutral, PublicKeyToken=d480b5b72fb413da, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.Abstractions.2.0.0.124\lib\net40\System.IO.Abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Test.SourceOnly\Mocks\MockDirectory.cs">
-      <Link>Mocks\MockDirectory.cs</Link>
-    </Compile>
-    <Compile Include="..\Test.SourceOnly\Mocks\MockFile.cs">
-      <Link>Mocks\MockFile.cs</Link>
-    </Compile>
-    <Compile Include="..\Test.SourceOnly\Mocks\MockPath.cs">
-      <Link>Mocks\MockPath.cs</Link>
-    </Compile>
-    <Compile Include="AssemblyPluginProcessorTest.cs" />
+    <Compile Include="PluginAssemblyOriginTest.cs" />
+    <Compile Include="PluginNuGetTypeLoaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -89,17 +89,17 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nuclei.Plugins.Core.Assembly\Nuclei.Plugins.Core.Assembly.csproj">
+      <Project>{8f859bfe-d114-42f0-96e2-04cd5b62a31d}</Project>
+      <Name>Nuclei.Plugins.Core.Assembly</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nuclei.Plugins.Core.NuGet\Nuclei.Plugins.Core.NuGet.csproj">
+      <Project>{790FA747-DC90-482B-A685-EE8B224DF842}</Project>
+      <Name>Nuclei.Plugins.Core.NuGet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
       <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
       <Name>Nuclei.Plugins.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Nuclei.Plugins.Discovery.Assembly\Nuclei.Plugins.Discovery.Assembly.csproj">
-      <Project>{b05bcf2b-081a-4008-a62e-fe515b6480d0}</Project>
-      <Name>Nuclei.Plugins.Discovery.Assembly</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
-      <Project>{89667ade-301d-455c-88c9-e2d5c9ae18cd}</Project>
-      <Name>Nuclei.Plugins.Discovery</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

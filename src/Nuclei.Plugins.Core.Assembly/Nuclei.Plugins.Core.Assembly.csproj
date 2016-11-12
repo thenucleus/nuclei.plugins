@@ -5,11 +5,11 @@
     <SolutionDir Condition="'$(SolutionDir)' == '' or '$(SolutionDir)' == '*undefined*'">$(MSBuildProjectDirectory)\..</SolutionDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B05BCF2B-081A-4008-A62E-FE515B6480D0}</ProjectGuid>
+    <ProjectGuid>{8F859BFE-D114-42F0-96E2-04CD5B62A31D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nuclei.Plugins.Discovery.Assembly</RootNamespace>
-    <AssemblyName>Nuclei.Plugins.Discovery.Assembly</AssemblyName>
+    <RootNamespace>Nuclei.Plugins.Core.Assembly</RootNamespace>
+    <AssemblyName>Nuclei.Plugins.Core.Assembly</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -42,10 +42,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO.Abstractions, Version=2.0.0.124, Culture=neutral, PublicKeyToken=d480b5b72fb413da, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.Abstractions.2.0.0.124\lib\net40\System.IO.Abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,7 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyPluginProcessor.cs" />
+    <Compile Include="PluginAssemblyOrigin.cs" />
+    <Compile Include="PluginAssemblyTypeLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -63,22 +60,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="nuclei.plugins.core.assembly.nuspec" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
+      <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
+      <Name>Nuclei.Plugins.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
-      <Project>{E39027F6-757D-4F16-9014-EA3FA25C0D0C}</Project>
-      <Name>Nuclei.Plugins.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
-      <Project>{89667ADE-301D-455C-88C9-E2D5C9AE18CD}</Project>
-      <Name>Nuclei.Plugins.Discovery</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
