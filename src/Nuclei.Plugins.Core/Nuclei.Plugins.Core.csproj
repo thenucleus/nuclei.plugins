@@ -78,7 +78,9 @@
     <Compile Include="DuplicateTypeDefinitionException.cs" />
     <Compile Include="ExportRegistrationId.cs" />
     <Compile Include="FilePluginType.cs" />
+    <Compile Include="ILoadTypesFromPlugins.cs" />
     <Compile Include="ImportRegistrationId.cs" />
+    <Compile Include="InvalidPluginOriginException.cs" />
     <Compile Include="IPartRegistration.cs" />
     <Compile Include="IPluginRepository.cs" />
     <Compile Include="IPluginType.cs" />
