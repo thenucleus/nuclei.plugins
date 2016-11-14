@@ -117,6 +117,7 @@
     <Compile Include="UnknownExportDefinitionException.cs" />
     <Compile Include="UnknownImportDefinitionException.cs" />
     <Compile Include="UnknownPartDefinitionException.cs" />
+    <Compile Include="UnknownPluginOriginTypeException.cs" />
     <Compile Include="UnknownPluginTypeException.cs" />
     <Compile Include="UnknownTypeDefinitionException.cs" />
   </ItemGroup>

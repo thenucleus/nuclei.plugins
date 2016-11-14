@@ -129,7 +129,7 @@ namespace Nuclei.Plugins.Core.NuGet
         {
             return (outputLocation, packagePath, packageId) =>
                 {
-                    var copiedFiles = _fileCopy(
+                    _fileCopy(
                         packageId,
                         "*.*",
                         packagePath,

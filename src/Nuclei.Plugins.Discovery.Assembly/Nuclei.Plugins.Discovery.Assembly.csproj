@@ -63,6 +63,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="nuclei.plugins.discovery.assembly.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +72,10 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nuclei.Plugins.Core.Assembly\Nuclei.Plugins.Core.Assembly.csproj">
+      <Project>{8F859BFE-D114-42F0-96E2-04CD5B62A31D}</Project>
+      <Name>Nuclei.Plugins.Core.Assembly</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
       <Project>{E39027F6-757D-4F16-9014-EA3FA25C0D0C}</Project>
       <Name>Nuclei.Plugins.Core</Name>

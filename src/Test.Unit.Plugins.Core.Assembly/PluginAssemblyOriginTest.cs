@@ -156,6 +156,11 @@ namespace Nuclei.Plugins.Core.Assembly
             "CA1806:DoNotIgnoreMethodResults",
             MessageId = "Nuclei.Plugins.Discovery.Assembly.PluginAssemblyOrigin",
             Justification = "Testing that the constructor throws an exception.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Core.Assembly.PluginAssemblyOrigin",
+            Justification = "Testing that the constructor throws.")]
         public void CreateWithEmptyFilePath()
         {
             Assert.Throws<ArgumentException>(() => new PluginAssemblyOrigin(string.Empty));
@@ -167,6 +172,11 @@ namespace Nuclei.Plugins.Core.Assembly
             "CA1806:DoNotIgnoreMethodResults",
             MessageId = "Nuclei.Plugins.Discovery.Assembly.PluginAssemblyOrigin",
             Justification = "Testing that the constructor throws an exception.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Core.Assembly.PluginAssemblyOrigin",
+            Justification = "Testing that the constructor throws.")]
         public void CreateWithNullFilePath()
         {
             Assert.Throws<ArgumentNullException>(() => new PluginAssemblyOrigin(null));

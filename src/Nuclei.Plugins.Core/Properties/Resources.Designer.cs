@@ -142,6 +142,15 @@ namespace Nuclei.Plugins.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The type of plugin origin is unknown..
+        /// </summary>
+        internal static string Exceptions_Messages_UnknownPluginOriginType {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_UnknownPluginOriginType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type of plugin class or interface has not been registered..
         /// </summary>
         internal static string Exceptions_Messages_UnknownPluginType {

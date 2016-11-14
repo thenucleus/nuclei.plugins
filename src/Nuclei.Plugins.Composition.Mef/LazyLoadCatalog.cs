@@ -15,6 +15,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Nuclei.Plugins.Composition.Mef.Properties;
 using Nuclei.Plugins.Core;
 
 namespace Nuclei.Plugins.Composition.Mef
@@ -36,6 +37,20 @@ namespace Nuclei.Plugins.Composition.Mef
                 {
                     { MefConstants.ExportTypeIdentity, definition.ExportTypeIdentityForMef }
                 };
+        }
+
+        private static ConstructorInfo GetImportingConstructor(Type type, IEnumerable<ParameterDefinition> parameters)
+        {
+            var constructor = type.GetConstructors(DefaultBindingFlags)
+                .Where(x => x.IsDefined(typeof(ImportingConstructorAttribute)))
+                .Where(x => !x.GetParameters().Select(p => p.Name).Except(parameters.Select(p => p.Name)).Any())
+                .FirstOrDefault();
+            if (constructor != null)
+            {
+                return constructor;
+            }
+
+            throw new InvalidImportDefinitionException();
         }
 
         /// <summary>
@@ -87,7 +102,9 @@ namespace Nuclei.Plugins.Composition.Mef
 
             if (!typeLoaders.Any())
             {
-                throw new ArgumentException();
+                throw new ArgumentException(
+                    Resources.Exceptions_Messages_MissingTypeLoaders,
+                    "typeLoaders");
             }
 
             _repository = repository;
@@ -225,26 +242,12 @@ namespace Nuclei.Plugins.Composition.Mef
             return lazyParameter;
         }
 
-        private ConstructorInfo GetImportingConstructor(Type type, IEnumerable<ParameterDefinition> parameters)
-        {
-            var constructor = type.GetConstructors(DefaultBindingFlags)
-                .Where(x => x.IsDefined(typeof(ImportingConstructorAttribute)))
-                .Where(x => !x.GetParameters().Select(p => p.Name).Except(parameters.Select(p => p.Name)).Any())
-                .FirstOrDefault();
-            if (constructor != null)
-            {
-                return constructor;
-            }
-
-            throw new InvalidImportDefinitionException();
-        }
-
         private Type LoadType(string fullyQualifiedName, PluginOrigin origin)
         {
             var originType = origin.GetType();
             if (!_typeLoaders.ContainsKey(originType))
             {
-                throw new foobar;
+                throw new UnknownPluginOriginTypeException();
             }
 
             var loader = _typeLoaders[originType];

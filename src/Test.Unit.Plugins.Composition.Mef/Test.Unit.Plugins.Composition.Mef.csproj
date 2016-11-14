@@ -120,6 +120,10 @@
       <Project>{92AE0855-7FBC-41E2-8E17-326617576650}</Project>
       <Name>Nuclei.Plugins.Composition.Mef</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Nuclei.Plugins.Core.Assembly\Nuclei.Plugins.Core.Assembly.csproj">
+      <Project>{8F859BFE-D114-42F0-96E2-04CD5B62A31D}</Project>
+      <Name>Nuclei.Plugins.Core.Assembly</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
       <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
       <Name>Nuclei.Plugins.Core</Name>

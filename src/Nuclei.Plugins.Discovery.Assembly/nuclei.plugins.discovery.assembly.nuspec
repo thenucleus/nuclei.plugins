@@ -1,7 +1,7 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
-        <id>Nuclei.Plugins.Core.NuGet</id>
+        <id>Nuclei.Plugins.Discovery.Assembly</id>
         <version>$VersionSemantic$</version>
         <authors>$CompanyName$</authors>
         <owners>$CompanyName$</owners>
@@ -9,7 +9,7 @@
         <projectUrl>$GitRemoteRepository$</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>
-            Provides base classes and functions for plugin discovery and loading from NuGet packages.
+            Provides classes and functions for plugin discovery of plugins in assembly files.
         </description>
         <releaseNotes>
             $ReleaseNotesHtmlEncoded$
@@ -18,16 +18,20 @@
             $Dependencies$
             <dependency id="Nuclei.Plugins.Core"
                         version="$VersionSemantic$" />
+            <dependency id="Nuclei.Plugins.Core.Assembly"
+                        version="$VersionSemantic$" />
+            <dependency id="Nuclei.Plugins.Discovery"
+                        version="$VersionSemantic$" />
         </dependencies>
     </metadata>
     <files>
-        <file src="$DirSrc$\Nuclei.Plugins.Core.NuGet\bin\$Configuration$\Nuclei.Plugins.Core.NuGet.dll"
+        <file src="$DirSrc$\Nuclei.Plugins.Discovery.Assembly\bin\$Configuration$\Nuclei.Plugins.Discovery.Assembly.dll"
               target="lib\net452" />
-        <file src="$DirSrc$\Nuclei.Plugins.Core.NuGet\bin\$Configuration$\Nuclei.Plugins.Core.NuGet.pdb"
+        <file src="$DirSrc$\Nuclei.Plugins.Discovery.Assembly\bin\$Configuration$\Nuclei.Plugins.Discovery.Assembly.pdb"
               target="lib\net452" />
-        <file src="$DirSrc$\Nuclei.Plugins.Core.NuGet\bin\$Configuration$\Nuclei.Plugins.Core.NuGet.xml"
+        <file src="$DirSrc$\Nuclei.Plugins.Discovery.Assembly\bin\$Configuration$\Nuclei.Plugins.Discovery.Assembly.xml"
               target="lib\net452" />
-        <file src="$DirSrc$\Nuclei.Plugins.Core.NuGet\**\*.cs"
-              target="src\Nuclei.Plugins.Core.NuGet" />
+        <file src="$DirSrc$\Nuclei.Plugins.Discovery.Assembly\**\*.cs"
+              target="src\Nuclei.Plugins.Discovery.Assembly" />
     </files>
 </package>

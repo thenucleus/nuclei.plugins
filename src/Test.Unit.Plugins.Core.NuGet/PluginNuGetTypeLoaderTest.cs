@@ -31,6 +31,11 @@ namespace Nuclei.Plugins.Core.NuGet
     public sealed class PluginNuGetTypeLoaderTest
     {
         [Test]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Core.NuGet.PluginNuGetTypeLoader",
+            Justification = "Testing that the constructor throws.")]
         public void CreateWithNullConfiguration()
         {
             var installer = new Mock<IInstallPackages>();
@@ -49,6 +54,11 @@ namespace Nuclei.Plugins.Core.NuGet
         }
 
         [Test]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Core.NuGet.PluginNuGetTypeLoader",
+            Justification = "Testing that the constructor throws.")]
         public void CreateWithNullDiagnostics()
         {
             var configuration = new Mock<IConfiguration>();
@@ -68,6 +78,11 @@ namespace Nuclei.Plugins.Core.NuGet
         }
 
         [Test]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Core.NuGet.PluginNuGetTypeLoader",
+            Justification = "Testing that the constructor throws.")]
         public void CreateWithNullFileCopy()
         {
             var configuration = new Mock<IConfiguration>();
@@ -86,6 +101,11 @@ namespace Nuclei.Plugins.Core.NuGet
         }
 
         [Test]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Core.NuGet.PluginNuGetTypeLoader",
+            Justification = "Testing that the constructor throws.")]
         public void CreateWithNullFileSystem()
         {
             var configuration = new Mock<IConfiguration>();
@@ -104,6 +124,11 @@ namespace Nuclei.Plugins.Core.NuGet
         }
 
         [Test]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Core.NuGet.PluginNuGetTypeLoader",
+            Justification = "Testing that the constructor throws.")]
         public void CreateWithNullPackageInstaller()
         {
             var configuration = new Mock<IConfiguration>();
@@ -122,6 +147,11 @@ namespace Nuclei.Plugins.Core.NuGet
         }
 
         [Test]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Core.NuGet.PluginNuGetTypeLoader",
+            Justification = "Testing that the constructor throws.")]
         public void CreateWithNullResolutionPaths()
         {
             var configuration = new Mock<IConfiguration>();
@@ -382,7 +412,7 @@ namespace Nuclei.Plugins.Core.NuGet
         }
 
         [Test]
-        public void LoadWithPreInstalledPackage()
+        public void LoadWithPreinstalledPackage()
         {
             var type = typeof(TypeLoader);
             var packageToLoad = new PackageIdentity("a", new NuGetVersion(1, 2, 3));

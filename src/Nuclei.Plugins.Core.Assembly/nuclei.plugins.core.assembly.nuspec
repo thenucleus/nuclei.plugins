@@ -16,6 +16,8 @@
         </releaseNotes>
         <dependencies>
             $Dependencies$
+            <dependency id="Nuclei.Plugins.Core"
+                        version="$VersionSemantic$" />
         </dependencies>
     </metadata>
     <files>

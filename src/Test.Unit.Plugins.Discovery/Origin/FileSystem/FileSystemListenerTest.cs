@@ -18,6 +18,7 @@ using Nuclei.Configuration;
 using Nuclei.Diagnostics;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
+using Nuclei.Plugins.Core.Assembly;
 using Nuclei.Plugins.Discovery.Assembly;
 using NUnit.Framework;
 using Test.Mocks;

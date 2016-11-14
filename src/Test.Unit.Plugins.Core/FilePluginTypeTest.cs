@@ -11,6 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Moq;
 using Nuclei.Nunit.Extensions;
+using Nuclei.Plugins.Core.Assembly;
 using Nuclei.Plugins.Discovery.Assembly;
 using NUnit.Framework;
 

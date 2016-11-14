@@ -120,4 +120,7 @@
   <data name="Exceptions_Messages_InvalidImportDefinition" xml:space="preserve">
     <value>The provided import definition is not valid.</value>
   </data>
+  <data name="Exceptions_Messages_MissingTypeLoaders" xml:space="preserve">
+    <value>At least one type loader should be provided.</value>
+  </data>
 </root>

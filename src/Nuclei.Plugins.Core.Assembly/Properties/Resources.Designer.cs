@@ -61,6 +61,15 @@ namespace Nuclei.Plugins.Core.Assembly.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot compare these two objects, their types do not match [this: {0}; other: {1}].
+        /// </summary>
+        internal static string Exceptions_Messages_CompareArgument_WithTypes {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_CompareArgument_WithTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The parameter should not be an empty string..
         /// </summary>
         internal static string Exceptions_Messages_ParameterShouldNotBeAnEmptyString {

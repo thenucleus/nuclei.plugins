@@ -129,7 +129,7 @@ namespace Nuclei.Plugins.Core.NuGet
         [SuppressMessage(
             "Microsoft.Usage",
             "CA1806:DoNotIgnoreMethodResults",
-            MessageId = "Nuclei.Plugins.Discovery.NuGet.PluginNuGetOrigin",
+            MessageId = "Nuclei.Plugins.Core.NuGet.PluginNuGetOrigin",
             Justification = "Testing that the constructor throws an exception.")]
         public void CreateWithNullIdentity()
         {

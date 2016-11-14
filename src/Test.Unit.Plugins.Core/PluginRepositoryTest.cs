@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using Nuclei.Plugins.Core.Assembly;
 using Nuclei.Plugins.Discovery;
 using Nuclei.Plugins.Discovery.Assembly;
 using Nuclei.Plugins.Discovery.Origin.FileSystem;
@@ -497,6 +498,47 @@ namespace Nuclei.Plugins.Core
             repository.AddType(definition);
 
             Assert.IsFalse(repository.IsSubtypeOf(TypeIdentity.CreateDefinition(typeof(double)), TypeIdentity.CreateDefinition(typeof(string))));
+        }
+
+        [Test]
+        public void OriginFor()
+        {
+            var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
+            PartDefinition definition = new PartDefinition
+            {
+                Identity = identityGenerator(typeof(ExportOnProperty)),
+            };
+
+            var origin = new PluginAssemblyOrigin("a", DateTimeOffset.Now, DateTimeOffset.Now);
+            repository.AddPart(definition, origin);
+
+            Assert.AreEqual(origin, repository.OriginFor(definition.Identity));
+        }
+
+        [Test]
+        public void OriginForWithNullIdentity()
+        {
+            var repository = new PluginRepository();
+
+            Assert.Throws<ArgumentNullException>(() => repository.OriginFor(null));
+        }
+
+        [Test]
+        public void OriginForWithUnknownIdentity()
+        {
+            var currentlyBuilding = new Dictionary<Type, TypeIdentity>();
+            var repository = new PluginRepository();
+
+            Func<Type, TypeIdentity> identityGenerator = TypeIdentityBuilder.IdentityFactory(repository, currentlyBuilding);
+            PartDefinition definition = new PartDefinition
+            {
+                Identity = identityGenerator(typeof(ExportOnProperty)),
+            };
+
+            Assert.Throws<UnknownTypeDefinitionException>(() => repository.OriginFor(definition.Identity));
         }
 
         [Test]

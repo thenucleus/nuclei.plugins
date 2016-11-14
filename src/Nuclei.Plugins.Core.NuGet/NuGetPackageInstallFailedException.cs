@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.Serialization;
 using Nuclei.Plugins.Core.NuGet.Properties;
@@ -51,6 +52,11 @@ namespace Nuclei.Plugins.Core.NuGet
         /// </summary>
         /// <param name="identity">The identity of the package.</param>
         /// <param name="innerException">The inner exception.</param>
+        [SuppressMessage(
+            "Microsoft.Design",
+            "CA1062:Validate arguments of public methods",
+            MessageId = "0",
+            Justification = "There is no way to validate this before we use it.")]
         public NuGetPackageInstallFailedException(PackageIdentity identity, Exception innerException)
             : base(
                   string.Format(

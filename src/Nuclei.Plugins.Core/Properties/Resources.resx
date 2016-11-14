@@ -144,6 +144,9 @@
   <data name="Exceptions_Messages_UnknownPartDefinition" xml:space="preserve">
     <value>The requested part definition is not registered.</value>
   </data>
+  <data name="Exceptions_Messages_UnknownPluginOriginType" xml:space="preserve">
+    <value>The type of plugin origin is unknown.</value>
+  </data>
   <data name="Exceptions_Messages_UnknownPluginType" xml:space="preserve">
     <value>The type of plugin class or interface has not been registered.</value>
   </data>

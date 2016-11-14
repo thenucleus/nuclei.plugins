@@ -412,7 +412,7 @@ namespace Nuclei.Plugins.Core
         {
             if (identity == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("identity");
             }
 
             if (!_parts.ContainsKey(identity))

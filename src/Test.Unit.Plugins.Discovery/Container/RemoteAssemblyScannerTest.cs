@@ -16,6 +16,7 @@ using System.Reflection;
 using Moq;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
+using Nuclei.Plugins.Core.Assembly;
 using Nuclei.Plugins.Discovery.Assembly;
 using Nuclei.Plugins.Discovery.Origin.FileSystem;
 using NUnit.Framework;

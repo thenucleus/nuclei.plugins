@@ -12,6 +12,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using Moq;
 using Nuclei.Plugins.Core;
+using Nuclei.Plugins.Core.Assembly;
 using Nuclei.Plugins.Discovery.Container;
 using NUnit.Framework;
 using Test.Mocks;

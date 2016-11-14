@@ -68,5 +68,14 @@ namespace Nuclei.Plugins.Composition.Mef.Properties {
                 return ResourceManager.GetString("Exceptions_Messages_InvalidImportDefinition", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least one type loader should be provided..
+        /// </summary>
+        internal static string Exceptions_Messages_MissingTypeLoaders {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_MissingTypeLoaders", resourceCulture);
+            }
+        }
     }
 }
