@@ -106,6 +106,13 @@ namespace Nuclei.Plugins.Core
         bool IsSubtypeOf(TypeIdentity parent, TypeIdentity child);
 
         /// <summary>
+        /// Returns the <see cref="PluginOrigin"/> for the given type.
+        /// </summary>
+        /// <param name="identity">The type identity.</param>
+        /// <returns>The <see cref="PluginOrigin"/> for the given type.</returns>
+        PluginOrigin OriginFor(TypeIdentity identity);
+
+        /// <summary>
         /// Returns the part that has the given type as declaring type.
         /// </summary>
         /// <param name="type">The declaring type.</param>

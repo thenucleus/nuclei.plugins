@@ -203,6 +203,16 @@ namespace Nuclei.Plugins.Discovery
         }
 
         /// <summary>
+        /// Returns the <see cref="PluginOrigin"/> for the given type.
+        /// </summary>
+        /// <param name="identity">The type identity.</param>
+        /// <returns>The <see cref="PluginOrigin"/> for the given type.</returns>
+        public PluginOrigin OriginFor(TypeIdentity identity)
+        {
+            return _repository.OriginFor(identity);
+        }
+
+        /// <summary>
         /// Returns the part that has the given type as declaring type.
         /// </summary>
         /// <param name="type">The declaring type.</param>
