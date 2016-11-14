@@ -17,6 +17,28 @@ namespace Nuclei.Plugins.Core.NuGet
     public static class CoreNuGetConfigurationKeys
     {
         /// <summary>
+        /// The <see cref="ConfigurationKeyBase"/> that is used to retrieve the directory in which
+        /// assemblies from NuGet packages are copied so that they can be used.
+        /// </summary>
+        [SuppressMessage(
+                "Microsoft.Security",
+                "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
+                Justification = "ConfigurationKey is immutable")]
+        public static readonly ConfigurationKey<string> AssemblyCacheLocation
+                = new ConfigurationKey<string>("AssemblyCacheLocation");
+
+        /// <summary>
+        /// The <see cref="ConfigurationKeyBase"/> that is used to retrieve the directory in which
+        /// NuGet packages can be installed.
+        /// </summary>
+        [SuppressMessage(
+                "Microsoft.Security",
+                "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
+                Justification = "ConfigurationKey is immutable")]
+        public static readonly ConfigurationKey<string> LocalInstallLocation
+                = new ConfigurationKey<string>("LocalInstallLocation");
+
+        /// <summary>
         /// The <see cref="ConfigurationKeyBase"/> that is used to retrieve the plugin directories for the application.
         /// </summary>
         [SuppressMessage(
@@ -34,6 +56,7 @@ namespace Nuclei.Plugins.Core.NuGet
         {
             return new List<ConfigurationKeyBase>
                 {
+                    LocalInstallLocation,
                     NuGetFeeds,
                 };
         }

@@ -140,6 +140,15 @@ namespace Nuclei.Plugins.Core.NuGet
         /// <param name="name">The ID of the package.</param>
         /// <param name="outputLocation">The full path of the directory where the packages should be installed.</param>
         /// <param name="postInstallAction">An action that is run after each package is installed.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="name"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="outputLocation"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if <paramref name="outputLocation"/> is an empty string.
+        /// </exception>
         public void Install(
             PackageIdentity name,
             string outputLocation,
@@ -164,16 +173,6 @@ namespace Nuclei.Plugins.Core.NuGet
                 outputLocation,
                 new PackagePathResolver(outputLocation),
                 postInstallAction);
-            if (nugetProject.PackageExists(name))
-            {
-                _diagnostics.Log(
-                    LevelToLog.Info,
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Resources.LogMessage_NuGetPackageInstaller_PackageExists_WithPackageId,
-                        name));
-                return;
-            }
 
             var nugetSettings = NuGetConfiguration.Settings.LoadDefaultSettings(
                 Assembly.GetExecutingAssembly().LocalDirectoryPath(),
@@ -207,15 +206,22 @@ namespace Nuclei.Plugins.Core.NuGet
             {
                 cacheContext.NoCache = false;
 
-                packageManager.InstallPackageAsync(
-                    nugetProject,
-                    name,
-                    resolutionContext,
-                    projectContext,
-                    primaryRepositories,
-                    Enumerable.Empty<SourceRepository>(),
-                    CancellationToken.None)
-                    .Wait();
+                try
+                {
+                    packageManager.InstallPackageAsync(
+                        nugetProject,
+                        name,
+                        resolutionContext,
+                        projectContext,
+                        primaryRepositories,
+                        Enumerable.Empty<SourceRepository>(),
+                        CancellationToken.None)
+                        .Wait();
+                }
+                catch (AggregateException e)
+                {
+                    throw new NuGetPackageInstallFailedException(name, e);
+                }
             }
         }
     }

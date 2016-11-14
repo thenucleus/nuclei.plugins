@@ -84,6 +84,7 @@
     <Compile Include="IPartRegistration.cs" />
     <Compile Include="IPluginRepository.cs" />
     <Compile Include="IPluginType.cs" />
+    <Compile Include="IProvideAssemblyResolutionPaths.cs" />
     <Compile Include="ISatisfyPluginRequests.cs" />
     <Compile Include="MefConstants.cs" />
     <Compile Include="MethodBasedDiscoverableMember.cs" />

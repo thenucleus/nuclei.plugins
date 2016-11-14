@@ -187,9 +187,12 @@
     <Compile Include="NuGetConstants.cs" />
     <Compile Include="NuGetPackageInstaller.cs" />
     <Compile Include="NuGetPackageInstallerContext.cs" />
+    <Compile Include="NuGetPackageInstallFailedException.cs" />
     <Compile Include="PackagePostInstall.cs" />
     <Compile Include="PackageUtilities.cs" />
+    <Compile Include="PluginNuGetOrigin.cs" />
     <Compile Include="PluginNuGetProject.cs" />
+    <Compile Include="PluginNuGetTypeLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -211,6 +214,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
+      <Project>{E39027F6-757D-4F16-9014-EA3FA25C0D0C}</Project>
+      <Name>Nuclei.Plugins.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

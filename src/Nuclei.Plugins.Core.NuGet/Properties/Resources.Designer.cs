@@ -61,6 +61,24 @@ namespace Nuclei.Plugins.Core.NuGet.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The given NuGet package failed to install..
+        /// </summary>
+        internal static string Exceptions_Messages_NuGetPackageFailedToInstall {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_NuGetPackageFailedToInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The given NuGet package {0} [{1}] failed to install..
+        /// </summary>
+        internal static string Exceptions_Messages_NuGetPackageFailedToInstall_WithId {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_NuGetPackageFailedToInstall_WithId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The parameter should not be an empty string..
         /// </summary>
         internal static string Exceptions_Messages_ParameterShouldNotBeAnEmptyString {
@@ -106,6 +124,55 @@ namespace Nuclei.Plugins.Core.NuGet.Properties {
             get {
                 return ResourceManager.GetString("LogMessage_PackageUtilities_CopyingAssemblyFile_WithPackageIdAndVersionAndOriginA" +
                         "ndDestination", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding the package destination folder at {0} to the assembly resolution list..
+        /// </summary>
+        internal static string LogMessage_PluginNuGetTypeLoader_AddingDestinationToAssemblyResolutionFolderList_WithDestination {
+            get {
+                return ResourceManager.GetString("LogMessage_PluginNuGetTypeLoader_AddingDestinationToAssemblyResolutionFolderList_" +
+                        "WithDestination", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to remove the package destination directory at {0}. Error was: {1}.
+        /// </summary>
+        internal static string LogMessage_PluginNuGetTypeLoader_FailedToDeleteDestination_WithDestinationAndException {
+            get {
+                return ResourceManager.GetString("LogMessage_PluginNuGetTypeLoader_FailedToDeleteDestination_WithDestinationAndExce" +
+                        "ption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to install package {0} [{1}] to {2}. Error was: {3}..
+        /// </summary>
+        internal static string LogMessage_PluginNuGetTypeLoader_FailedToInstallPackage_WithPackageNameAndVersionAndDestinationAndException {
+            get {
+                return ResourceManager.GetString("LogMessage_PluginNuGetTypeLoader_FailedToInstallPackage_WithPackageNameAndVersion" +
+                        "AndDestinationAndException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installing package {0} [{1}] and copying binaries to {2}..
+        /// </summary>
+        internal static string LogMessage_PluginNuGetTypeLoader_InstallingPackage_WithPackageNameAndVersionAndDestination {
+            get {
+                return ResourceManager.GetString("LogMessage_PluginNuGetTypeLoader_InstallingPackage_WithPackageNameAndVersionAndDe" +
+                        "stination", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing the package destination directory at {0}..
+        /// </summary>
+        internal static string LogMessage_PluginNuGetTypeLoader_RemovingDestination_WithDestination {
+            get {
+                return ResourceManager.GetString("LogMessage_PluginNuGetTypeLoader_RemovingDestination_WithDestination", resourceCulture);
             }
         }
     }

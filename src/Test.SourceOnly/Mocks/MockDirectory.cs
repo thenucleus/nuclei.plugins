@@ -23,9 +23,14 @@ namespace Test.Mocks
     {
         private readonly IEnumerable<string> _files;
 
-        public MockDirectory(IEnumerable<string> files)
+        private readonly bool _throwOnCreate;
+
+        public MockDirectory(
+            IEnumerable<string> files,
+            bool throwOnCreate = false)
         {
             _files = files;
+            _throwOnCreate = throwOnCreate;
         }
 
         public override DirectoryInfoBase CreateDirectory(string path)
@@ -35,6 +40,11 @@ namespace Test.Mocks
 
         public override DirectoryInfoBase CreateDirectory(string path, DirectorySecurity directorySecurity)
         {
+            if (_throwOnCreate)
+            {
+                throw new IOException();
+            }
+
             return null;
         }
 

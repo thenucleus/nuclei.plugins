@@ -8,12 +8,11 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using Nuclei.Plugins.Core;
-using Nuclei.Plugins.Discovery.NuGet.Properties;
+using Nuclei.Plugins.Core.NuGet.Properties;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
-namespace Nuclei.Plugins.Discovery.NuGet
+namespace Nuclei.Plugins.Core.NuGet
 {
     /// <summary>
     /// Describes the identity of a NuGet package that contains plugins.

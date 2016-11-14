@@ -14,7 +14,7 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NUnit.Framework;
 
-namespace Nuclei.Plugins.Discovery.NuGet
+namespace Nuclei.Plugins.Core.NuGet
 {
     [TestFixture]
     [SuppressMessage(

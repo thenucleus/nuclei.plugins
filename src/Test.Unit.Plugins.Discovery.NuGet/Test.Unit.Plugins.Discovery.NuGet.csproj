@@ -147,7 +147,6 @@
       <Link>Mocks\MockPath.cs</Link>
     </Compile>
     <Compile Include="NuGetPluginProcessorTest.cs" />
-    <Compile Include="PluginNuGetOriginTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
