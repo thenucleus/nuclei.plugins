@@ -23,7 +23,6 @@ using NuGet.Packaging.Core;
 using NuGet.Protocol.Core.Types;
 using NuGet.Protocol.Core.v2;
 using NuGet.Protocol.Core.v3;
-using NuGet.Protocol.Core.v3.LocalRepositories;
 using NuGet.Versioning;
 using NUnit.Framework;
 
