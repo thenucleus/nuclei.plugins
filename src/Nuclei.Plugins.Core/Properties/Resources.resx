@@ -129,6 +129,9 @@
   <data name="Exceptions_Messages_DuplicateTypeDefinition" xml:space="preserve">
     <value>A type with the given type identity is already registered.</value>
   </data>
+  <data name="Exceptions_Messages_InvalidPluginOrigin" xml:space="preserve">
+    <value>The specified plugin origin is not valid for the current type loader.</value>
+  </data>
   <data name="Exceptions_Messages_ParameterShouldNotBeAnEmptyString" xml:space="preserve">
     <value>The parameter should not be an empty string.</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="Exceptions_Messages_UnknownPartDefinition" xml:space="preserve">
     <value>The requested part definition is not registered.</value>
+  </data>
+  <data name="Exceptions_Messages_UnknownPluginOriginType" xml:space="preserve">
+    <value>The type of plugin origin is unknown.</value>
   </data>
   <data name="Exceptions_Messages_UnknownPluginType" xml:space="preserve">
     <value>The type of plugin class or interface has not been registered.</value>

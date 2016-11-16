@@ -567,6 +567,9 @@
         <TemplateTokens Include="DirDoc">
             <ReplacementValue>$(DirDoc)</ReplacementValue>
         </TemplateTokens>
+        <TemplateTokens Include="GitRemoteRepository">
+            <ReplacementValue>$(GitRemoteRepository)</ReplacementValue>
+        </TemplateTokens>
     </ItemGroup>
 
     <!-- Additional generated files -->

@@ -13,13 +13,13 @@ namespace Nuclei.Plugins.Core
     /// Defines the origin for a plugin.
     /// </summary>
     [Serializable]
-    public abstract class PluginOrigin : Id<PluginOrigin, string>
+    public abstract class PluginOrigin : Id<PluginOrigin, PluginOriginData>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PluginOrigin"/> class.
         /// </summary>
         /// <param name="value">The value.</param>
-        protected PluginOrigin(string value)
+        protected PluginOrigin(PluginOriginData value)
             : base(value)
         {
         }
@@ -31,17 +31,6 @@ namespace Nuclei.Plugins.Core
         /// <returns>
         /// A copy of the current ID number.
         /// </returns>
-        protected override abstract PluginOrigin Clone(string value);
-
-        /// <summary>
-        /// Returns a <see cref="string"/> that represents this instance.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="string"/> that represents this instance.
-        /// </returns>
-        public override string ToString()
-        {
-            return InternalValue;
-        }
+        protected override abstract PluginOrigin Clone(PluginOriginData value);
     }
 }

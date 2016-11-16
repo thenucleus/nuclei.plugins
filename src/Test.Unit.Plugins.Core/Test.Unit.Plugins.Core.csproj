@@ -98,7 +98,9 @@
     <Compile Include="DuplicatePartDefinitionExceptionTest.cs" />
     <Compile Include="DuplicateTypeDefinitionExceptionTest.cs" />
     <Compile Include="ExportRegistrationIdTest.cs" />
+    <Compile Include="FilePluginTypeTest.cs" />
     <Compile Include="ImportRegistrationIdTest.cs" />
+    <Compile Include="InvalidPluginOriginExceptionTest.cs" />
     <Compile Include="MethodBasedDiscoverableMemberTest.cs" />
     <Compile Include="MethodBasedExportDefinitionTest.cs" />
     <Compile Include="MethodDefinitionTest.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="UnknownExportDefinitionExceptionTest.cs" />
     <Compile Include="UnknownImportDefinitionExceptionTest.cs" />
     <Compile Include="UnknownPartDefinitionExceptionTest.cs" />
+    <Compile Include="UnknownPluginOriginTypeExceptionTest.cs" />
     <Compile Include="UnknownPluginTypeExceptionTest.cs" />
     <Compile Include="UnknownTypeDefinitionExceptionTest.cs" />
   </ItemGroup>
@@ -129,9 +132,17 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nuclei.Plugins.Core.Assembly\Nuclei.Plugins.Core.Assembly.csproj">
+      <Project>{8F859BFE-D114-42F0-96E2-04CD5B62A31D}</Project>
+      <Name>Nuclei.Plugins.Core.Assembly</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
       <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
       <Name>Nuclei.Plugins.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nuclei.Plugins.Discovery.Assembly\Nuclei.Plugins.Discovery.Assembly.csproj">
+      <Project>{b05bcf2b-081a-4008-a62e-fe515b6480d0}</Project>
+      <Name>Nuclei.Plugins.Discovery.Assembly</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
       <Project>{89667ade-301d-455c-88c9-e2d5c9ae18cd}</Project>

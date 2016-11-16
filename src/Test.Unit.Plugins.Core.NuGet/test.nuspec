@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Test.Unit.Plugins.Core.NuGet.TestPackage</id>
+        <version>1.2.3</version>
+        <authors>Test.Unit.Plugins.Core.NuGet</authors>
+        <owners>Test.Unit.Plugins.Core.NuGet</owners>
+        <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>
+            Test package
+        </description>
+        <dependencies>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\$Configuration$\Test.Unit.Plugins.Core.Nuget.dll"
+              target="lib\net452" />
+    </files>
+</package>

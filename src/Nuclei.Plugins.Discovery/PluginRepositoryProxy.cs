@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Nuclei.Plugins.Core;
+using Nuclei.Plugins.Discovery.Container;
 
 namespace Nuclei.Plugins.Discovery
 {
@@ -199,6 +200,16 @@ namespace Nuclei.Plugins.Discovery
         public IEnumerable<PluginOrigin> KnownPluginOrigins()
         {
             return _repository.KnownPluginOrigins();
+        }
+
+        /// <summary>
+        /// Returns the <see cref="PluginOrigin"/> for the given type.
+        /// </summary>
+        /// <param name="identity">The type identity.</param>
+        /// <returns>The <see cref="PluginOrigin"/> for the given type.</returns>
+        public PluginOrigin OriginFor(TypeIdentity identity)
+        {
+            return _repository.OriginFor(identity);
         }
 
         /// <summary>

@@ -120,9 +120,17 @@
       <Project>{92AE0855-7FBC-41E2-8E17-326617576650}</Project>
       <Name>Nuclei.Plugins.Composition.Mef</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Nuclei.Plugins.Core.Assembly\Nuclei.Plugins.Core.Assembly.csproj">
+      <Project>{8F859BFE-D114-42F0-96E2-04CD5B62A31D}</Project>
+      <Name>Nuclei.Plugins.Core.Assembly</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
       <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
       <Name>Nuclei.Plugins.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nuclei.Plugins.Discovery.Assembly\Nuclei.Plugins.Discovery.Assembly.csproj">
+      <Project>{B05BCF2B-081A-4008-A62E-FE515B6480D0}</Project>
+      <Name>Nuclei.Plugins.Discovery.Assembly</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
       <Project>{89667ade-301d-455c-88c9-e2d5c9ae18cd}</Project>

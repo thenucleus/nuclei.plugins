@@ -97,6 +97,15 @@ namespace Nuclei.Plugins.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified plugin origin is not valid for the current type loader..
+        /// </summary>
+        internal static string Exceptions_Messages_InvalidPluginOrigin {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_InvalidPluginOrigin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The parameter should not be an empty string..
         /// </summary>
         internal static string Exceptions_Messages_ParameterShouldNotBeAnEmptyString {
@@ -129,6 +138,15 @@ namespace Nuclei.Plugins.Core.Properties {
         internal static string Exceptions_Messages_UnknownPartDefinition {
             get {
                 return ResourceManager.GetString("Exceptions_Messages_UnknownPartDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type of plugin origin is unknown..
+        /// </summary>
+        internal static string Exceptions_Messages_UnknownPluginOriginType {
+            get {
+                return ResourceManager.GetString("Exceptions_Messages_UnknownPluginOriginType", resourceCulture);
             }
         }
         

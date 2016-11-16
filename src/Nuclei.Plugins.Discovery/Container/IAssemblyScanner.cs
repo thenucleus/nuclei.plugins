@@ -6,11 +6,12 @@
 //-----------------------------------------------------------------------
 
 using System.Collections.Generic;
+using Nuclei.Plugins.Core;
 
-namespace Nuclei.Plugins.Discovery
+namespace Nuclei.Plugins.Discovery.Container
 {
     /// <summary>
-    /// Defines the interface for objects that perform scanning of plugin assemblies.
+    /// Defines the interface for objects that perform scanning of assemblies.
     /// </summary>
     public interface IAssemblyScanner
     {
@@ -19,8 +20,9 @@ namespace Nuclei.Plugins.Discovery
         /// returns the plugin description information.
         /// </summary>
         /// <param name="assemblyFilesToScan">
-        /// The collection that contains the file paths to all the assemblies to be scanned.
+        /// The collection that maps the file paths of the assemblies that need to be scanned to the plugin container that stores
+        /// the assemblies.
         /// </param>
-        void Scan(IEnumerable<string> assemblyFilesToScan);
+        void Scan(IDictionary<string, PluginOrigin> assemblyFilesToScan);
     }
 }

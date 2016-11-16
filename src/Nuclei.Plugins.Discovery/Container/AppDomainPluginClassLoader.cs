@@ -10,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
 
-namespace Nuclei.Plugins.Discovery
+namespace Nuclei.Plugins.Discovery.Container
 {
     /// <summary>
     /// Defines methods to load an <see cref="IAssemblyScanner"/> object into a remote <c>AppDomain</c>.

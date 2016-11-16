@@ -18,7 +18,11 @@ using Moq;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Composition.Mef;
 using Nuclei.Plugins.Core;
+using Nuclei.Plugins.Core.Assembly;
 using Nuclei.Plugins.Discovery;
+using Nuclei.Plugins.Discovery.Assembly;
+using Nuclei.Plugins.Discovery.Container;
+using Nuclei.Plugins.Discovery.Origin.FileSystem;
 using NUnit.Framework;
 using Test.Mocks;
 
@@ -36,7 +40,7 @@ namespace Nuclei.Plugins.Composition.Mef
             var repository = CreateRepository(
                 typeof(ExportOnPropertyWithEnumerable),
                 typeof(ImportOnConstructorWithEnumerable));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportGetterForImportOnConstructorWithEnumerable();
@@ -57,7 +61,7 @@ namespace Nuclei.Plugins.Composition.Mef
                 typeof(MockExportingInterfaceImplementation),
                 typeof(ExportOnTypeWithType),
                 typeof(ImportOnConstructorWithMany));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportGetterForImportOnConstructorWithMany();
@@ -82,7 +86,7 @@ namespace Nuclei.Plugins.Composition.Mef
                 typeof(ExportOnAnotherMethod),
                 typeof(ExportOnMethod),
                 typeof(ImportOnConstructorWithCollectionOfFunc));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportGetterForImportOnConstructorWithEnumerableFunc();
@@ -110,7 +114,7 @@ namespace Nuclei.Plugins.Composition.Mef
                 typeof(ExportOnPropertyWithType),
                 typeof(ExportOnProperty),
                 typeof(ImportOnConstructorWithCollectionOfLazy));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportGetterForImportOnConstructorWithEnumerableLazy();
@@ -140,7 +144,7 @@ namespace Nuclei.Plugins.Composition.Mef
             var repository = CreateRepository(
                 typeof(ExportOnPropertyWithType),
                 typeof(ImportOnConstructorWithExportFactory));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportGetterForImportOnConstructorWithExportFactory();
@@ -165,7 +169,7 @@ namespace Nuclei.Plugins.Composition.Mef
             var repository = CreateRepository(
                 typeof(ExportOnMethod),
                 typeof(ImportOnConstructorWithFunc));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportGetterForImportOnConstructorWithFunc();
@@ -184,7 +188,7 @@ namespace Nuclei.Plugins.Composition.Mef
             var repository = CreateRepository(
                 typeof(ExportOnProperty),
                 typeof(ImportOnConstructorWithLazy));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportGetterForImportOnConstructorWithLazy();
@@ -205,7 +209,7 @@ namespace Nuclei.Plugins.Composition.Mef
                 typeof(ExportOnTypeWithType),
                 typeof(ImportOnPropertyWithType),
                 typeof(ImportOnConstructorWithMultipleImports));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportGetterForImportOnConstructorWithMultipleImports();
@@ -227,7 +231,7 @@ namespace Nuclei.Plugins.Composition.Mef
             var repository = CreateRepository(
                 typeof(ExportOnTypeWithType),
                 typeof(ImportOnConstructorWithType));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportGetterForImportOnConstructorWithType();
@@ -244,7 +248,7 @@ namespace Nuclei.Plugins.Composition.Mef
         public void ComposeWithImportingPropertyWithEnumerable()
         {
             var repository = CreateRepository(typeof(ExportOnPropertyWithEnumerable));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportOnPropertyWithEnumerable();
@@ -259,7 +263,7 @@ namespace Nuclei.Plugins.Composition.Mef
         public void ComposeWithImportingPropertyWithEnumerableFromMany()
         {
             var repository = CreateRepository(typeof(MockExportingInterfaceImplementation), typeof(ExportOnTypeWithType));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportOnPropertyWithEnumerableFromMany();
@@ -278,7 +282,7 @@ namespace Nuclei.Plugins.Composition.Mef
         public void ComposeWithImportingPropertyWithEnumerableFuncFromMany()
         {
             var repository = CreateRepository(typeof(ExportOnAnotherMethod), typeof(ExportOnMethod));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportOnPropertyWithCollectionOfFunc();
@@ -300,7 +304,7 @@ namespace Nuclei.Plugins.Composition.Mef
         public void ComposeWithImportingPropertyWithEnumerableLazyFromMany()
         {
             var repository = CreateRepository(typeof(ExportOnPropertyWithType), typeof(ExportOnProperty));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportOnPropertyWithCollectionOfLazy();
@@ -325,7 +329,7 @@ namespace Nuclei.Plugins.Composition.Mef
         public void ComposeWithImportingPropertyWithExportFactory()
         {
             var repository = CreateRepository(typeof(ExportOnPropertyWithType));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportOnPropertyWithExportFactory();
@@ -344,7 +348,7 @@ namespace Nuclei.Plugins.Composition.Mef
         public void ComposeWithImportingPropertyWithFunc()
         {
             var repository = CreateRepository(typeof(ExportOnMethod));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportOnPropertyWithFunc();
@@ -358,7 +362,7 @@ namespace Nuclei.Plugins.Composition.Mef
         public void ComposeWithImportingPropertyWithLazy()
         {
             var repository = CreateRepository(typeof(ExportOnProperty));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportOnPropertyWithLazy();
@@ -373,7 +377,7 @@ namespace Nuclei.Plugins.Composition.Mef
         public void ComposeWithImportingPropertyWithType()
         {
             var repository = CreateRepository(typeof(ExportOnTypeWithType));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportOnProperty();
@@ -387,7 +391,7 @@ namespace Nuclei.Plugins.Composition.Mef
         public void ComposeWithNestedImport()
         {
             var repository = CreateRepository(typeof(ExportOnTypeWithType), typeof(ImportOnPropertyWithType));
-            var catalog = new LazyLoadCatalog(repository);
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
             var container = new CompositionContainer(catalog);
 
             var obj = new ImportOnPropertyWithImport();
@@ -411,7 +415,7 @@ namespace Nuclei.Plugins.Composition.Mef
                 repository.AddType(type);
             }
 
-            var origin = new PluginFileOrigin(Assembly.GetExecutingAssembly().LocalFilePath());
+            var origin = new PluginAssemblyOrigin(Assembly.GetExecutingAssembly().LocalFilePath());
             foreach (var part in _parts)
             {
                 if (typeNames.Contains(part.Identity.AssemblyQualifiedName))
@@ -451,7 +455,7 @@ namespace Nuclei.Plugins.Composition.Mef
                     new Mock<ILogMessagesFromRemoteAppDomains>().Object);
 
                 var localPath = Assembly.GetExecutingAssembly().LocalFilePath();
-                scanner.Scan(new List<string> { localPath });
+                scanner.Scan(new Dictionary<string, PluginOrigin> { { localPath, new PluginAssemblyOrigin(localPath) } });
 
                 _types = types;
                 _parts = parts;

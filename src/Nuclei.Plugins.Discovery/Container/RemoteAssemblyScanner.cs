@@ -21,7 +21,7 @@ using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Discovery.Properties;
 
-namespace Nuclei.Plugins.Discovery
+namespace Nuclei.Plugins.Discovery.Container
 {
     /// <summary>
     /// Performs assembly scanning in search for plugin information.
@@ -282,7 +282,7 @@ namespace Nuclei.Plugins.Discovery
                     LevelToLog.Error,
                     string.Format(
                         CultureInfo.InvariantCulture,
-                        Resources.Plugins_LogMessage_Scanner_FailedToLoadCustomMemberTypes_WithAssemblyAndException,
+                        Resources.LogMessage_Scanner_FailedToLoadCustomMemberTypes_WithAssemblyAndException,
                         assembly,
                         e));
 
@@ -303,7 +303,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Info,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_DiscoveredMember_WithDefinition,
+                                Resources.LogMessage_Scanner_DiscoveredMember_WithDefinition,
                                 member));
                     }
                 }
@@ -313,7 +313,7 @@ namespace Nuclei.Plugins.Discovery
                         LevelToLog.Error,
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
+                            Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
                             type.FullName,
                             e));
                 }
@@ -323,7 +323,7 @@ namespace Nuclei.Plugins.Discovery
                         LevelToLog.Error,
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
+                            Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
                             type.FullName,
                             e));
                 }
@@ -333,7 +333,7 @@ namespace Nuclei.Plugins.Discovery
                         LevelToLog.Error,
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
+                            Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
                             type.FullName,
                             e));
                 }
@@ -343,7 +343,7 @@ namespace Nuclei.Plugins.Discovery
                         LevelToLog.Error,
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
+                            Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberTypeAndException,
                             type.FullName,
                             e));
                 }
@@ -363,7 +363,7 @@ namespace Nuclei.Plugins.Discovery
                                 LevelToLog.Info,
                                 string.Format(
                                     CultureInfo.InvariantCulture,
-                                    Resources.Plugins_LogMessage_Scanner_DiscoveredMember_WithDefinition,
+                                    Resources.LogMessage_Scanner_DiscoveredMember_WithDefinition,
                                     member));
                         }
                     }
@@ -373,7 +373,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
                                 method.Name,
                                 method.ReflectedType,
                                 e));
@@ -384,7 +384,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
                                 method.Name,
                                 method.ReflectedType,
                                 e));
@@ -395,7 +395,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
                                 method.Name,
                                 method.ReflectedType,
                                 e));
@@ -406,7 +406,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
                                 method.Name,
                                 method.ReflectedType,
                                 e));
@@ -428,7 +428,7 @@ namespace Nuclei.Plugins.Discovery
                                 LevelToLog.Info,
                                 string.Format(
                                     CultureInfo.InvariantCulture,
-                                    Resources.Plugins_LogMessage_Scanner_DiscoveredMember_WithDefinition,
+                                    Resources.LogMessage_Scanner_DiscoveredMember_WithDefinition,
                                     member));
                         }
                     }
@@ -438,7 +438,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
                                 property.Name,
                                 property.ReflectedType,
                                 e));
@@ -449,7 +449,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
                                 property.Name,
                                 property.ReflectedType,
                                 e));
@@ -460,7 +460,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
                                 property.Name,
                                 property.ReflectedType,
                                 e));
@@ -471,7 +471,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
+                                Resources.LogMessage_Scanner_InvalidCustomMember_WithMemberNameAndTypeAndException,
                                 property.Name,
                                 property.ReflectedType,
                                 e));
@@ -519,7 +519,7 @@ namespace Nuclei.Plugins.Discovery
                                 LevelToLog.Info,
                                 string.Format(
                                     CultureInfo.InvariantCulture,
-                                    Resources.Plugins_LogMessage_Scanner_DiscoveredExport_WithDefinition,
+                                    Resources.LogMessage_Scanner_DiscoveredExport_WithDefinition,
                                     exportDefinition));
                         }
                         else
@@ -528,7 +528,7 @@ namespace Nuclei.Plugins.Discovery
                                 LevelToLog.Warn,
                                 string.Format(
                                     CultureInfo.InvariantCulture,
-                                    Resources.Plugins_LogMessage_Scanner_UnableToProcessExport_WithContractName,
+                                    Resources.LogMessage_Scanner_UnableToProcessExport_WithContractName,
                                     export.ContractName,
                                     memberInfo.MemberType));
                         }
@@ -539,7 +539,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException,
+                                Resources.LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException,
                                 export.ContractName,
                                 type,
                                 e));
@@ -550,7 +550,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException,
+                                Resources.LogMessage_Scanner_InvalidExport_WithContractNameAndTypeAndException,
                                 export.ContractName,
                                 type,
                                 e));
@@ -576,7 +576,7 @@ namespace Nuclei.Plugins.Discovery
                                 LevelToLog.Info,
                                 string.Format(
                                     CultureInfo.InvariantCulture,
-                                    Resources.Plugins_LogMessage_Scanner_DiscoveredImport_WithDefinition,
+                                    Resources.LogMessage_Scanner_DiscoveredImport_WithDefinition,
                                     importDefinition));
                         }
                         else
@@ -585,7 +585,7 @@ namespace Nuclei.Plugins.Discovery
                                 LevelToLog.Warn,
                                 string.Format(
                                     CultureInfo.InvariantCulture,
-                                    Resources.Plugins_LogMessage_Scanner_UnableToProcessImport_WithContractName,
+                                    Resources.LogMessage_Scanner_UnableToProcessImport_WithContractName,
                                     import.ContractName));
                         }
                     }
@@ -595,7 +595,7 @@ namespace Nuclei.Plugins.Discovery
                             LevelToLog.Error,
                             string.Format(
                                 CultureInfo.InvariantCulture,
-                                Resources.Plugins_LogMessage_Scanner_InvalidImport_WithContractNameAndTypeAndException,
+                                Resources.LogMessage_Scanner_InvalidImport_WithContractNameAndTypeAndException,
                                 import.ContractName,
                                 type,
                                 e));
@@ -641,7 +641,7 @@ namespace Nuclei.Plugins.Discovery
                     LevelToLog.Error,
                     string.Format(
                         CultureInfo.InvariantCulture,
-                        Resources.Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
+                        Resources.LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
                         fileName,
                         e));
             }
@@ -651,7 +651,7 @@ namespace Nuclei.Plugins.Discovery
                     LevelToLog.Error,
                     string.Format(
                         CultureInfo.InvariantCulture,
-                        Resources.Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
+                        Resources.LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
                         fileName,
                         e));
             }
@@ -661,7 +661,7 @@ namespace Nuclei.Plugins.Discovery
                     LevelToLog.Error,
                     string.Format(
                         CultureInfo.InvariantCulture,
-                        Resources.Plugins_LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
+                        Resources.LogMessage_Scanner_AssemblyLoadFailed_WithNameAndException,
                         fileName,
                         e));
             }
@@ -674,7 +674,8 @@ namespace Nuclei.Plugins.Discovery
         /// returns the plugin description information.
         /// </summary>
         /// <param name="assemblyFilesToScan">
-        /// The collection that contains the file paths to all the assemblies to be scanned.
+        /// The collection that maps the file paths of the assemblies that need to be scanned to the plugin container that stores
+        /// the assemblies.
         /// </param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="assemblyFilesToScan"/> is <see langword="null" />.
@@ -683,19 +684,19 @@ namespace Nuclei.Plugins.Discovery
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "Will catch an log here because we don't actually know what exceptions can happen due to the LoadAssembly() call.")]
-        public void Scan(IEnumerable<string> assemblyFilesToScan)
+        public void Scan(IDictionary<string, PluginOrigin> assemblyFilesToScan)
         {
             if (assemblyFilesToScan == null)
             {
                 throw new ArgumentNullException("assemblyFilesToScan");
             }
 
-            foreach (var a in assemblyFilesToScan)
+            foreach (var pair in assemblyFilesToScan)
             {
                 try
                 {
-                    var assembly = LoadAssembly(a);
-                    ScanAssembly(assembly);
+                    var assembly = LoadAssembly(pair.Key);
+                    ScanAssembly(assembly, pair.Value);
                 }
                 catch (Exception e)
                 {
@@ -703,8 +704,8 @@ namespace Nuclei.Plugins.Discovery
                         LevelToLog.Error,
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            Resources.Plugins_LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException,
-                            a,
+                            Resources.LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException,
+                            pair.Key,
                             e));
                 }
             }
@@ -714,7 +715,7 @@ namespace Nuclei.Plugins.Discovery
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "Will catch an log here because we don't actually know what exceptions can happen due to the ExtractGroups() call.")]
-        private void ScanAssembly(Assembly assembly)
+        private void ScanAssembly(Assembly assembly, PluginOrigin origin)
         {
             try
             {
@@ -724,9 +725,6 @@ namespace Nuclei.Plugins.Discovery
                         CultureInfo.InvariantCulture,
                         Resources.RemoteAssemblyScanner_LogMessage_ScanningAssembly_WithName,
                         assembly.FullName));
-
-                var file = new FileInfo(assembly.LocalFilePath());
-                var fileInfo = new PluginFileOrigin(file.FullName, file.LastWriteTimeUtc);
 
                 var createTypeIdentity = TypeIdentityBuilder.IdentityFactory(_repository, new Dictionary<Type, TypeIdentity>());
                 var mefParts = ExtractImportsAndExports(assembly, createTypeIdentity);
@@ -739,7 +737,7 @@ namespace Nuclei.Plugins.Discovery
                             Resources.RemoteAssemblyScanner_LogMessage_AddingPartToRepository_WithPartInformation,
                             pair.Identity));
 
-                    _repository.AddPart(pair, fileInfo);
+                    _repository.AddPart(pair, origin);
                 }
 
                 var customMembers = ExtractCustomMembers(assembly, createTypeIdentity);
@@ -752,7 +750,7 @@ namespace Nuclei.Plugins.Discovery
                             Resources.RemoteAssemblyScanner_LogMessage_AddingDiscoverableMemberToRepository_WithMemberInformation,
                             member.DeclaringType));
 
-                    _repository.AddDiscoverableMember(member, fileInfo);
+                    _repository.AddDiscoverableMember(member, origin);
                 }
             }
             catch (Exception e)
@@ -761,7 +759,7 @@ namespace Nuclei.Plugins.Discovery
                     LevelToLog.Error,
                     string.Format(
                         CultureInfo.InvariantCulture,
-                        Resources.Plugins_LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException,
+                        Resources.LogMessage_Scanner_TypeScanFailed_WithAssemblyAndException,
                         assembly.GetName().FullName,
                         e));
             }

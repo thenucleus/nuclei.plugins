@@ -401,6 +401,29 @@ namespace Nuclei.Plugins.Core
         }
 
         /// <summary>
+        /// Returns the <see cref="PluginOrigin"/> for the given type.
+        /// </summary>
+        /// <param name="identity">The type identity.</param>
+        /// <returns>The <see cref="PluginOrigin"/> for the given type.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="identity"/> is <see langword="null" />.
+        /// </exception>
+        public PluginOrigin OriginFor(TypeIdentity identity)
+        {
+            if (identity == null)
+            {
+                throw new ArgumentNullException("identity");
+            }
+
+            if (!_parts.ContainsKey(identity))
+            {
+                throw new UnknownTypeDefinitionException();
+            }
+
+            return _parts[identity].Item2;
+        }
+
+        /// <summary>
         /// Returns the part that has the given type as declaring type.
         /// </summary>
         /// <param name="type">The declaring type.</param>

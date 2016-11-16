@@ -1,0 +1,33 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Nuclei.Plugins.Core.NuGet</id>
+        <version>$VersionSemantic$</version>
+        <authors>$CompanyName$</authors>
+        <owners>$CompanyName$</owners>
+        <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+        <projectUrl>$GitRemoteRepository$</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>
+            Provides base classes and functions for plugin discovery and loading from NuGet packages.
+        </description>
+        <releaseNotes>
+            $ReleaseNotesHtmlEncoded$
+        </releaseNotes>
+        <dependencies>
+            $Dependencies$
+            <dependency id="Nuclei.Plugins.Core"
+                        version="$VersionSemantic$" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="$DirSrc$\Nuclei.Plugins.Core.NuGet\bin\$Configuration$\Nuclei.Plugins.Core.NuGet.dll"
+              target="lib\net452" />
+        <file src="$DirSrc$\Nuclei.Plugins.Core.NuGet\bin\$Configuration$\Nuclei.Plugins.Core.NuGet.pdb"
+              target="lib\net452" />
+        <file src="$DirSrc$\Nuclei.Plugins.Core.NuGet\bin\$Configuration$\Nuclei.Plugins.Core.NuGet.xml"
+              target="lib\net452" />
+        <file src="$DirSrc$\Nuclei.Plugins.Core.NuGet\**\*.cs"
+              target="src\Nuclei.Plugins.Core.NuGet" />
+    </files>
+</package>
