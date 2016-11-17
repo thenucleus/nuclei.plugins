@@ -27,6 +27,17 @@ namespace Nuclei.Plugins.Discovery
                 = new ConfigurationKey<string[]>("PluginDirectories");
 
         /// <summary>
+        /// The configuration key that is used to retrieve the paths in which
+        /// plugin files are placed.
+        /// </summary>
+        [SuppressMessage(
+            "Microsoft.Security",
+            "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
+            Justification = "ConfigurationKey objects are immutable.")]
+        public static readonly ConfigurationKey<string[]> PluginSearchDirectories
+            = new ConfigurationKey<string[]>("PluginSearchDirectories");
+
+        /// <summary>
         /// Returns a collection containing all the configuration keys for the diagnostics section.
         /// </summary>
         /// <returns>A collection containing all the configuration keys for the diagnostics section.</returns>
@@ -35,6 +46,7 @@ namespace Nuclei.Plugins.Discovery
             return new List<ConfigurationKeyBase>
                 {
                     PluginDirectories,
+                    PluginSearchDirectories,
                 };
         }
     }

@@ -11,6 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO.Abstractions;
 using System.Linq;
 using Moq;
+using Nuclei.Configuration;
 using Nuclei.Diagnostics;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
@@ -51,6 +52,12 @@ namespace Nuclei.Plugins.Discovery.NuGet
         [Test]
         public void Added()
         {
+            var configuration = new Mock<IConfiguration>();
+            {
+                configuration.Setup(c => c.HasValueFor(It.IsAny<ConfigurationKeyBase>()))
+                    .Returns(false);
+            }
+
             var packageInstaller = new Mock<IInstallPackages>();
             {
                 packageInstaller.Setup(p => p.Install(It.IsAny<PackageIdentity>(), It.IsAny<string>(), It.IsAny<PackagePostInstall>()))
@@ -90,6 +97,7 @@ namespace Nuclei.Plugins.Discovery.NuGet
             }
 
             var detector = new NuGetPluginProcessor(
+                configuration.Object,
                 packageInstaller.Object,
                 copier,
                 repository.Object,
@@ -105,6 +113,12 @@ namespace Nuclei.Plugins.Discovery.NuGet
         [Test]
         public void Removed()
         {
+            var configuration = new Mock<IConfiguration>();
+            {
+                configuration.Setup(c => c.HasValueFor(It.IsAny<ConfigurationKeyBase>()))
+                    .Returns(false);
+            }
+
             var packageInstaller = new Mock<IInstallPackages>();
             CopyPackageFiles copier = (id, pattern, source, destination) => new List<string>();
 
@@ -130,6 +144,7 @@ namespace Nuclei.Plugins.Discovery.NuGet
             }
 
             var detector = new NuGetPluginProcessor(
+                configuration.Object,
                 packageInstaller.Object,
                 copier,
                 repository.Object,

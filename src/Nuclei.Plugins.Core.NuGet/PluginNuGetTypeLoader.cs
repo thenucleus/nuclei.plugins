@@ -139,8 +139,8 @@ namespace Nuclei.Plugins.Core.NuGet
 
         private string GetAssemblyCacheLocation(PackageIdentity identity)
         {
-            var baseCacheLocation = _configuration.HasValueFor(CoreNuGetConfigurationKeys.AssemblyCacheLocation)
-                ? _configuration.Value(CoreNuGetConfigurationKeys.AssemblyCacheLocation)
+            var baseCacheLocation = _configuration.HasValueFor(CoreConfigurationKeys.AssemblyCacheLocation)
+                ? _configuration.Value(CoreConfigurationKeys.AssemblyCacheLocation)
                 : NuGetConstants.DefaultAssemblyCacheLocation;
 
             return _fileSystem.Path.Combine(

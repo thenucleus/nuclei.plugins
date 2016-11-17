@@ -16,13 +16,9 @@ using System.Linq;
 using System.Reflection;
 using Moq;
 using Nuclei.Diagnostics.Logging;
-using Nuclei.Plugins.Composition.Mef;
 using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Core.Assembly;
-using Nuclei.Plugins.Discovery;
-using Nuclei.Plugins.Discovery.Assembly;
 using Nuclei.Plugins.Discovery.Container;
-using Nuclei.Plugins.Discovery.Origin.FileSystem;
 using NUnit.Framework;
 using Test.Mocks;
 

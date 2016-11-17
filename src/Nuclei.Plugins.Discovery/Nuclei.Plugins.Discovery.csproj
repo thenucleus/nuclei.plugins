@@ -78,7 +78,6 @@
     <Compile Include="IProcessPluginOriginChanges.cs" />
     <Compile Include="Origin\FileSystem\FileSystemWatcherProxy.cs" />
     <Compile Include="Origin\FileSystem\IFileSystemWatcher.cs" />
-    <Compile Include="PluginConfigurationKeys.cs" />
     <Compile Include="PluginDiscoveryConfigurationKeys.cs" />
     <Compile Include="PluginDiscoveryConstants.cs" />
     <Compile Include="PluginRepositoryProxy.cs" />

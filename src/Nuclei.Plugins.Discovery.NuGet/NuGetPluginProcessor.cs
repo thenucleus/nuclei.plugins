@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.Linq;
+using Nuclei.Configuration;
 using Nuclei.Diagnostics;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
@@ -17,6 +18,7 @@ using Nuclei.Plugins.Core.NuGet;
 using Nuclei.Plugins.Discovery.Container;
 using Nuclei.Plugins.Discovery.NuGet.Properties;
 using NuGet.Packaging;
+using NuGet.Packaging.Core;
 
 namespace Nuclei.Plugins.Discovery.NuGet
 {
@@ -37,6 +39,11 @@ namespace Nuclei.Plugins.Discovery.NuGet
                         }
                     }),
             };
+
+        /// <summary>
+        /// Provides the configuration settings for the application.
+        /// </summary>
+        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// The object that provides the diagnostics for the system.
@@ -72,12 +79,16 @@ namespace Nuclei.Plugins.Discovery.NuGet
         /// <summary>
         /// Initializes a new instance of the <see cref="NuGetPluginProcessor"/> class.
         /// </summary>
+        /// <param name="configuration">Provides the configuration settings for the application.</param>
         /// <param name="packageInstaller"> The object that installs NuGet packages.</param>
         /// <param name="fileCopy">The function used to copy the files from the installed NuGet packages.</param>
         /// <param name="repository">The object that stores information about all the parts and the part groups.</param>
         /// <param name="scannerBuilder">The function that is used to create an NuGet package scanner.</param>
         /// <param name="fileSystem">The object that provides an abstraction of the file system.</param>
         /// <param name="diagnostics">The object that provides the diagnostics methods for the system.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown if <paramref name="configuration"/> is <see langword="null" />.
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="packageInstaller"/> is <see langword="null" />.
         /// </exception>
@@ -97,6 +108,7 @@ namespace Nuclei.Plugins.Discovery.NuGet
         ///     Thrown if <paramref name="diagnostics"/> is <see langword="null" />.
         /// </exception>
         public NuGetPluginProcessor(
+            IConfiguration configuration,
             IInstallPackages packageInstaller,
             CopyPackageFiles fileCopy,
             IPluginRepository repository,
@@ -104,6 +116,11 @@ namespace Nuclei.Plugins.Discovery.NuGet
             IFileSystem fileSystem,
             SystemDiagnostics diagnostics)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException("configuration");
+            }
+
             if (packageInstaller == null)
             {
                 throw new ArgumentNullException("packageInstaller");
@@ -134,6 +151,7 @@ namespace Nuclei.Plugins.Discovery.NuGet
                 throw new ArgumentNullException("diagnostics");
             }
 
+            _configuration = configuration;
             _diagnostics = diagnostics;
             _fileCopy = fileCopy;
             _fileSystem = fileSystem;
@@ -164,6 +182,28 @@ namespace Nuclei.Plugins.Discovery.NuGet
             StorePlugins(packagesToAdd);
         }
 
+        private string GetAssemblyCacheLocation(PackageIdentity identity)
+        {
+            var baseCacheLocation = _configuration.HasValueFor(CoreConfigurationKeys.AssemblyCacheLocation)
+                ? _configuration.Value(CoreConfigurationKeys.AssemblyCacheLocation)
+                : NuGetConstants.DefaultAssemblyCacheLocation;
+
+            return _fileSystem.Path.Combine(
+                baseCacheLocation,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    "{0}.{1}",
+                    identity.Id,
+                    identity.Version));
+        }
+
+        private string GetInstallLocation()
+        {
+            return _configuration.HasValueFor(CoreNuGetConfigurationKeys.LocalInstallLocation)
+                ? _configuration.Value(CoreNuGetConfigurationKeys.LocalInstallLocation)
+                : NuGetConstants.DefaultInstallLocation;
+        }
+
         /// <summary>
         /// Processes the removed files.
         /// </summary>
@@ -180,20 +220,20 @@ namespace Nuclei.Plugins.Discovery.NuGet
                 return;
             }
 
+            var installLocation = GetInstallLocation();
             foreach (var package in packagesToScan.Select(f => f.Identity))
             {
-                var tempDirectory = _fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), Guid.NewGuid().ToString());
-                var binPath = _fileSystem.Path.Combine(tempDirectory, "bin");
-                if (!_fileSystem.Directory.Exists(binPath))
+                var assemblyCacheLocation = GetAssemblyCacheLocation(package);
+                if (!_fileSystem.Directory.Exists(assemblyCacheLocation))
                 {
                     _diagnostics.Log(
                         LevelToLog.Debug,
                         string.Format(
                             CultureInfo.InvariantCulture,
                             Resources.LogMessage_PackageScanner_CreatingBinDirectory_WithPath,
-                            binPath));
+                            assemblyCacheLocation));
 
-                    _fileSystem.Directory.CreateDirectory(binPath);
+                    _fileSystem.Directory.CreateDirectory(assemblyCacheLocation);
                 }
 
                 try
@@ -201,14 +241,14 @@ namespace Nuclei.Plugins.Discovery.NuGet
                     var filesToScan = new Dictionary<string, PluginOrigin>();
                     _packageInstaller.Install(
                         package,
-                        tempDirectory,
+                        installLocation,
                         (outputLocation, path, id) =>
                         {
                             var copiedFiles = _fileCopy(
                                 id,
                                 "*.*",
                                 path,
-                                binPath);
+                                assemblyCacheLocation);
 
                             if (id.Equals(package))
                             {
@@ -231,9 +271,9 @@ namespace Nuclei.Plugins.Discovery.NuGet
                 }
                 finally
                 {
-                    if (_fileSystem.Directory.Exists(tempDirectory))
+                    if (_fileSystem.Directory.Exists(installLocation))
                     {
-                        _fileSystem.Directory.Delete(tempDirectory, true);
+                        _fileSystem.Directory.Delete(installLocation, true);
                     }
                 }
             }

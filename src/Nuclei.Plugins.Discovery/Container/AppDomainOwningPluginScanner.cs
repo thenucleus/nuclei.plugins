@@ -125,12 +125,28 @@ namespace Nuclei.Plugins.Discovery.Container
         /// </param>
         public void Scan(IDictionary<string, PluginOrigin> assemblyFilesToScan)
         {
-            var paths = _configuration.HasValueFor(PluginDiscoveryConfigurationKeys.PluginDirectories)
-                ? _configuration.Value(PluginDiscoveryConfigurationKeys.PluginDirectories)
+            var searchPaths = _configuration.HasValueFor(PluginDiscoveryConfigurationKeys.PluginSearchDirectories)
+                ? _configuration.Value(PluginDiscoveryConfigurationKeys.PluginSearchDirectories)
                 : new string[]
                     {
                         _fileSystem.Path.Combine(Assembly.GetExecutingAssembly().LocalDirectoryPath(), PluginsDirectoryName)
                     };
+
+            var cachePaths = new string[0];
+            if (_configuration.HasValueFor(CoreConfigurationKeys.AssemblyCacheLocation))
+            {
+                cachePaths = new string[]
+                    {
+                        _configuration.Value(CoreConfigurationKeys.AssemblyCacheLocation)
+                    };
+            }
+
+            var paths = new string[searchPaths.Length + cachePaths.Length];
+            Array.Copy(searchPaths, paths, searchPaths.Length);
+            if (cachePaths.Length > 0)
+            {
+                Array.Copy(cachePaths, 0, paths, searchPaths.Length, cachePaths.Length);
+            }
 
             var domain = _appDomainBuilder(Resources.PluginScanDomainName, paths);
             try

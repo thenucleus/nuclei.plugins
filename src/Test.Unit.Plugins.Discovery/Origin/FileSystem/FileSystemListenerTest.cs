@@ -6,20 +6,15 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Abstractions;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Moq;
 using Nuclei.Configuration;
 using Nuclei.Diagnostics;
 using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core;
 using Nuclei.Plugins.Core.Assembly;
-using Nuclei.Plugins.Discovery.Assembly;
 using NUnit.Framework;
 using Test.Mocks;
 
