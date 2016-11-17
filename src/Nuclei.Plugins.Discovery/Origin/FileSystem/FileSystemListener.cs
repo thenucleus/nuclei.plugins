@@ -107,8 +107,8 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             _fileSystem = fileSystem;
             _scanners.AddRange(fileScanners);
 
-            var fileSearchPaths = configuration.HasValueFor(PluginConfigurationKeys.PluginLocations)
-                ? configuration.Value(PluginConfigurationKeys.PluginLocations)
+            var fileSearchPaths = configuration.HasValueFor(PluginDiscoveryConfigurationKeys.PluginSearchDirectories)
+                ? configuration.Value(PluginDiscoveryConfigurationKeys.PluginSearchDirectories)
                 : new[] { PluginDiscoveryConstants.DefaultPluginLocation };
             foreach (var path in fileSearchPaths)
             {

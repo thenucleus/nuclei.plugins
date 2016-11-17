@@ -1,0 +1,81 @@
+{
+    "metadata": [
+        {
+            "src": [
+                {
+                    "cwd": "../../",
+                    "exclude": [
+                        "**/obj/**",
+                        "**/bin/**",
+                        "_site/**"
+                    ],
+                    "files": [
+                        "src/**/Nuclei.Plugins.Composition.csproj",
+                        "src/**/Nuclei.Plugins.Composition.Mef.csproj",
+                        "src/**/Nuclei.Plugins.Core.csproj",
+                        "src/**/Nuclei.Plugins.Core.Assembly.csproj",
+                        "src/**/Nuclei.Plugins.Core.NuGet.csproj",
+                        "src/**/Nuclei.Plugins.Discovery.csproj",
+                        "src/**/Nuclei.Plugins.Discovery.Assembly.csproj",
+                        "src/**/Nuclei.Plugins.Discovery.NuGet.csproj"
+                    ]
+                }
+            ],
+            "dest": "obj/api"
+        }
+    ],
+    "build": {
+        "content": [
+            {
+                "files": [
+                    "api/**.yml"
+                ],
+                "cwd": "obj"
+            },
+            {
+                "files": [
+                    "api/*.md",
+                    "articles/**.md",
+                    "toc.yml",
+                    "*.md"
+                ],
+                "exclude": [
+                    "obj/**",
+                    "_site/**"
+                ]
+            }
+        ],
+        "dest": "_site",
+        "globalMetadata": {
+            "newFileRepository": {
+                "branch": "develop"
+            },
+            "_appFooter": "${CopyrightLong}"
+        },
+        "overwrite": [
+            {
+                "files": [
+                    "apidoc/**.md"
+                ],
+                "exclude": [
+                    "obj/**",
+                    "_site/**"
+                ]
+            }
+        ],
+        "resource": [
+            {
+                "files": [
+                    "images/**"
+                ],
+                "exclude": [
+                    "obj/**",
+                    "_site/**"
+                ]
+            }
+        ],
+        "template": [
+            "default"
+        ]
+    }
+}

@@ -26,7 +26,7 @@ namespace Nuclei.Plugins.Discovery.Container
     /// <summary>
     /// Performs assembly scanning in search for plugin information.
     /// </summary>
-    internal sealed class RemoteAssemblyScanner : MarshalByRefObject, IAssemblyScanner
+    public sealed class RemoteAssemblyScanner : MarshalByRefObject, IAssemblyScanner
     {
         private static SerializableImportDefinition CreateConstructorParameterImport(
             ContractBasedImportDefinition import,

@@ -1,22 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <SolutionDir Condition="'$(SolutionDir)' == '' or '$(SolutionDir)' == '*undefined*'">$(MSBuildProjectDirectory)\..</SolutionDir>
+    <SolutionDir Condition="'$(SolutionDir)' == '' or '$(SolutionDir)' == '*undefined*'">$(MSBuildProjectDirectory)\..\..\src</SolutionDir>
+  </PropertyGroup>
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BA52BF50-EB9B-4E05-8155-BB73BA70BDA1}</ProjectGuid>
+    <ProjectGuid>{4DFE1364-BCA7-4439-92AD-58B503EFA746}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nuclei.Plugins.Core</RootNamespace>
-    <AssemblyName>Test.Unit.Plugins.Core</AssemblyName>
+    <RootNamespace>Nuclei.Plugins.Samples</RootNamespace>
+    <AssemblyName>Nuclei.Plugins.Samples</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,7 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)/base.props" />
+  <Import Project="$(SolutionDir)\base.props" />
   <ItemGroup>
     <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
@@ -61,77 +60,44 @@
       <HintPath>..\..\packages\Nuclei.Configuration.0.9.0\lib\net452\Nuclei.Configuration.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Nuclei.Nunit.Extensions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ee5b68ec5ad4ef93, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Nuclei.Nunit.Extensions.2.6.2\lib\net40\Nuclei.Nunit.Extensions.dll</HintPath>
+    <Reference Include="Nuclei.Diagnostics, Version=0.10.0.0, Culture=neutral, PublicKeyToken=ee5b68ec5ad4ef93, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Nuclei.Diagnostics.0.10.0\lib\net452\Nuclei.Diagnostics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="QuickGraph.Data, Version=3.6.61114.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="QuickGraph.Graphviz, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Graphviz.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="QuickGraph.Serialization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Serialization.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Abstractions, Version=2.0.0.124, Culture=neutral, PublicKeyToken=d480b5b72fb413da, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.Abstractions.2.0.0.124\lib\net40\System.IO.Abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Test.SourceOnly\Mocks\Attributes.cs">
+    <Compile Include="..\..\src\Test.SourceOnly\Mocks\Attributes.cs">
       <Link>Mocks\Attributes.cs</Link>
     </Compile>
-    <Compile Include="..\Test.SourceOnly\Mocks\Exports.cs">
+    <Compile Include="..\..\src\Test.SourceOnly\Mocks\Exports.cs">
       <Link>Mocks\Exports.cs</Link>
     </Compile>
-    <Compile Include="..\Test.SourceOnly\Mocks\Imports.cs">
+    <Compile Include="..\..\src\Test.SourceOnly\Mocks\Imports.cs">
       <Link>Mocks\Imports.cs</Link>
     </Compile>
-    <Compile Include="AssemblyDefinitionTest.cs" />
-    <Compile Include="CannotMapExportToImportExceptionTest.cs" />
-    <Compile Include="ConstructorBasedImportDefinitionTest.cs" />
-    <Compile Include="ConstructorDefinitionTest.cs" />
-    <Compile Include="DuplicateDiscoverableMemberExceptionTest.cs" />
-    <Compile Include="DuplicatePartDefinitionExceptionTest.cs" />
-    <Compile Include="DuplicateTypeDefinitionExceptionTest.cs" />
-    <Compile Include="ExportRegistrationIdTest.cs" />
-    <Compile Include="FilePluginTypeTest.cs" />
-    <Compile Include="ImportRegistrationIdTest.cs" />
-    <Compile Include="InvalidPluginOriginExceptionTest.cs" />
-    <Compile Include="MethodBasedDiscoverableMemberTest.cs" />
-    <Compile Include="MethodBasedExportDefinitionTest.cs" />
-    <Compile Include="MethodDefinitionTest.cs" />
-    <Compile Include="ParameterDefinitionTest.cs" />
-    <Compile Include="PartRegistrationIdTest.cs" />
-    <Compile Include="PluginRepositoryTest.cs" />
+    <Compile Include="FileSystemListenerSample.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="LazyLoadCatalogSample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyBasedDiscoverableMemberTest.cs" />
-    <Compile Include="PropertyBasedExportDefinitionTest.cs" />
-    <Compile Include="PropertyBasedImportDefinitionTest.cs" />
-    <Compile Include="PropertyDefinitionTest.cs" />
-    <Compile Include="TypeBasedDiscoverableMemberTest.cs" />
-    <Compile Include="TypeBasedExportDefinitionTest.cs" />
-    <Compile Include="TypeDefinitionTest.cs" />
-    <Compile Include="TypeIdentityTest.cs" />
-    <Compile Include="UnknownExportDefinitionExceptionTest.cs" />
-    <Compile Include="UnknownImportDefinitionExceptionTest.cs" />
-    <Compile Include="UnknownPartDefinitionExceptionTest.cs" />
-    <Compile Include="UnknownPluginOriginTypeExceptionTest.cs" />
-    <Compile Include="UnknownPluginTypeExceptionTest.cs" />
-    <Compile Include="UnknownTypeDefinitionExceptionTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -140,19 +106,38 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nuclei.Plugins.Core.Assembly\Nuclei.Plugins.Core.Assembly.csproj">
-      <Project>{8F859BFE-D114-42F0-96E2-04CD5B62A31D}</Project>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Nuclei.Plugins.Composition.Mef\Nuclei.Plugins.Composition.Mef.csproj">
+      <Project>{92ae0855-7fbc-41e2-8e17-326617576650}</Project>
+      <Name>Nuclei.Plugins.Composition.Mef</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Nuclei.Plugins.Composition\Nuclei.Plugins.Composition.csproj">
+      <Project>{1c7534b2-2e24-487c-bbf8-7af10dc8165e}</Project>
+      <Name>Nuclei.Plugins.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Nuclei.Plugins.Core.Assembly\Nuclei.Plugins.Core.Assembly.csproj">
+      <Project>{8f859bfe-d114-42f0-96e2-04cd5b62a31d}</Project>
       <Name>Nuclei.Plugins.Core.Assembly</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
+    <ProjectReference Include="..\..\src\Nuclei.Plugins.Core.NuGet\Nuclei.Plugins.Core.NuGet.csproj">
+      <Project>{790fa747-dc90-482b-a685-ee8b224df842}</Project>
+      <Name>Nuclei.Plugins.Core.NuGet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
       <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
       <Name>Nuclei.Plugins.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nuclei.Plugins.Discovery.Assembly\Nuclei.Plugins.Discovery.Assembly.csproj">
+    <ProjectReference Include="..\..\src\Nuclei.Plugins.Discovery.Assembly\Nuclei.Plugins.Discovery.Assembly.csproj">
       <Project>{b05bcf2b-081a-4008-a62e-fe515b6480d0}</Project>
       <Name>Nuclei.Plugins.Discovery.Assembly</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
+    <ProjectReference Include="..\..\src\Nuclei.Plugins.Discovery.NuGet\Nuclei.Plugins.Discovery.NuGet.csproj">
+      <Project>{2d7eb43e-c40f-405b-b8fc-2f1cba5302d3}</Project>
+      <Name>Nuclei.Plugins.Discovery.NuGet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
       <Project>{89667ade-301d-455c-88c9-e2d5c9ae18cd}</Project>
       <Name>Nuclei.Plugins.Discovery</Name>
     </ProjectReference>
