@@ -109,5 +109,11 @@ namespace Nuclei.Plugins.Core.NuGet
                 return null;
             }
         }
+
+        public TelemetryServiceHelper TelemetryService
+        {
+            get;
+            set;
+        }
     }
 }

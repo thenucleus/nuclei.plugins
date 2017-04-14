@@ -120,6 +120,7 @@
     <ItemGroup>
         <NuGetPackageSpecs
             Condition=" '$(DirSrc)' != '' "
+            Exclude="$(DirSrc)\Test*\**\test*.nuspec"
             Include="$(DirSrc)\**\*.nuspec">
             <ShouldBuildSymbols>true</ShouldBuildSymbols>
             <IncludedDependencies>

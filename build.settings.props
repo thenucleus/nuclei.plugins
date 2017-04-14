@@ -1040,7 +1040,7 @@
         -->
         <FxCopFiles
             Condition=" '$(DirSrc)' != '' "
-            Exclude="$(DirSrc)\**\bin\$(Configuration)\Test.*.dll"
+            Exclude="$(DirSrc)\**\bin\$(Configuration)\Test.*.dll;$(DirSrc)\**\bin\$(Configuration)\*.Samples.dll"
             Include="$(DirSrc)\**\bin\$(Configuration)\nuclei.plugins.*.dll">
             <CustomDictionary>$(FxCopCustomDictionary)</CustomDictionary>
             <RuleSet>$(DirSrc)\default.ruleset</RuleSet>
@@ -1048,7 +1048,7 @@
         </FxCopFiles>
         <FxCopFiles
             Condition=" '$(DirSrc)' != '' "
-            Include="$(DirSrc)\**\bin\$(Configuration)\Test.*.dll">
+            Include="$(DirSrc)\**\bin\$(Configuration)\Test.*.dll;$(DirSrc)\**\bin\$(Configuration)\*.Samples.dll">
             <CustomDictionary>$(FxCopCustomDictionary)</CustomDictionary>
             <RuleSet>$(DirSrc)\test.ruleset</RuleSet>
             <TargetFramework>4.5</TargetFramework>

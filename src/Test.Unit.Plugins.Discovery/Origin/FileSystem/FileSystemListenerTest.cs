@@ -445,6 +445,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileChangedWithFilesMatchingMultipleScanners()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -554,6 +559,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileChangedWithFilesMatchingScanner()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -629,6 +639,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileChangedWithFilesNotMatchingScanners()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -685,6 +700,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "Microsoft.Performance",
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileChangedWithScannerThrowing()
         {
@@ -796,6 +816,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileCreatedWithFilesMatchingMultipleScanners()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -887,6 +912,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileCreatedWithFilesMatchingScanner()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -953,6 +983,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileCreatedWithFilesNotMatchingScanners()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -1009,6 +1044,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "Microsoft.Performance",
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileCreatedWithScannerThrowing()
         {
@@ -1102,6 +1142,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileDeletedWithFilesMatchingMultipleScanners()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -1193,6 +1238,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileDeletedWithFilesMatchingScanner()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -1261,6 +1311,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileDeletedWithFilesNotMatchingScanners()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -1317,6 +1372,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "Microsoft.Performance",
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileDeletedWithScannerThrowing()
         {
@@ -1409,6 +1469,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "Microsoft.Performance",
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileRenamedWithFilesMatchingMultipleScanners()
         {
@@ -1522,6 +1587,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileRenamedWithFilesMatchingScanner()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -1600,6 +1670,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileRenamedWithFilesNotMatchingScanners()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -1658,6 +1733,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "Microsoft.Performance",
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileRenamedWithOldFileMatchingScanner()
         {
@@ -1730,6 +1810,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileRenamedWithNewFileMatchingScanner()
         {
             var path = @"c:\this\is\a\fake\directory";
@@ -1797,6 +1882,11 @@ namespace Nuclei.Plugins.Discovery.Origin.FileSystem
             "Microsoft.Performance",
             "CA1804:RemoveUnusedLocals",
             MessageId = "listener",
+            Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
+        [SuppressMessage(
+            "Microsoft.Usage",
+            "CA1806:DoNotIgnoreMethodResults",
+            MessageId = "Nuclei.Plugins.Discovery.Origin.FileSystem.FileSystemListener",
             Justification = "Cannot remove the object under tests. Object is used through the event handlers.")]
         public void FileRenamedWithScannerThrowing()
         {

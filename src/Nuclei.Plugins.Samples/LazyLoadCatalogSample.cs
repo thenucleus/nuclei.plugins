@@ -35,18 +35,7 @@ namespace Nuclei.Plugins.Samples
         private static IEnumerable<TypeDefinition> _types;
         private static IEnumerable<PartDefinition> _parts;
 
-        [Test]
-        public void Create()
-        {
-            var repository = CreateRepository();
-            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
-            var container = new CompositionContainer(catalog);
-
-            var obj = new ImportGetterForImportOnConstructorWithEnumerable();
-            container.ComposeParts(obj);
-        }
-
-        private IPluginRepository CreateRepository()
+        private static IPluginRepository CreateRepository()
         {
             var types = new Type[]
                 {
@@ -71,6 +60,17 @@ namespace Nuclei.Plugins.Samples
             }
 
             return repository;
+        }
+
+        [Test]
+        public void Create()
+        {
+            var repository = CreateRepository();
+            var catalog = new LazyLoadCatalog(repository, new ILoadTypesFromPlugins[] { new PluginAssemblyTypeLoader() });
+            var container = new CompositionContainer(catalog);
+
+            var obj = new ImportGetterForImportOnConstructorWithEnumerable();
+            container.ComposeParts(obj);
         }
 
         [TestFixtureSetUp]

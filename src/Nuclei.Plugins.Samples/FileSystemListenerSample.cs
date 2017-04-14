@@ -29,7 +29,7 @@ namespace Nuclei.Plugins.Samples
         Justification = "Unit tests do not need documentation.")]
     public sealed class FileSystemListenerSample
     {
-        private ILogger NewLogger()
+        private static ILogger NewLogger()
         {
             var result = new Mock<ILogger>();
             {

@@ -90,10 +90,6 @@
     <Reference Include="NuGet.LibraryModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NuGet.LibraryModel.4.0.0\lib\net45\NuGet.LibraryModel.dll</HintPath>
     </Reference>
-    <Reference Include="NuGet.Logging, Version=3.4.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NuGet.Logging.3.4.4-rtm-final\lib\net45\NuGet.Logging.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="NuGet.PackageManagement, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NuGet.PackageManagement.4.0.0\lib\net45\NuGet.PackageManagement.dll</HintPath>
     </Reference>
@@ -160,6 +156,7 @@
     <Compile Include="CopyPackageFiles.cs" />
     <Compile Include="CoreNuGetConfigurationKeys.cs" />
     <Compile Include="IInstallPackages.cs" />
+    <Compile Include="LoggerProxy.cs" />
     <Compile Include="NuGetConstants.cs" />
     <Compile Include="NuGetPackageInstaller.cs" />
     <Compile Include="NuGetPackageInstallerContext.cs" />
