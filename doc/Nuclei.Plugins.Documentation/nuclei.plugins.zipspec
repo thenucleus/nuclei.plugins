@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<archive>
-    <name>nuclei.documentation-${VersionSemantic}</name>
-    <files>
-        <file src="${DirWorkspace}\readme.md" target="" />
-        <file src="${DirWorkspace}\license.md" target="" />
-        <file src="${DirDoc}\nuclei.plugins.documentation\_site\**\*.*" target="" />
-    </files>
-</archive>

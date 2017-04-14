@@ -2,7 +2,7 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <SolutionDir Condition="'$(SolutionDir)' == '' or '$(SolutionDir)' == '*undefined*'">$(MSBuildProjectDirectory)\..\..\src</SolutionDir>
+    <SolutionDir Condition="'$(SolutionDir)' == '' or '$(SolutionDir)' == '*undefined*'">$(MSBuildProjectDirectory)\..</SolutionDir>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -64,16 +64,14 @@
       <HintPath>..\..\packages\Nuclei.Diagnostics.0.10.0\lib\net452\Nuclei.Diagnostics.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Abstractions, Version=2.0.0.124, Culture=neutral, PublicKeyToken=d480b5b72fb413da, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.IO.Abstractions.2.0.0.124\lib\net40\System.IO.Abstractions.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -109,35 +107,35 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Nuclei.Plugins.Composition.Mef\Nuclei.Plugins.Composition.Mef.csproj">
+    <ProjectReference Include="..\Nuclei.Plugins.Composition.Mef\Nuclei.Plugins.Composition.Mef.csproj">
       <Project>{92ae0855-7fbc-41e2-8e17-326617576650}</Project>
       <Name>Nuclei.Plugins.Composition.Mef</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Nuclei.Plugins.Composition\Nuclei.Plugins.Composition.csproj">
+    <ProjectReference Include="..\Nuclei.Plugins.Composition\Nuclei.Plugins.Composition.csproj">
       <Project>{1c7534b2-2e24-487c-bbf8-7af10dc8165e}</Project>
       <Name>Nuclei.Plugins.Composition</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Nuclei.Plugins.Core.Assembly\Nuclei.Plugins.Core.Assembly.csproj">
+    <ProjectReference Include="..\Nuclei.Plugins.Core.Assembly\Nuclei.Plugins.Core.Assembly.csproj">
       <Project>{8f859bfe-d114-42f0-96e2-04cd5b62a31d}</Project>
       <Name>Nuclei.Plugins.Core.Assembly</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Nuclei.Plugins.Core.NuGet\Nuclei.Plugins.Core.NuGet.csproj">
+    <ProjectReference Include="..\Nuclei.Plugins.Core.NuGet\Nuclei.Plugins.Core.NuGet.csproj">
       <Project>{790fa747-dc90-482b-a685-ee8b224df842}</Project>
       <Name>Nuclei.Plugins.Core.NuGet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
+    <ProjectReference Include="..\Nuclei.Plugins.Core\Nuclei.Plugins.Core.csproj">
       <Project>{e39027f6-757d-4f16-9014-ea3fa25c0d0c}</Project>
       <Name>Nuclei.Plugins.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Nuclei.Plugins.Discovery.Assembly\Nuclei.Plugins.Discovery.Assembly.csproj">
+    <ProjectReference Include="..\Nuclei.Plugins.Discovery.Assembly\Nuclei.Plugins.Discovery.Assembly.csproj">
       <Project>{b05bcf2b-081a-4008-a62e-fe515b6480d0}</Project>
       <Name>Nuclei.Plugins.Discovery.Assembly</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Nuclei.Plugins.Discovery.NuGet\Nuclei.Plugins.Discovery.NuGet.csproj">
+    <ProjectReference Include="..\Nuclei.Plugins.Discovery.NuGet\Nuclei.Plugins.Discovery.NuGet.csproj">
       <Project>{2d7eb43e-c40f-405b-b8fc-2f1cba5302d3}</Project>
       <Name>Nuclei.Plugins.Discovery.NuGet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
+    <ProjectReference Include="..\Nuclei.Plugins.Discovery\Nuclei.Plugins.Discovery.csproj">
       <Project>{89667ade-301d-455c-88c9-e2d5c9ae18cd}</Project>
       <Name>Nuclei.Plugins.Discovery</Name>
     </ProjectReference>

@@ -20,9 +20,9 @@ using Nuclei.Diagnostics.Logging;
 using Nuclei.Plugins.Core.NuGet;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
+using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Protocol.Core.v2;
-using NuGet.Protocol.Core.v3;
 using NuGet.Versioning;
 using NUnit.Framework;
 

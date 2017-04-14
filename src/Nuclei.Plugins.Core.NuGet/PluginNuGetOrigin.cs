@@ -160,7 +160,7 @@ namespace Nuclei.Plugins.Core.NuGet
 
                 if (string.IsNullOrEmpty(name))
                 {
-                    throw new ArgumentException(Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString, "name");
+                    throw new ArgumentException(Properties.Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString, "name");
                 }
 
                 if (version == null)
@@ -170,7 +170,7 @@ namespace Nuclei.Plugins.Core.NuGet
 
                 if (string.IsNullOrEmpty(version))
                 {
-                    throw new ArgumentException(Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString, "version");
+                    throw new ArgumentException(Properties.Resources.Exceptions_Messages_ParameterShouldNotBeAnEmptyString, "version");
                 }
 
                 _packageName = name;
@@ -213,7 +213,7 @@ namespace Nuclei.Plugins.Core.NuGet
                     throw new ArgumentException(
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            Resources.Exceptions_Messages_CompareArgument_WithTypes,
+                            Properties.Resources.Exceptions_Messages_CompareArgument_WithTypes,
                             other.GetType().FullName,
                             GetType().FullName),
                         @"other");

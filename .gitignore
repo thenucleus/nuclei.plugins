@@ -253,3 +253,4 @@ paket-files/
 build/
 doc/Nuclei.Plugins.Documentation/_site/
 doc/Nuclei.Plugins.Documentation/docfx.json
+packages.xml

@@ -199,7 +199,7 @@ namespace Nuclei.Plugins.Core.NuGet
 
             var projectContext = new NuGetPackageInstallerContext(_diagnostics)
             {
-                PackageExtractionContext = new PackageExtractionContext()
+                PackageExtractionContext = new PackageExtractionContext(new LoggerProxy(_diagnostics))
             };
 
             using (var cacheContext = new SourceCacheContext())
