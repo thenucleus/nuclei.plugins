@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Nuclei.Plugins.Discovery.Assembly</id>
+        <version>$VersionSemantic$</version>
+        <authors>$CompanyName$</authors>
+        <owners>$CompanyName$</owners>
+        <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+        <projectUrl>$GitRemoteRepository$</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>
+            Provides classes and functions for plugin discovery of plugins in assembly files.
+        </description>
+        <releaseNotes>
+            $ReleaseNotesHtmlEncoded$
+        </releaseNotes>
+        <dependencies>
+            $Dependencies$
+            <dependency id="Nuclei.Plugins.Core"
+                        version="$VersionSemantic$" />
+            <dependency id="Nuclei.Plugins.Core.Assembly"
+                        version="$VersionSemantic$" />
+            <dependency id="Nuclei.Plugins.Discovery"
+                        version="$VersionSemantic$" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="$DirSrc$\Nuclei.Plugins.Discovery.Assembly\bin\$Configuration$\Nuclei.Plugins.Discovery.Assembly.dll"
+              target="lib\net452" />
+        <file src="$DirSrc$\Nuclei.Plugins.Discovery.Assembly\bin\$Configuration$\Nuclei.Plugins.Discovery.Assembly.pdb"
+              target="lib\net452" />
+        <file src="$DirSrc$\Nuclei.Plugins.Discovery.Assembly\bin\$Configuration$\Nuclei.Plugins.Discovery.Assembly.xml"
+              target="lib\net452" />
+        <file src="$DirSrc$\Nuclei.Plugins.Discovery.Assembly\**\*.cs"
+              target="src\Nuclei.Plugins.Discovery.Assembly" />
+    </files>
+</package>

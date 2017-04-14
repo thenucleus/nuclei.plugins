@@ -1,5 +1,4 @@
 # Nuclei.Plugins
-
 Nuclei is a collection of libraries containing classes and functions for inter-application interaction via a command mechanism, diagnostics, configuration handling, exception handling and assembly location and loading.
 The `Nuclei.Plugins` assemblies contain a set of classes and interfaces for detecting and delay loading plugins via MEF.
 

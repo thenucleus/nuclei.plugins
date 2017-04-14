@@ -1,0 +1,16 @@
+// Preprocessor directives
+#recipe Docs
+
+// Hosting information
+Settings[Keys.Host] = "thenucleus.github.io";
+Settings[Keys.LinkRoot] = "/nuclei.plugins";
+
+// Site information
+Settings[DocsKeys.Title] = "Nuclei.Plugins";
+
+// Edit settings
+Settings[DocsKeys.BaseEditUrl] = "https://thenucleus.github.io/nuclei.plugins/tree/master/doc/";
+
+// API settings
+Settings[DocsKeys.AutoLinkTypes] = true;
+Settings[DocsKeys.SourceFiles] = "../src/nuclei.plugins*/**/*.cs";
