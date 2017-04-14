@@ -173,7 +173,7 @@
         <AdditionalFiles Include="$(MSBuildThisFileDirectory)\stylecop.json" />
     </ItemGroup>
     <ItemGroup>
-    <CodeAnalysisDictionary Include="$(MSBuildThisFileDirectory)\..\CustomDictionary.xml">
+    <CodeAnalysisDictionary Include="$(MSBuildThisFileDirectory)\CustomDictionary.xml">
         <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>
